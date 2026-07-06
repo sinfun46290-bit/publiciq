@@ -1,0 +1,26 @@
+{
+  "created_utc": "2026-07-06T15:01:54+00:00",
+  "stamp": "20260706_100154",
+  "source_db": "pool_iq_snapshots.db",
+  "snapshot_db": "pool_iq_snapshots-20260706_100154.db",
+  "sha256": "fbcd71deb61cf1de7d9217058ebd554342892198a4b59b2822e30b4fddb4f9f0",
+  "source_sha256": "a2bbb5eb0e7174c4db7c03a6e60d872595cb1696d8a7b8c03927f3517d8df412",
+  "size_bytes": 278528,
+  "row_counts": {
+    "pool_grades": 214,
+    "snapshots": 547,
+    "sqlite_sequence": 1
+  },
+  "companion_exhibits": [
+    {
+      "name": "prereg_anchor.md",
+      "sha256": "4969ac85adcc4b96aaf3a80830a3e33e3b3c990a8fcdd754ea9a539855a4419a",
+      "size_bytes": 1892
+    },
+    {
+      "name": "preflight_2026-07-02.txt",
+      "sha256": "7549c9c0de7d5f36a2917eae60041c07c1f3f8fc0650b6d659efa02a22beb47b",
+      "size_bytes": 3777
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+PROVENANCE
+==========
+Produced by:   python preflight_july3.py   (git-untracked, file mtime 2026-07-02 11:34)
+Against:       pool_iq_snapshots.db as it stood on 2026-07-02
+               (469 snapshot rows, 149 prediction rows, 0 RESOLVED rows)
+Captured live: 2026-07-02 (pre-verdict data audit run)
+Written to this exhibit file: 2026-07-06 (transcribed verbatim from the 07-02 run)
+
+WHY THIS IS THE "PREDICTION PREDATED RESOLUTION" PROOF
+  On 2026-07-02 the panel had ZERO resolved rows (section [4] below). The earliest
+  14-day forward window (snapshot date 2026-06-19) does not close until 2026-07-03,
+  so no row could physically be resolved on 2026-07-02. This is independently
+  verifiable from the DB's own snapshot dates and is not a claim resting on this
+  file's own timestamp. The predictions were stored; nothing had realized yet.
+
+============================ VERBATIM 2026-07-02 OUTPUT ============================
+============================================================================
+  PREFLIGHT -- July 3 Pool IQ verdict data audit (READ-ONLY)
+============================================================================
+  DB: pool_iq_snapshots.db   snapshots rows: 469   (opened mode=ro: OK)
+
+[1] Collector heartbeat
+    snapshot days: 22  span: 2026-06-09 .. 2026-07-01  (23 calendar days, 1 missing)
+    gap: collector silent 1d between 2026-06-26 and 2026-06-28
+    days within 4d of boundary present: ['2026-06-28', '2026-06-29', '2026-06-30', '2026-07-01']
+
+[2] Price integrity
+    rows: 383   NULL price: 0   zero/negative price: 0
+    no stale-price runs >= 5d. Feed is moving.
+
+[3] Date quorum survival (MIN_POOLS_PER_DATE = 12)
+    dates with predictions: 12   median pools/day: 14   min: 7
+    [AMBER] 4 dates fall below quorum and will be SILENTLY dropped from the IC: ['2026-06-19', '2026-06-20', '2026-06-21', '2026-06-22']
+    [RED ] over 25% of dates fail quorum -- the cross-section is thinner than the design assumed; interpret HAC T accordingly before trusting the verdict
+
+[4] Realized panel composition
+    rows: 149
+      LIVE (real fwd price)        : 0
+      DEATH imputed (last-seen IL) : 0
+      DEAD_NO_DATA (-0.50 assumed): 0
+      pending / outage NaN         : 149
+    [RED ] zero resolved rows -- nothing to grade; the .bat would exit 'nothing to grade' (verify it does so LOUDLY)
+
+[5] Grader dry probe (read-only, same functions the verdict uses)
+    IC_t0    dates entering cross-section: 0
+    IC_t1    dates entering cross-section: 0
+    IC_heur  dates entering cross-section: 0
+    t1-vs-heur HAC: T=0 calendar-present days, gap nan%  (needs T >> L=14; T<~28 is underpowered, not wrong)
+    [RED ] HAC has T<3 -- leg A cannot compute; verdict would be HOLD by construction, know that before reading it
+    non-overlapping phases resolved: 0/14  (gate needs >= 10)
+    [AMBER] only 0 phases resolvable -- leg B is underpowered; a HOLD tomorrow means 'not enough data', NOT 'model failed'. Read it that way in the book chapter.
+
+[6] Fee-unit sanity (tier1 docstring trap)
+    median |exp_net_t0| = 0.0060
+    consistent with fractional units (docstring: 0.01-0.05 typical). OK.
+
+============================================================================
+  RESULT: RED -- 3 blocking finding(s). Resolve the interpretation BEFORE the verdict fires:
+    !! over 25% of dates fail quorum -- the cross-section is thinner than the design assumed; interpret HAC T accordingly before trusting the verdict
+    !! zero resolved rows -- nothing to grade; the .bat would exit 'nothing to grade' (verify it does so LOUDLY)
+    !! HAC has T<3 -- leg A cannot compute; verdict would be HOLD by construction, know that before reading it
+============================================================================
+exit code: 2 (RED)
