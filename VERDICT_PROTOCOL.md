@@ -90,6 +90,19 @@ changes no sign and no conclusion. Disclosed now so that when a powered read bec
 possible (~mid-August), the record already shows it was known and the panel definition was
 fixed in advance.
 
+## CLARIFICATION 2026-07-18 (pre-verdict) — Deployment + first live-data observations
+Logged the day after the public `/xrpl` board went live, before any powered verdict. Changes
+no rule and no frozen content (commit `b6efae7` untouched); does NOT edit the 2026-07-17
+disclosure. Records three things deployment surfaced: (1) the 2026-07-17 addendum is a dated
+`source_sha256` snapshot (376 / 149 verbatim / ΔIC[t1−t0] −0.1355) while the live board
+recomputes from current bytes (first live export: 391 / 162 verbatim / ΔIC[t1−t0] −0.1113) —
+expected forward growth, not a revision; (2) all 13 EXCLUDE cohorts are one pool (Xoge) on 13
+distinct dates, a live-computed count that cannot overstate; (3) the board's integrity
+guarantees — export-time IC recompute with a hard-stop against the grade run's recorded ΔIC,
+the entry-tier oracle, refresh only inside the grade chain, and staleness self-report. Full
+detail in PREREGISTRATION.md -> "Addendum 2026-07-18 (pre-verdict) — Deployment + first
+live-data observations."
+
 ## Global Definitions
 - Quorum / Powered: >=12 pools AND >=10 phases.
 - Maturity Deadline: 2026-08-15 (cohort has full natural maturation + buffer;

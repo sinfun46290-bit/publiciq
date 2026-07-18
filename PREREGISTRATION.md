@@ -97,3 +97,40 @@ hard-stops if it disagrees with the persisted verdict; it recomputes the IC from
 grader on the same DB whose `source_sha256` the board cites, and hard-stops if that IC
 disagrees with the grade run's recorded output for that `source_sha256`. The published
 contract number cannot silently drift from the frozen pipeline the gate reads.
+
+## Addendum 2026-07-18 (pre-verdict) — Deployment + first live-data observations
+Recorded the day after the public `/xrpl` board went live, still before any powered verdict
+(earliest mid-August 2026). It records what deployment and one day of live data surfaced. It
+does NOT edit the 2026-07-17 addendum, which stays frozen as the dated snapshot it is, and it
+changes nothing frozen: hypothesis, primary metric, pass contract, thresholds, universe, and
+commit `b6efae7` are all untouched.
+
+### 1. Count drift and recompute semantics
+The 2026-07-17 addendum is a dated snapshot anchored to `source_sha256` `7b95e0f7…`
+(376 cohorts / 149 resolved verbatim / ΔIC[t1−t0] −0.1355). The live board does not reuse
+those numbers — it recomputes from the current DB bytes each run. As of the first live export
+it read 391 cohorts / 162 resolved verbatim / ΔIC[t1−t0] −0.1113, anchored to a different
+`source_sha256`. Each figure is correct for its own input bytes. The divergence is expected
+forward growth as cohorts accrue and resolve — NOT a revision of the frozen contract and not a
+re-fit. Both figures remain negative; the read remains underpowered.
+
+### 2. Xoge single-pool characterization
+All 13 EXCLUDE cohorts are one pool (Xoge) recorded on 13 distinct dates — correlated
+contamination, not 13 independent pools. Its effective independent contribution to the
+cross-sectional IC is far below the raw count of 13. The board computes this count live from
+current data, so the characterization cannot overstate as the panel grows.
+
+### 3. Board-integrity and staleness guarantees
+The published board is not a re-computation of the model — it publishes what the frozen gate
+reads, with mechanical guarantees:
+- It recomputes the contract IC at export time from the DB whose `source_sha256` it cites, and
+  hard-stops (writing nothing) if that IC diverges from the grade run's RECORDED ΔIC for that
+  same `source_sha256`.
+- Each entry tier is re-derived from the frozen scorer and hard-stops on disagreement with the
+  verdict actually issued at open date.
+- It refreshes ONLY inside the grade chain, on the graded bytes; an out-of-band re-export after
+  new collection writes hard-stops by design.
+- It renders `generated_at` prominently and self-reports staleness once older than one grade
+  cycle. A board that cannot tell the reader it is stale would be lying by omission.
+These are the mechanisms that make the published number trustworthy: it cannot silently drift
+from the pipeline the gate reads.
