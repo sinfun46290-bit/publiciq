@@ -1,0 +1,16 @@
+# Pre-registration commit-source — NEVER commit data or secrets, only manifests/docs.
+*.db
+*.db-wal
+*.db-shm
+*-wal
+*-shm
+.env
+*.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.log
+# absolute-path / local artifacts
+*.abs.json
+*.local.*
