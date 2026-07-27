@@ -1,0 +1,11 @@
+{
+  "batch_root": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "chain": "solana",
+  "created_utc": "2026-07-27T17:17:34+00:00",
+  "n": 0,
+  "redactions": {},
+  "rows": [],
+  "source_sha256": "1077bce678862bbddffbe71a9880bfdfede7d8ea96d509b2b9ea19ccd4043c89",
+  "stamp": "20260727_171734_solana_preregistered_at_prediction",
+  "tier": "preregistered_at_prediction"
+}
