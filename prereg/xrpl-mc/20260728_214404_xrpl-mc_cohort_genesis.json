@@ -1,0 +1,157 @@
+{
+  "artifact": "cohort_membership_manifest",
+  "scope": "xrpl-mc",
+  "score_version": 6,
+  "chain": "xrpl-mc",
+  "genesis_ts": "2026-07-28T21:44:04Z",
+  "genesis_ledger_index": 105917226,
+  "cadence_sec": 180,
+  "il_model": "cp_il/1.0.0 full_range_constant_product",
+  "fee_model": "cp_fee/1.0.0 state_delta_geomean",
+  "dead_pool_rule": "-50% forward resolution for members that die AFTER genesis; membership frozen",
+  "member_count": 18,
+  "members": [
+    {
+      "member_id": "r9ZKrNu1RJQg1UoqJ24pn5ZqynJg7rifGY",
+      "ticker": "FLR",
+      "asset2_currency": "FLR",
+      "asset2_issuer": "rcxJwVnftZzXqyH9YheB8TgeiZUhNo1Eu"
+    },
+    {
+      "member_id": "rBu4LXTxM9cfs3JsFCuDbPMzvGBDR66wpi",
+      "ticker": "CORE",
+      "asset2_currency": "434F524500000000000000000000000000000000",
+      "asset2_issuer": "rcoreNywaoz2ZCQ8Lg2EbSLnGuRBmun6D"
+    },
+    {
+      "member_id": "rD6BwRhKRtzdiF1miWw7xrxiJwLwnY4PqH",
+      "ticker": "1MC",
+      "asset2_currency": "1MC",
+      "asset2_issuer": "rsJvPP7GVdPfe5zmQtvxAJVZAmDUGfhkV1"
+    },
+    {
+      "member_id": "rEDFZUyyikyUbjNoMsSgmXfZNN53rwLLZv",
+      "ticker": "ETH",
+      "asset2_currency": "ETH",
+      "asset2_issuer": "rcA8X3TVMST1n3CJeAdGk1RdRCHii7N2h"
+    },
+    {
+      "member_id": "rEKkGGiLMfL28q74W4QAEPeRwXvcxWdutn",
+      "ticker": "CNY",
+      "asset2_currency": "CNY",
+      "asset2_issuer": "rKiCet8SdvWxPXnAgYarFUXMh1zCPz432Y"
+    },
+    {
+      "member_id": "rEaErQ5vEbHXThFedUrjz9YFotG5HHcxoW",
+      "ticker": "SGB",
+      "asset2_currency": "SGB",
+      "asset2_issuer": "rctArjqVvTHihekzDeecKo6mkTYTUSBNc"
+    },
+    {
+      "member_id": "rG5ZYmUUT14RGtU491p3CCfoHzuDRLy8nU",
+      "ticker": "STX",
+      "asset2_currency": "STX",
+      "asset2_issuer": "rSTAYKxF2K77ZLZ8GoAwTqPGaphAqMyXV"
+    },
+    {
+      "member_id": "rHUpaqUPbwzKZdzQ8ZQCme18FrgW9pB4am",
+      "ticker": "USD.bs",
+      "asset2_currency": "USD",
+      "asset2_issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"
+    },
+    {
+      "member_id": "rJvuDNFkb25GybpHvqCmQzEMjycqBn3uTi",
+      "ticker": "BTC.core",
+      "asset2_currency": "BTC",
+      "asset2_issuer": "rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"
+    },
+    {
+      "member_id": "rLikwdZqS14VEqtAB43NAYeCv8uJVYQXzJ",
+      "ticker": "Xoge",
+      "asset2_currency": "586F676500000000000000000000000000000000",
+      "asset2_issuer": "rJMtvf5B3GbuFMrqybh5wYVXEH4QE8VyU1"
+    },
+    {
+      "member_id": "rMEJo9H5XvTe17UoAJzj8jtKVvTRcxwngo",
+      "ticker": "SOLO",
+      "asset2_currency": "534F4C4F00000000000000000000000000000000",
+      "asset2_issuer": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz"
+    },
+    {
+      "member_id": "rQBeAghWHEwWvKShryBSa5yR3VRX9oyQ5T",
+      "ticker": "BTC.bs",
+      "asset2_currency": "BTC",
+      "asset2_issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"
+    },
+    {
+      "member_id": "rUw4bsCaZyRiZJLzh2Hb3fujnSXiieHarz",
+      "ticker": "VGB",
+      "asset2_currency": "VGB",
+      "asset2_issuer": "rhcyBrowwApgNonehKBj8Po5z4gTyRknaU"
+    },
+    {
+      "member_id": "rf7g4JWCxu9oE1MKsWTihL9whY75AphCaV",
+      "ticker": "CSC",
+      "asset2_currency": "CSC",
+      "asset2_issuer": "rCSCManTZ8ME9EoLrSHHYKW8PPwWMgkwr"
+    },
+    {
+      "member_id": "rpnAMBAyBMhK4RN1qDLsgENrLMYNEsx3i4",
+      "ticker": "RPR",
+      "asset2_currency": "RPR",
+      "asset2_issuer": "r3qWgpz2ry3BhcRJ8JE6rxM8esrfhuKp4R"
+    },
+    {
+      "member_id": "rs9ineLqrCzeAGS1bxsrW8x2n3bRJYAh3Q",
+      "ticker": "USD.gh",
+      "asset2_currency": "USD",
+      "asset2_issuer": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq"
+    },
+    {
+      "member_id": "rsKuiczZKG1jXdTDBJnZombGeENYvrmY2U",
+      "ticker": "Schmeckles",
+      "asset2_currency": "5363686D65636B6C657300000000000000000000",
+      "asset2_issuer": "rPxw83ZP6thv7KmG5DpAW4cDW55DZRZ9wu"
+    },
+    {
+      "member_id": "rw3tWE23X3Qn43XGKwqVJ7J8QA42rYEGy4",
+      "ticker": "EUR.gh",
+      "asset2_currency": "EUR",
+      "asset2_issuer": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq"
+    }
+  ],
+  "cohort_root": "sha256:f48aedbfcfc46f7131fa4ceed9d26e6102dd6b47df2da46e0c65aa49e803db78",
+  "cohort_root_recipe": {
+    "note": "membership seal \u2014 stable & reproducible; depends ONLY on members[], not on genesis_ts/reserves",
+    "member_key_fields": [
+      "member_id",
+      "ticker",
+      "asset2_currency",
+      "asset2_issuer"
+    ],
+    "per_member_hash": "sha256(jcs.canonicalize(member)) \u2014 RFC-8785 JCS; prereg_hash.canonical_row_hash, exclude=('prediction_hash','hash','row_hash')",
+    "aggregate": "batch_root = sha256('\n'.join(sorted(member_hashes)))  [prereg_hash.batch_root]",
+    "tooling": "gradedlp/prereg_common/prereg_hash.py (RFC-8785 / jcs)",
+    "member_hashes_sorted": [
+      "01820f34f3b7f8264bad2ef2f8ddfebedbef65867badc859fc7f0c82439b9a66",
+      "06492dfecc195c79c7e09093839da1cf26e8b1afbf2a400047041c651318294f",
+      "066f7ecc5d41c161a1c8a54ad7059faf1a0ff094952f61e09c5832164e982d43",
+      "1aff8f13ca4f8be929d89d0ca7322c8961d33e9f2dd7e05cf2d0edee30b56923",
+      "2c99c87d4edc2d93d94d721a231eb2dcf7badaea67fdb4581aa2a993c9170a08",
+      "31a988e2ac83df2fc35ee0c7d55c834fae1013b3f4dd6be941176f3496815221",
+      "33e25bfe3b96b99f0bd59ce64210d8be24a6c51c6d26302d05d1c2223fabf917",
+      "5f7a1b6318d4b6a6b063d13c00e9bf1b07c12053ac7032c0f07060ab6cb1af85",
+      "6dfaff64e5fcdedf840a8ed081c5717f3fda72f725d651242b4765c6f6f0ed15",
+      "6f69fe1a8f8d13b5ebb85365bc265cd4f12866363a38a38a4cc39d2368a45c00",
+      "72c69d7c243e955884db2958aa9bd77cd25d4767a417198810e569b947aeeaaa",
+      "8a69330472b47b841f57d74ddcdd976ef7ab1b7e223f38f61c176aaf0aff919d",
+      "d99a374e61726e2a6a0fa71c647a1cdd84a80604749e82e2d1789a77f81eddcf",
+      "db7bde599200939bbff847d17757c506ad7e82a87ae394d141d1216e2cf93fa1",
+      "dee003e30af61e814efa6b9b26f8378f1d657a048352826ca2a98b8c8332a638",
+      "eb24e9ff05ef87c9b7e18c9416e45169e60b4ad40c6d4650731b9f989e0ecfb9",
+      "eeed1e502f2a91f68498c846600eb23fddd5a9c779616f18a52c8f388c1882c1",
+      "f4c1657a79fec0427d8748cdb73dde5ca01aa44135222ec63c58e8b55575d994"
+    ]
+  },
+  "manifest_hash": "sha256:fbf5c80e3cb2493d2545f35990697787978d02e4a99bac23b6c0c40f45911768"
+}
