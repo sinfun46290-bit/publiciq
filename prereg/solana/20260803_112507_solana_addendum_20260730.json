@@ -1,0 +1,121 @@
+{
+  "artifact": "prereg_addendum",
+  "scope": "solana",
+  "chain": "solana",
+  "stamp": "20260803_112507_solana_addendum_20260730",
+  "title": "SOLANA PRE-REGISTRATION ADDENDUM — SOL 2026-07-30 launch batch",
+  "issued_utc": "2026-08-03T11:25:07Z",
+  "outcomes_known_at_issue": "NONE",
+  "applies_to": {
+    "manifest": "prereg/solana/20260730_164140_solana_preregistered_at_prediction.json",
+    "stamp": "20260730_164140_solana_preregistered_at_prediction",
+    "commit": "19429ddc506e3d0531aceecbe8833226b68e095c",
+    "batch_root": "2021bf22684e8cbcbd989ae4760c1f905b85d71c2e803c707f3573ca0712fafe",
+    "source_sha256": "0e6012202bd67e6152464cadf6af66c296bdd429cf2edd579c07e7e7bb9eebd9",
+    "n": 46,
+    "tier_as_published": "preregistered_at_prediction",
+    "published_utc": "2026-07-30T16:41:40Z"
+  },
+  "disclosure": {
+    "header": "scope: solana | applies to: prereg/solana/20260730_164140_solana_preregistered_at_prediction.json\n             (commit 19429dd, batch_root 2021bf22…0712fafe, n=46)\nissued: 2026-08-03T11:25:07Z | outcomes known at issue: NONE (14-day horizon resolves 2026-08-13)",
+    "what_happened": "The 07-30 Solana manifest contains 46 predictions across the 23-pool founding cohort —\ntwo complete frozen batches, not one:\n  batch 1 — frozen 2026-07-30T12:31:18Z, span_days 14.0154, published 4h10m22s later\n  batch 2 — frozen 2026-07-30T16:40:53Z, span_days 14.1887, published 47s later\nBoth cleared the protocol-14 lookback gate (unlock 12:09:08Z); neither is pre-unlock.\nBatch 1 was produced by an operator invocation intended as a dry run. The run wrapper's\nDRY_RUN flag suppresses publication but does not suppress the freeze, so real predictions\nwere written and held unpublished until the second run's emit swept them in.",
+    "what_differs": "The two batches are distinct claims, not duplicates: prediction bounds, vol_input,\nfee_rate_input, mc_seed and prediction_hash differ for all 23 pools; y_prob differs for 10.\nFrozen bands are identical across both — no cohort or band drift. Divergence is small\n(max Δy_prob 0.0032, avg 0.0005) and driven by per-run Monte-Carlo seed re-randomization\nplus four hours of additional collector data.",
+    "the_label_defect": "All 46 rows carry tier `preregistered_at_prediction`, which asserts publication at prediction\ntime. That is accurate for batch 2. For batch 1 the freeze→publish gap was 4h10m22s, so those\npredictions existed privately before commitment; the tier label overstates their publication\nlatency. All timestamps were and remain in the published manifest — nothing is falsified.\nThe published record is not modified, deleted, or rewritten. This addendum corrects the label\nby disclosure.",
+    "canonical_batch_rule": "  When multiple frozen batches exist for the same prediction window, the canonical set is\n  the one whose freeze→publish latency satisfies the tier-3 claim.\nApplied here: batch 2 (47s) is canonical and governs grading on 2026-08-13. Batch 1 is\nretained in the public record as informational and is NOT graded.\nRationale: the batches are near-duplicates, so grading both would treat 46 correlated rows\nas 46 independent observations — inflating apparent sample size and understating variance in\nthe calibration statistics. One set must govern. This rule is adopted while all outcomes are\nunknown, so the selection cannot be outcome-motivated, and it applies to any future\nrecurrence without further judgment.",
+    "remediation": "The run wrapper is being changed so a dry run cannot write the production prediction store,\nand so a freeze is refused if a batch already exists for the current UTC day.",
+    "text_status": "operator-approved, verbatim"
+  },
+  "canonical_batch_rule": {
+    "heading": "CANONICAL-BATCH RULE (adopted, general, effective immediately)",
+    "rule": "When multiple frozen batches exist for the same prediction window, the canonical set is the one whose freeze→publish latency satisfies the tier-3 claim.",
+    "scope_of_rule": "general; effective immediately; applies to any future recurrence",
+    "canonical_batch": 2,
+    "canonical_freeze_utc": "2026-07-30T16:40:53Z",
+    "informational_batch": 1,
+    "informational_freeze_utc": "2026-07-30T12:31:18Z",
+    "batch_1_graded": false,
+    "batch_1_voided": false,
+    "batch_1_deleted": false,
+    "grading_date_utc": "2026-08-13",
+    "adopted_utc": "2026-08-03T11:25:07Z",
+    "outcomes_known_at_adoption": "NONE"
+  },
+  "gate": {
+    "protocol": "VOL_LOOKBACK_MIN_DAYS = 14 (protocol.py); no CLI or env override was set",
+    "cohort_first_snapshot_utc": "2026-07-16T12:09:08Z",
+    "unlock_utc": "2026-07-30T12:09:08Z",
+    "both_batches_post_unlock": true,
+    "span_days_definition": {
+      "status": "explanatory note; NOT part of the operator-approved disclosure text",
+      "text": "span_days_at_freeze = (freeze_ts - cohort_first_snapshot_ts) / 86400. The gate's own per-pool span uses the last collector snapshot at or before freeze_ts and is therefore marginally smaller than the value quoted here; both batches clear 14.0 either way."
+    }
+  },
+  "batches": [
+    {
+      "batch": 1,
+      "freeze_utc": "2026-07-30T12:31:18Z",
+      "freeze_ts": 1785414678,
+      "n": 23,
+      "pools": 23,
+      "seconds_after_unlock": 1330,
+      "span_days_at_freeze": 14.0154,
+      "published_utc": "2026-07-30T16:41:40Z",
+      "publish_latency_seconds": 15022,
+      "publish_latency_human": "4h 10m 22s",
+      "tier_label_accurate": false,
+      "canonical": false
+    },
+    {
+      "batch": 2,
+      "freeze_utc": "2026-07-30T16:40:53Z",
+      "freeze_ts": 1785429653,
+      "n": 23,
+      "pools": 23,
+      "seconds_after_unlock": 16305,
+      "span_days_at_freeze": 14.1887,
+      "published_utc": "2026-07-30T16:41:40Z",
+      "publish_latency_seconds": 47,
+      "publish_latency_human": "47s",
+      "tier_label_accurate": true,
+      "canonical": true
+    }
+  ],
+  "divergence": {
+    "pairs_compared": 23,
+    "fields_differing_of_23_pairs": {
+      "prediction_lower": 23,
+      "prediction_upper": 23,
+      "vol_input": 23,
+      "fee_rate_input": 23,
+      "mc_seed": 23,
+      "prediction_hash": 23,
+      "entry_price_usdc": 21,
+      "y_prob": 10,
+      "band_tick_lower": 0,
+      "band_tick_upper": 0
+    },
+    "magnitude": {
+      "max_abs_delta_y_prob": 0.0032,
+      "avg_abs_delta_y_prob": 0.0005,
+      "max_abs_pct_delta_vol_input": 5.56
+    }
+  },
+  "verification": {
+    "cohort_match": "23 predicted pools identical to the 23 frozen founding-cohort pools; no drift, no additions",
+    "manifest_batch_root_reproduces": true,
+    "manifest_rows_reproduced": "46/46 per-row prediction_hash recomputed from a clean clone",
+    "audit_drift": 0,
+    "method": "clean clone from origin, row hashes recomputed with prereg_common/prereg_hash.py"
+  },
+  "addendum_hash_recipe": {
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "addendum_hash": "sha256:af02f6466ac0860e2b250658d7799e54e30f021f20a3307d89ae48e79448b6a4"
+}
