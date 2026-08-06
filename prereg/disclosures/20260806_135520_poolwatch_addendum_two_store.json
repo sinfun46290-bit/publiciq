@@ -1,0 +1,166 @@
+{
+  "addendum_hash": "sha256:0e99b44239624ba59c4945400740b4e680035f7b7d7a07c850837bd4be66827a",
+  "addendum_hash_recipe": {
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "artifact": "prereg_addendum",
+  "chain": "poolwatch",
+  "companion_disclosure": "prereg/disclosures/20260806_135520_xrpl_addendum_outcome_citation.json",
+  "disclosure": {
+    "freeze_to_publish_lag": {
+      "consequence": "Each day's new cohort was pre-registered by the FOLLOWING day's emit rather than the same day, because each emit republished the complete open set. No prediction was lost from the public record. But for those cohorts the commitment occurred at prediction time plus approximately 24 hours, while the tier label reads preregistered_at_prediction, which overstates immediacy. On a 14-day horizon this still leaves roughly 13 days of commitment before any outcome is known, so the pre-registration property itself holds.",
+      "contradicted_rows_as_of": "2026-08-06; was 196 on 2026-08-05 and rose as further --scope open emits landed before the fix",
+      "detection": "The daily audit recorded non-zero drift on nine consecutive runs (28, 56, 28, 56, 84, 28, 28, 28, 28) beginning approximately 2026-07-28. It detected the condition every time and logged no send failure; whether those alerts were delivered or read is NOT established by the log, and in practice only the run of 2026-08-04 was noticed. The detection worked; the response to it did not.",
+      "independently_verifiable": "Compare each manifest's created_utc against its rows' open_date.",
+      "measured_2026_08_04": "The emit ran at 00:40:45Z and the snapshot completed at 00:46:46Z - six minutes too late to be included. RECORDED OBSERVATION: the emit time is verifiable from the manifest's created_utc, but the snapshot completion time was read from the database mtime on 2026-08-04 and is no longer independently re-derivable, because that database continued to be written. The same-minute pattern recurred on 2026-08-05 (00:46:09Z).",
+      "rows_whose_tier_3_label_their_own_timestamps_contradict": 210,
+      "summary": "From approximately 2026-07-28 the daily pre-registration ran BEFORE that day's snapshot had finished writing. The grade step waited for the snapshot with a 15-minute cap and then proceeded anyway; the cap was introduced after earlier database-lock failures and converted a loud failure into a silent partial-state emit."
+    },
+    "header": "scope: poolwatch | detected 2026-08-04 by our own daily pre-registration audit, not by a reader | remedied 2026-08-06",
+    "how_it_arose": "Poolwatch was migrated to run on the server, but the original workstation tasks were never disabled - unlike the XRPL migration, which had an explicit step for that. Both hosts continued to run the full snapshot-and-grade cycle against their own database, roughly eight hours apart, neither reading the other. Pre-registration manifests were emitted from the WORKSTATION database. The public board, the record file, the recorded-outcome manifests and the front-page record section are all generated from the SERVER database. Because the two snapshots ran eight hours apart against a rotating pool universe, each host opened the same NUMBER of positions per day but partly different pools. Daily counts were identical throughout; membership was not.",
+    "remedy": {
+      "backfill": "The 194 positions open in the publishing database and not previously pre-registered were committed under tier preregistered_pre_outcome - accurate for a commitment made after the prediction but before any outcome was known. They are NOT labelled preregistered_at_prediction, which would be false. Every row carries both open_date and committed_at so the interval is explicit in the artifact. Every included position was verified ungraded at emit time.",
+      "backfill_batch_root": "d9c1b02bf33aca43b4264c535bf4670fb450723cc0e41b1531003ee6b26275e3",
+      "backfill_commit": "fe0e302d278cf8460fca26f9a6d70bb5bbcf8e1e",
+      "backfill_duplication": "Sixteen of those 194 were already pre-registered at prediction time and did not need re-registering. The workstation had emitted them at 00:40Z that morning; the server's copy of the public repository had not yet pulled that commit when the exclusion set was computed, because the emit tool pulled AFTER building its manifest rather than before. The duplication is harmless - the tier-2 statement is true of all 194, and the original tier-3 registrations are untouched - but it is a registration error inside a disclosure about registration accuracy, and it has the same cause as the defect being disclosed: a stale local copy at computation time.",
+      "backfill_manifest": "prereg/poolwatch/20260805_111923_poolwatch_preregistered_pre_outcome.json",
+      "emit_only_uncommitted": "Each row is now emitted ONCE, under the tier true of it at that moment: opened today -> tier 3, opened earlier -> tier 2, already committed -> not re-emitted. Self-healing is preserved because 'not yet committed' is exactly the drift set.",
+      "emit_path_staleness_guard": "The emitter now refuses to run against a commit-source clone behind its upstream, which is what produced the 16 duplicates.",
+      "server_audit_added": "A pre-registration audit now runs on the server for poolwatch, which previously had none - only the workstation audited, and only its own database.",
+      "snapshot_wait_now_fails": "The 15-minute snapshot wait FAILS rather than proceeding. A partial-state emit is worse than a late one; failing loudly would have surfaced this on the first day instead of the ninth.",
+      "two_surface_split": "NOBODY DECIDED THIS. record.json is built straight from the database; the recorded manifests are gated on the committed pre-registration record. Two publication surfaces with different admission rules, arrived at by accretion rather than by choice. REMEDY: each record.json entry now carries an explicit provenance mark - 'preregistered', 'historical_freeze', 'none', or null when the committed record could not be read. MARKING, NOT GATING: gating would hide real outcomes, and a record that silently omits results is a selection rather than a record. Verified against the live store: preregistered 832, historical_freeze 534, none 8 - the 8 being exactly these eight, reproduced independently of the analysis that found them.",
+      "unification": "The server database is now authoritative for both prediction and publication. Its grade step emits and pushes pre-registration directly, so the two can no longer diverge.",
+      "withholding_now_alerts": "The exporter counted withheld outcomes in unlinked_total, printed it, and did nothing else - so eight outcomes were withheld for a day and found only during an unrelated investigation. It now alerts whenever any outcome is withheld. Withholding is a decision and has to announce itself.",
+      "workstation_tasks_disabled": true,
+      "xrpl_mc_audit_added": "The xrpl-mc stream was added to the audit ahead of its first graded batch."
+    },
+    "republication_and_anchoring": {
+      "anchor_rule": "FIRST PUBLICATION IS THE ANCHOR. A later re-publication does not move it: the index takes the earliest committed manifest per record_id. A reader reconciling tiers should use the earliest manifest containing a record_id, not the most recent.",
+      "behaviour": "Until 2026-08-06 every daily emit republished the WHOLE open set at tier 3. Poolwatch record_ids therefore appear in a mean of 4.4 manifests each, maximum 11 (as of 2026-08-06).",
+      "multi_hash": {
+        "as_of": "2026-08-06; frozen going forward - committed_at is now on both tiers",
+        "cause": "tier-2 emits add a committed_at field and tier-3 emits did not, so the same logical row canonicalized to different bytes depending on which tier emitted it. Identity (record_id) was never affected, and because the anchor is the earliest manifest the outcome linkage was never affected either.",
+        "fix": "committed_at is now stamped on BOTH tiers, so the field set is uniform and no NEW divergence is created. Existing manifests are NOT re-hashed - history is not rewritten.",
+        "record_ids_with_more_than_one_prediction_hash": 652
+      }
+    },
+    "summary": "Between 2026-07-22 and 2026-08-06, poolwatch predictions were pre-registered from one database while poolwatch outcomes were published from a different one. The two databases agreed completely on every position that had already graded, so no published outcome was ever misstated. But positions opened in the publishing database were not being pre-registered, and on 2026-08-05 eight of them graded. Separately, for nine consecutive days a scheduling defect delayed each day's pre-registration by roughly 24 hours.",
+    "the_eight": {
+      "as_of": "2026-08-06",
+      "graded_utc": "2026-08-05T09:15:01Z",
+      "not_back_dated": "A pre-registration emitted after an outcome is known is not a pre-registration. These eight were deliberately excluded from the remediation manifest.",
+      "open_date": "2026-07-22",
+      "outcomes_published_in_full": "Four pools, two range settings each; six role=CONTROL, two role=TOP. Verdicts: 4 correct, 4 miss - including BOTH TOP positions as misses. Full values are carried here so no reader has to take a summary on trust and no question of selective reporting can arise.",
+      "positions": [
+        {
+          "outcome": "miss",
+          "pool_key": "arbitrum:0xc473e2aee3441bf9240be85eb122abb059a3b57c",
+          "range_pct": 0.05,
+          "realized_net_pct": 2.1,
+          "role": "CONTROL"
+        },
+        {
+          "outcome": "miss",
+          "pool_key": "arbitrum:0xc473e2aee3441bf9240be85eb122abb059a3b57c",
+          "range_pct": 0.1,
+          "realized_net_pct": 1.1,
+          "role": "CONTROL"
+        },
+        {
+          "outcome": "correct",
+          "pool_key": "eth:0x109830a1aaad605bbf02a9dfa7b0b92ec2fb7daa",
+          "range_pct": 0.05,
+          "realized_net_pct": -0.9,
+          "role": "CONTROL"
+        },
+        {
+          "outcome": "correct",
+          "pool_key": "eth:0x109830a1aaad605bbf02a9dfa7b0b92ec2fb7daa",
+          "range_pct": 0.1,
+          "realized_net_pct": -0.5,
+          "role": "CONTROL"
+        },
+        {
+          "outcome": "correct",
+          "pool_key": "eth:0x64869c8d4b7c5a6a2f102c9fceea7f7de846b672",
+          "range_pct": 0.05,
+          "realized_net_pct": -0.3,
+          "role": "CONTROL"
+        },
+        {
+          "outcome": "correct",
+          "pool_key": "eth:0x64869c8d4b7c5a6a2f102c9fceea7f7de846b672",
+          "range_pct": 0.1,
+          "realized_net_pct": -0.1,
+          "role": "CONTROL"
+        },
+        {
+          "outcome": "miss",
+          "pool_key": "eth:0x970a7749ecaa4394c8b2bf5f2471f41fd6b79288",
+          "range_pct": 0.05,
+          "realized_net_pct": -0.0,
+          "role": "TOP"
+        },
+        {
+          "outcome": "miss",
+          "pool_key": "eth:0x970a7749ecaa4394c8b2bf5f2471f41fd6b79288",
+          "range_pct": 0.1,
+          "realized_net_pct": -0.0,
+          "role": "TOP"
+        }
+      ],
+      "same_day_context": "28 positions graded that day in total; 20 were pre-registered.",
+      "status": "NOT pre-registered and not claimed to be. They were published rather than withheld: suppressing a result because of how it arose would be a worse defect than the one being disclosed, and would make the record a selection rather than a record. They are excluded from every pre-registration statistic.",
+      "tier": "NONE. They carry no tier, because record.json has no tier concept. Two earlier drafts of this addendum were wrong in opposite directions - one said they were published under the 'recorded' tier, the other said they were not published at all. Both were caught in review before issue. This is the corrected account.",
+      "where_they_ARE_published": "On the front-page record ledger (record.json), with outcomes and verdicts, since 2026-08-05. They are public and were never withheld from readers.",
+      "where_they_are_ABSENT": "From every hash-chained recorded manifest, because link_rows refuses to publish an outcome with no committed prediction. This is the fail-safe working as designed, not an omission.",
+      "why_neither_mechanism_covered_them": "The freeze manifest (historical_20260723.json, created 2026-07-23T13:31:55Z) covers poolwatch positions opened 2026-06-11 through 2026-07-23 - a range that includes 07-22. But the freeze was taken from the WORKSTATION database, and the two databases had already diverged on 2026-07-22, one day earlier. Pre-registration thereafter ran from that same database. These eight existed only in the publishing database and fell through both mechanisms rather than being missed by either one."
+    },
+    "the_fail_safe_held": "THE STRONGEST FACT IN THIS DISCLOSURE, and the one that matters most: the hash-chained record CANNOT contain an outcome whose prediction was never publicly committed. prereg_emit_recorded.link_rows structurally drops any resolved outcome with no committed prediction ('drop rows with no public commit (unverifiable)'). The eight are absent from every recorded manifest because that fail-safe worked. Across all chains, for the entire life of the exporter, the complete set of outcomes it has ever withheld is exactly these eight: xrpl 452 resolved / 452 linked / 0 withheld; poolwatch 1048 / 1040 / 8; solana 0 / 0 / 0.",
+    "what_this_does_not_change": "No published record has been modified, deleted or rewritten. No prediction has been withdrawn. The 1048 graded outcomes (as of 2026-08-06) stand as published. This addendum adds information; it removes none.",
+    "what_was_and_was_not_affected": {
+      "both_databases_agreed": "Cross-checked 2026-08-04, when 992 had graded: identical sets, no position present in one and absent from the other. No published outcome was wrong, missing or altered. This check is stated as of that date and is not claimed to be continuously re-verified.",
+      "class_1_historical": {
+        "count": 606,
+        "note": "Opened BEFORE 2026-07-23, the date pre-registration began, and covered by the tier-1 historical-freeze manifest, whose header already states those records were not committed before their outcomes were known. Disclosed previously, not new here."
+      },
+      "class_2_covered_by_nothing": {
+        "count": 8,
+        "note": "Covered by NEITHER pre-registration NOR the historical freeze. See the_eight."
+      },
+      "graded_positions": 1048,
+      "graded_positions_as_of": "2026-08-06; this figure moves as positions ripen",
+      "opened_on_or_after_2026_07_23_published_without_registration": 0,
+      "published_outcomes_without_pre_registration": 614
+    }
+  },
+  "issued_utc": "2026-08-06T13:55:20Z",
+  "outcomes_known_at_issue": "8 - enumerated in disclosure.the_eight. All other affected predictions remain unresolved.",
+  "scope": "poolwatch",
+  "stamp": "20260806_135520_poolwatch_addendum_two_store",
+  "title": "POOLWATCH PRE-REGISTRATION ADDENDUM - two-store divergence and freeze-to-publish lag",
+  "verification": {
+    "audit_drift_at_issue": 0,
+    "method": "clean clone from origin; record_ids recomputed with prereg_common/prereg_emit.record_id_for over POOLWATCH_KEY (pool_key, open_date, role, range_pct); row hashes with prereg_common/prereg_hash.py",
+    "open_positions_at_issue": 392,
+    "poolwatch_record_ids_committed": 1004,
+    "reproduction_recipe": [
+      "git clone <publiciq> && cd publiciq",
+      "# the 194-row backfill",
+      "jq -r '.tier, .n, .batch_root' prereg/poolwatch/20260805_111923_poolwatch_preregistered_pre_outcome.json",
+      "# the ~24h lag, from any earlier manifest",
+      "jq -r '[.created_utc, ([.rows[].open_date]|max)]|@tsv' prereg/poolwatch/*_at_prediction.json",
+      "# first publication (the anchor) for a record_id",
+      "grep -l '<record_id>' prereg/poolwatch/*.json | sort | head -1",
+      "# this addendum's own hash",
+      "python -c \"import json,sys;sys.path.insert(0,'prereg_common');from prereg_hash import canonical_row_hash as h;a=json.load(open('<this file>'));print('sha256:'+h(a,exclude=('addendum_hash',)))\""
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "addendum_hash": "sha256:6dd05ad6b12e73d93e2c13edf3520281a60f7448e61282dbe01eaa42b710c4ba",
+  "addendum_hash_recipe": {
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "artifact": "prereg_addendum",
+  "chain": "xrpl",
+  "companion_disclosure": "prereg/disclosures/20260806_135520_poolwatch_addendum_two_store.json",
+  "disclosure": {
+    "cause": "The index that resolves a record_id to its committed prediction hash scanned prereg/*/*.json and took the FIRST match in PATH order, keeping the earliest by directory name. Directory names sort historical < poolwatch < recorded < solana < xrpl < xrpl-mc, so 'recorded' - which holds OUTCOMES - sorted ahead of solana, xrpl and xrpl-mc, and won for any record_id it mentioned. Only xrpl outcomes had resolved in sufficient volume for this to appear.",
+    "chains_that_would_have_inherited_it": "solana and xrpl-mc both sort after 'recorded' and would have developed the identical defect as their outcomes accumulated. XRPL-MC's first graded batch resolves after 2026-08-11. The fix landed 2026-08-06, BEFORE that exposure.",
+    "fix": "The index now uses an explicit WHITELIST of pre-registration chain directories rather than scanning everything. A blacklist of 'recorded' would have fixed the instance and left the class open: 'disclosures' sorts before 'historical', so this very addendum would otherwise have stolen the anchor for every record_id it cites. Anchoring is additionally keyed on the manifest's created_utc rather than its path, which moved zero anchors on live data and removes a dependency on directory names happening to sort in emission order.",
+    "header": "scope: xrpl | found 2026-08-05 while auditing outcome linkage during an unrelated poolwatch investigation | fixed 2026-08-06",
+    "immutability": "Published manifests are never rewritten. The 256 mis-citations STAND AS PUBLISHED and cannot be repaired. The fix governs future citations only. No number in this addendum should be read as history having been corrected.",
+    "scale": {
+      "distinct_record_ids_cited": 73,
+      "growth_by_recorded_manifest": {
+        "recorded_20260731_140019.json": 13,
+        "recorded_20260801_140017.json": 28,
+        "recorded_20260802_140018.json": 38,
+        "recorded_20260803_140020.json": 47,
+        "recorded_20260804_140019.json": 57,
+        "recorded_20260805_140020.json": 73
+      },
+      "growth_note": "Growing daily - 13 to 73 over five days - not static.",
+      "latent_note": "89 record_ids had a recorded-manifest anchor; 73 had been cited in a published outcome by the time of the fix. The other 16 would have been cited as their outcomes resolved.",
+      "mis_cited_links": 256,
+      "published_outcome_links_total": 15080,
+      "record_ids_anchored_to_a_recorded_manifest_including_latent": 89
+    },
+    "summary": "256 published outcome links cite a prediction hash whose earliest occurrence is a recorded (outcome) manifest rather than a pre-registration manifest. The citation is circular: the artifact pointed at as the 'committed prediction' is one that already contained the outcome.",
+    "verified_after_fix_INDEX_ONLY": {
+      "anchors_already_resolving_correctly_that_moved": 0,
+      "anchors_failing_to_resolve_to_a_pre_registration_manifest": 0,
+      "anchors_in_recorded_directory": 0,
+      "previously_recorded_anchored_record_ids_now_pre_registration_anchored": 89,
+      "scope_note": "These figures describe the ANCHOR INDEX going forward. They do NOT describe the published artifacts: the 256 mis-citations already in recorded manifests are immutable and are repaired by none of this."
+    },
+    "what_is_NOT_wrong": "ZERO outcome links cite a hash that exists nowhere. Every one of the 73 affected record_ids IS genuinely pre-registered in an xrpl pre-registration manifest, and that pre-registration is independently verifiable from the public repository. No outcome is linked to nothing, and no prediction is missing. What is wrong is the CITATION: it points a verifier at the wrong artifact."
+  },
+  "issued_utc": "2026-08-06T13:55:20Z",
+  "outcomes_known_at_issue": "All 73 cited predictions are resolved; this concerns how their outcomes CITE their predictions, not whether the predictions existed.",
+  "scope": "xrpl",
+  "stamp": "20260806_135520_xrpl_addendum_outcome_citation",
+  "title": "XRPL PRE-REGISTRATION ADDENDUM - circular outcome citations in recorded manifests",
+  "verification": {
+    "method": "clean clone from origin; index rebuilt with the whitelisted prereg_emit_recorded.committed_index; every published committed_prediction_hash re-checked against pre-registration manifests only",
+    "record_ids_anchored_after_fix": 2403,
+    "reproduction_recipe": [
+      "git clone <publiciq> && cd publiciq",
+      "# count published outcome links whose cited hash is absent from pre-registration manifests",
+      "# (expect 256; they are immutable and will not change)",
+      "python - <<'EOF'",
+      "import json,glob,os,collections",
+      "PRE=('historical','poolwatch','solana','xrpl','xrpl-mc')",
+      "pre=collections.defaultdict(set)",
+      "for f in glob.glob('prereg/*/*.json'):",
+      "    if os.path.basename(os.path.dirname(f)) not in PRE: continue",
+      "    for r in json.load(open(f)).get('rows',[]):",
+      "        if r.get('record_id') and r.get('prediction_hash'): pre[r['record_id']].add(r['prediction_hash'])",
+      "bad=tot=0",
+      "for f in glob.glob('prereg/recorded/*.json'):",
+      "    for r in json.load(open(f)).get('rows',[]):",
+      "        rid,ph=r.get('committed_record_id'),r.get('committed_prediction_hash')",
+      "        if not (rid or ph): continue",
+      "        tot+=1; bad += ph not in pre.get(rid,set())",
+      "print('links',tot,'mis-cited',bad)",
+      "EOF",
+      "# this addendum's own hash",
+      "python -c \"import json,sys;sys.path.insert(0,'prereg_common');from prereg_hash import canonical_row_hash as h;a=json.load(open('<this file>'));print('sha256:'+h(a,exclude=('addendum_hash',)))\""
+    ]
+  }
+}
