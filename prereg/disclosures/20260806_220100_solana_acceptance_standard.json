@@ -1,0 +1,225 @@
+{
+  "addendum_hash": "sha256:dfa8ebef311efe3d76a6d9b9a178b744e1b16560ba50a850cc1f020deb643159",
+  "addendum_hash_recipe": {
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "amendment_rule": "Any change after 2026-08-13 must be published as a dated successor artifact stating what changed and why, alongside the version it replaces. A silent edit invalidates the pre-registration property of the entire SOL stream.",
+  "artifact": "prereg_disclosure_acceptance_standard",
+  "chain": "solana",
+  "contributes_zero_anchors": "This artifact cites record_ids but can anchor none of them. Two independent rules: prereg/disclosures/ is absent from PREREG_ANCHOR_DIRS ('historical', 'poolwatch', 'solana', 'xrpl', 'xrpl-mc'), and the artifact field above contains 'disclosure' so _is_non_anchor_artifact excludes it by TYPE even if the file were moved into a whitelisted directory. It also carries no rows key.",
+  "cross_reference": {
+    "batch2_manifest": "prereg/solana/20260730_164140_solana_preregistered_at_prediction.json",
+    "canonical_batch_selection": "batch 1 ts=1785414678 (12:31:18Z) published 16:41:40Z -> latency 4h10m22s, fails the tier-3 claim; batch 2 ts=1785429653 (16:40:53Z) published 16:41:40Z -> latency 47s, qualifies. Batch 2 is canonical.",
+    "relationship": "The SOL addendum establishes the canonical-batch rule that selects which of the two 2026-07-30 freeze batches is graded. This artifact pre-commits what the resulting grade will be allowed to CLAIM. The addendum decides which rows resolve; this decides what their resolution means.",
+    "sol_addendum": "prereg/solana/20260803_112507_solana_addendum_20260730.json",
+    "sol_addendum_hash": "sha256:af02f6466ac0860e2b250658d7799e54e30f021f20a3307d89ae48e79448b6a4"
+  },
+  "effective_sample_size": {
+    "claim": "23 pools in one window is not n = 23.",
+    "measured_2026_08_06": "MEASURED, not assumed. Pearson correlation of daily log returns of price_usdc over the batch-2 calibration window (ts <= T), across the 23 cohort members, 14 daily observations per pool: mean pairwise rho = 0.3696, median 0.3505, range -0.5319 to 0.9999. n_eff = n^2/sum(C) = 2.52 against a nominal n of 23. Excluding the two USD stables: n = 21, rho = 0.4016, n_eff = 2.32. A second estimator on |returns| gives rho = 0.1838, n_eff = 4.56; see reported_range for why that is an alternative estimate and NOT a better proxy for joint-trap dependence.",
+    "reported_range": "PRIMARY FIGURE: n_eff ~ 2.5 (2.32 to 2.52 from return correlation). The |returns| estimator gives 4.56 because absolute returns are LESS cross-correlated (rho 0.18) than signed returns (rho 0.37) in this sample. Report the range as 2.3 to 4.6 ACROSS ESTIMATORS and do not claim a direction of bias: the dependence that actually governs a joint trap event is tail co-movement, which neither Pearson estimator measures, and 14 daily observations cannot pin it down. What is NOT in doubt is the order of magnitude - n_eff is single digits, not 23.",
+    "supersedes": "An earlier internal draft stated n_eff 1.2-2.4 from an assumed rho of 0.4-0.8. That was a stated-assumption sensitivity. It is superseded by the measurement above, which is slightly more favourable. Recorded here so the change is visible and is not mistaken for a post-hoc adjustment - it was made 2026-08-06, seven days before any outcome.",
+    "the_cluster_bootstrap_does_not_fix_this": "cluster_bootstrap_metric clusters by pool_id. On one cohort every pool contributes exactly one prediction, so n_clusters = n_records = 23 and the cluster bootstrap is ARITHMETICALLY IDENTICAL to the iid bootstrap - verified by running both on a 23-row one-per-pool frame: cluster_bca mean 0.1990 CI [0.0000,0.6364] versus iid bca mean 0.1990 CI [0.0000,0.6364], identical to four decimals. On one cohort the correlation runs ACROSS pools within the shared window, not within pool across time; clustered on that axis n_clusters = 1 and the function correctly returns its degenerate all-zero block with n_resamples 0. A cluster-robust interval on one cohort is undefined, and must not be cited as if the clustering had done work."
+  },
+  "governs": "The 23 rows of the canonical batch-2 SOL cohort, freeze ts 1785429653 (2026-07-30T16:40:53Z), first published in prereg/solana/20260730_164140_solana_preregistered_at_prediction.json, and every later SOL cohort until superseded by a dated successor artifact.",
+  "issued_utc": "2026-08-06T22:01:00Z",
+  "known_weaknesses_disclosed_with_the_first_grades": {
+    "alignment_invariant": {
+      "caveat_disclosed": "The two sides do not call the SAME function object for IL. The simulator calls clmm_impermanent_loss (human-price basis); the grader calls il_native_from_sqrt (raw sqrt-price basis). Both are single-sourced, and their measured worst-case disagreement over a sweep of decimals, sides and price ratios is 3.2e-15 - 6e-14 of the -0.05 threshold, immaterial. But test_alignment.py asserts identity on clmm_impermanent_loss, which the grader's evaluation path never calls: the assertion guards a dead import. Inlining the grader's real IL path would leave all 46 gates green. The invariant is true today and is NOT enforced where it matters.",
+      "holds": "The simulator and the grader import one shared economics package; neither re-implements IL or fees. Verified by runtime object identity (not by reading the test): scoring/sol_grade/clmm_fee all resolve clmm_impermanent_loss, v_hodl_native, il_native_from_sqrt and clmm_fee_return to the same objects in economics."
+    },
+    "gbm_path_model_assumptions_solana_pools_violate": [
+      "Continuous paths, no jumps. Solana alts gap on listings, unlocks, depegs and exploits. GBM has no tail mass there, so y_prob UNDERSTATES trap probability for precisely the pools where traps occur. The PATH_MODEL registry exists for a v2 jump-diffusion; it is not built.",
+      "Constant sigma over 14 days, estimated from the trailing 14. No vol clustering, no mean reversion. Sigma is stale by construction at the moment it matters.",
+      "Zero drift - a martingale in the USDC numeraire. Defensible for majors; wrong for a memecoin in decay, and it sets LST premium accrual to zero.",
+      "Lognormal support excludes zero. A rug or hard depeg is outside the model's support entirely.",
+      "No LVR and no adverse selection. IL-versus-HODL captures the deterministic rebalancing cost only, never the flow-toxicity cost of being picked off by arbitrageurs - in practice the dominant LP loss.",
+      "Independent paths across pools. Each pool draws its own seed from sha256(GLOBAL_RANDOM_SEED:record_id), so the 23 simulations are independent while the real pools share one tape. This does not bias any single y_prob, but the cohort's JOINT distribution is wrong and every cross-sectional statistic has a variance the model cannot represent. Same fact as effective_sample_size.",
+      "The two tightest bands are the least modellable. USDT/USDC and USDS/USDC sit on 439-tick (+/-2%) bands with sigma near zero, giving y_prob 0.0000 - and a depeg is exactly a jump out of a +/-2% band."
+    ],
+    "no_swap_collector": {
+      "consequences": [
+        "No volume and no fee APY. The advertised-APY-versus-realized comparison cannot be computed at all. On SOL, 'yield-trap detection' means IL-versus-HODL detection with a realized fee offset - NOT APY-versus-realized detection. It must be described in those words.",
+        "fee_component near zero is ambiguous: volume drying up and price leaving the band produce the same reading, and the grader cannot separate them.",
+        "A mid-window fee collapse is unforecastable by construction - fee_rate_input is a single trailing point estimate with no volume covariate.",
+        "Wash and incentive-inflated volume are invisible, which is the mechanism behind most real-world yield traps.",
+        "Concentration and cliff data reach nothing: tick_liquidity is collected hourly but no liquidity-distribution feature enters y_prob. The concentration methodology the collector was built for is not in the prediction."
+      ],
+      "correction_to_a_common_shorthand": "fee_growth_a and fee_growth_b ARE captured by the collector, and the grade's fee_component is computed from real on-chain deltas. Verified 2026-08-06: fee_rate_input is non-zero for all 23 batch-2 rows and reproduces from the collector series to 5.2e-15 relative. What is absent is SWAP-LEVEL ingestion (SWAP_INGESTION_SPEC is not deployed)."
+    },
+    "the_46_gates_are_synthetic": {
+      "real_world_failure_modes_they_do_not_cover": [
+        "Collector correctness - u128 offsets, DynamicTickArray dispatch, USDC-side detection, mint_decimals lookup. A wrong decimals_a silently rescales the entire economics and all 46 gates stay green.",
+        "fee_growth reset semantics - a negative delta is clamped to zero and counted as an anomaly; no gate establishes what a real reset looks like or whether clamping is right. A genuine reset LOSES the fees accrued before it.",
+        "Calibration-window snapshot density (the ungated path above).",
+        "The first-in-window-snapshot == prediction-ts coupling.",
+        "Interval coverage - no gate, because the grader does not compute it.",
+        "tick_current versus sqrt_price agreement on the same row: the in-range gate uses tick_current, IL uses sqrt_price, nothing checks they agree.",
+        "The sim/grade in-range grid mismatch - the sim integrates in-range time on a 1-hour grid (SIM_STEPS_PER_DAY 24), the grade on the 180-second grid (SNAPSHOTS_PER_DAY 480). Measured effect: the sim overstates in-range time by +0.02 to +0.09 days out of 14, worth at most 2e-4 of V_hodl on realized_net - immaterial, but unmeasured by any gate.",
+        "END-TO-END prediction-outcome symmetry. No test runs run_forecast into sol_grade over one synthetic pool and asserts the graded realized_net falls inside the predicted interval at the nominal rate. That is the single test that would actually exercise the claim this artifact is about, and it does not exist.",
+        "Anything about correlation or effective sample size.",
+        "The degenerate-metric behaviour in v1_UNTESTED."
+      ],
+      "reference_class_for_46_of_46_green": "34 of 34 passed while fee_component was 5 to 10 orders of magnitude wrong (ECON_UNITS_DELTA.md). The synthetic suite missed a units bug that made the fee half of realized_net meaningless. Green gates are evidence about the gates.",
+      "status": "All 46 pass (verified 2026-08-06, 50 s, against the gradedlp REPO CHECKOUT - not against the deployed tree at /opt/solana_iq, whose code identity is unverifiable for the reason given in verification.PROVENANCE_GAP). Every one runs on hand-built fixtures or closed-form identities. NONE touches real whirlpool_state data and NONE touches a resolved outcome. They are unit and invariance gates."
+    }
+  },
+  "metrics_embargoed_until_8_cohorts_and_20_traps_each_class": {
+    "embargoed": [
+      "roc_auc",
+      "pr_auc",
+      "brier",
+      "precision",
+      "recall",
+      "logistic_recalibration",
+      "bootstrap.cluster",
+      "bootstrap.iid_reference"
+    ],
+    "non_overlapping_is_a_COUNT_not_a_DATE": "A 14-day horizon means consecutive freezes share up to 13 of 14 window-days. Freeze cadence is NOT reliably daily - the observed batches are 2026-07-30 16:40:53Z, then a 3.82-day gap, then 08-03, 08-04, 08-05, 08-06 daily. So the 8-cohort requirement is stated as a count of resolved non-overlapping cohorts, deliberately NOT as a calendar date.",
+    "release_requires_all_three": [
+      "at least 8 resolved NON-OVERLAPPING cohorts",
+      "at least 20 realized traps AND at least 20 realized non-traps, pooled",
+      "the correlation-adjusted effective sample size reported alongside every figure"
+    ],
+    "why_20_traps": "Hanley-McNeil at a true AUC of 0.75 gives a 95% CI half-width of +/-0.41 at (2 traps, 21 non-traps) - the plausible first-cohort case - versus +/-0.15 at (20,20) and +/-0.13 at (20,60). Below 20 traps an AUC figure is decoration."
+  },
+  "outcomes_known_at_issue": "ZERO. No SOL prediction has resolved. The canonical batch-2 cohort matures 2026-08-13T16:40:53Z. solana resolved/linked/withheld = 0/0/0. Four grade ledgers already exist (2026-08-03 through 08-06) and every one of them grades nothing: 138 predictions considered, 0 graded, 138 rejected as immature_window, performance_evaluation_matrix null, verifiable_audit_ledger empty. Every threshold in this artifact is arithmetic on quantities already frozen and already published; none was chosen with knowledge of an outcome, because no outcome exists to know.",
+  "scope": "solana",
+  "stamp": "20260806_220100_solana_acceptance_standard",
+  "the_four_verdicts": {
+    "evaluation_order": "INVALID first, then UNTESTED, then EVIDENCE AGAINST, then EVIDENCE OF SKILL. A cohort cannot be called skilful or wrong until it has passed both of the first two.",
+    "v0_INVALID": {
+      "audited_2026_08_06_result": "NEITHER of the two DATA-shaped triggers - the ts-coupling trigger and the calibration-density trigger - fires for batch 2. The three ledger-shaped triggers (state/n_graded, calculation_error, fee_growth_anomaly) cannot be evaluated until the grade runs. Verified read-only against the live collector DB: calibration density 0.99845-0.99874 for all 23 pools (min, not mean), so the sqrt(480) annualization was applied to an effectively complete window and vol_input is NOT inflated by sparsity; and last(ts<=T) == first(ts>=T) == T for 23/23 pools, so the ts-coupling holds. See the verification section.",
+      "consequence": "Fix, disclose, and resolve the NEXT cohort. It does not license re-freezing the failed one.",
+      "meaning": "A pipeline fault. Not a result about the model.",
+      "triggers_any_of": [
+        "grading_status.state != 'graded', or n_graded < 20 of 23",
+        "data_quality.calculation_error > 0",
+        "any row with fee_growth_anomaly > 0 (a fee_growth reset was clamped to zero, which DISCARDS real fees - economics/clmm_fee.py)",
+        "any row where the first in-window snapshot ts is not the prediction ts (the grade derives entry s0 from the first snapshot >= T; the prediction froze entry_price_usdc from the last snapshot <= T; these coincide only because T = MAX(ts) and nothing in the code asserts it)",
+        "any row whose CALIBRATION window had snapshot density below 0.80. Note the calibration window is NOT 14 days: VOL_LOOKBACK_DAYS is None, so it is ALL history with ts <= T, which for batch 2 is 14.1887 days. (The grade window is gated at MIN_COMPLETENESS=0.80; the calibration window is not gated at all, while realized_vol multiplies by sqrt(480) unconditionally - at 50% density sigma inflates 1.41x, at 10% density 3.16x.)"
+      ]
+    },
+    "v1_UNTESTED": {
+      "arithmetic": "With all y_prob near a common p, P(0 traps) = (1-p)^23: p=0.005 -> 0.891; p=0.01 -> 0.794; p=0.02 -> 0.628; p=0.05 -> 0.307; p=0.10 -> 0.089; p=0.15 -> 0.024; p=0.20 -> 0.006. Below E ~ 3 a zero-trap outcome is the MODAL outcome under the model, so it distinguishes nothing.",
+      "batch2_is_already_in_this_branch_if_nothing_traps": "MEASURED E = 0.2886 for canonical batch 2. That is 12x below the 3.45 needed for a zero-trap result to be evidence against. P(0 traps) under the model = 0.7367. 13 of 23 rows carry y_prob exactly 0.0000; 19 of 23 carry y_prob < 0.01. So: IF NO POOL TRAPS, THE VERDICT IS UNTESTED, AND THAT IS FIXED NOW, BEFORE ANY OUTCOME, BY THE FROZEN PREDICTIONS ALONE.",
+      "binding_reporting_rules": [
+        "It must NOT be reported as '23/23 correct', '100% accuracy', or any win-rate. An all-safe prediction set in an all-safe window is a null result. '23/23' converts a measurement of the window into a claim about the model.",
+        "roc_auc, pr_auc, precision, recall and brier must be republished as UNDEFINED, not as the numbers the ledger contains. Computed 2026-08-06 by feeding the REAL frozen batch-2 y_prob vector through the shipped grader functions with y_true all zero, these are the EXACT values the ledger will carry in that branch: roc_auc 0.0, pr_auc 0.0, precision 0.0, recall 0.0, brier 0.001350423478260869 (= mean(y_prob^2)), calibration ([],[]), logistic_recalibration {intercept 0.0, slope 1.0, fit_converged false}, confusion tp=0 fp=0 tn=23 fn=0. These pass the grader's own finiteness check and are written into a hash-signed ledger with state 'graded'. EVERY ONE IS AN ARTIFACT OF AN UNDEFINED METRIC COERCED TO A FLOAT. A reader will read roc_auc 0.0 as an inverted classifier and brier 0.00135 as a strong one; both readings are false. The ledger has no field capable of saying 'undefined', so this disclosure carries it.",
+        "The BOOTSTRAP blocks must be republished as UNDEFINED on the same terms, and the cluster block is the most misleading of the eight because it carries evidence of computation. Computed 2026-08-06 the same way as the five metrics above - real frozen batch-2 y_prob, y_true all zero, through the shipped functions - the ledger will carry, IDENTICALLY for roc_auc and pr_auc: bootstrap.cluster = {mean 0.0, ci_low 0.0, ci_high 0.0, bias_correction_z0 -6.361340902404056, acceleration_a 0.0, n_resamples 1000, n_clusters 23, method 'cluster_bca'} and bootstrap.iid_reference = {mean 0.0, ci_low 0.0, ci_high 0.0, n_resamples 0, method 'bca'}. Read that cluster block carefully: it reports 23 clusters, 1000 COMPLETED resamples and a bias correction of -6.36, and every one of those 1000 resamples evaluated to 0.0, because _safe_eval_metric returns 0.0 whenever y_true carries a single class. The iid block is honest by accident - its guard short-circuits on single-class y_true and reports n_resamples 0 - while the cluster guard only requires >= 2 clusters, which 23 one-row pools satisfy. A reader comparing the two would conclude the cluster bootstrap succeeded where the iid one declined. Neither computed anything.",
+        "What MAY be claimed: the pipeline resolved end to end (freeze -> maturity -> grade -> hash-signed ledger -> publication); the maturity and completeness gates fired as specified; realized_net was computable from real on-chain fee_growth deltas; and the interval-coverage count, which is a real measurement."
+      ],
+      "trigger": "E = sum(y_prob) over the cohort < 3.45 AND realized trap count == 0. E is computable before any outcome.",
+      "why_3_45_and_not_3_0": "3.45 is the SAME boundary as the zero_trap_contradiction trigger in v2, deliberately, so the two verdicts meet with no gap. An earlier draft used E < 3.0 for UNTESTED against E >= 3.45 for EVIDENCE AGAINST, which left cohorts with 3.0 <= E < 3.45 and zero traps falling into neither verdict - an unclassified band that a later reader could have resolved in whichever direction suited the result. The partition is now exact: zero traps with E < 3.45 is UNTESTED, zero traps with E >= 3.45 is EVIDENCE AGAINST, and any cohort with at least one trap is never UNTESTED whatever E is."
+    },
+    "v2_EVIDENCE_AGAINST": {
+      "meaning": "The model is wrong, not merely unlucky. Any ONE trigger suffices.",
+      "the_grader_does_not_compute_the_primary_test": "sol_grade.py stores prediction_lower/prediction_upper in every ledger row and validates only lower <= upper; performance_evaluation_matrix has no coverage field. PREDICTION_CONTRACT_SPEC section 2 says the interval is 'a genuine predictive interval the grader can check for calibrated coverage over time.' It does not. Coverage will be computed off-grader from fields the ledger already contains, so no code change is needed to honour this standard, and the harness that does it was built and self-tested 2026-08-06, before any outcome existed.",
+      "triggers": {
+        "directional_failure": "mean realized_net of the top-y_prob third is ABOVE that of the bottom third - the rank signal is inverted.",
+        "interval_coverage_primary": ">= 6 of 23 rows with realized_net_return_window outside [prediction_lower, prediction_upper]. P(X>=6 | Bin(23,0.10)) = 0.0226, so this is the 5% level.",
+        "interval_coverage_strong": ">= 7 misses. P(X>=7 | Bin(23,0.10)) = 0.0058, the 1% level.",
+        "miss_asymmetry": "all coverage misses fall on the same side of the interval (>= 3 misses) - the interval is biased, not merely mis-scaled.",
+        "missed_trap_contradiction": "any row with y_prob < 0.01 realized as a trap - the model assigned under 1% to something that happened. 19 of 23 batch-2 rows qualify, so this trigger is live for batch 2.",
+        "zero_trap_contradiction": "E = sum(y_prob) >= 3.45 and realized traps == 0"
+      }
+    },
+    "v3_EVIDENCE_OF_SKILL": {
+      "ceiling_on_the_claim": "A single cohort satisfying all four is evidence of skill and nothing stronger. It is not a validated model, not a track record, and not grounds for a performance claim.",
+      "requires_all_four": [
+        "The cohort was capable of being wrong: E = sum(y_prob) >= 3.45, OR at least one realized trap. Either the prediction set was falsifiable a priori, or the window proved it was. Stated as a disjunction so the 3.45 boundary cannot lock out a cohort that WAS tested empirically at lower E - the mirror of the gap closed in v1_UNTESTED.",
+        "realized trap count inside the central 90% of PoissonBinomial(y_prob_1..23)",
+        "interval coverage misses in {1,2,3,4,5}. ZERO misses is NOT evidence of skill: it is consistent with an over-wide interval, P(X=0)=0.0886, and with the same benign window as UNTESTED.",
+        "mean realized_net of the top-y_prob third BELOW that of the bottom third - the ordering carried information"
+      ]
+    }
+  },
+  "the_one_line_commitment": "If, on 2026-08-13, the 23 predictions were mostly near zero and no pool trapped, we will publish that as UNTESTED - nothing learned about the model - together with the interval-coverage count, the E = 0.2886 that shows the cohort could not have been wrong, and the statement that roc_auc 0.0 and brier 0.00135 in the ledger are undefined metrics coerced to floats and mean neither failure nor success. We will not report it as 23/23.",
+  "title": "SOL GRADER ACCEPTANCE STANDARD - what counts as calibrated, pre-committed before the first resolution",
+  "verification": {
+    "PROVENANCE_GAP_the_ledger_cannot_be_tied_to_its_code": "DISCLOSED BECAUSE IT WEAKENS EVERY GRADE THIS STANDARD GOVERNS. Every published ledger carries validator_manifest.git_commit = 'unknown'. _get_git_hash() in sol_grade.py shells out to `git rev-parse HEAD` with cwd set to the grader's own directory, but /opt/solana_iq is a deploy target and not a git checkout (no .git present), so the call fails and falls back to 'unknown'. Consequence: a reader can verify the ledger's canonical hash and its input hashes, but CANNOT verify which version of the grader produced it. The ledger is self-consistent and input-pinned, not code-pinned. Until this is fixed, the code identity of any SOL grade rests on the deploy record rather than on the artifact.",
+    "audit_performed": "2026-08-06, read-only, seven days before first resolution",
+    "batch2_cohort_statistics_computable_today": {
+      "E_sum_y_prob": 0.28859999999999997,
+      "E_sum_y_prob_note": "Exact IEEE-754 sum of the 23 frozen y_prob values, quoted unrounded so a verifier's jq add reproduces it bit-for-bit. Rounds to 0.2886.",
+      "P_zero_traps_under_the_model": 0.7367,
+      "max_y_prob": "0.1275 (KMNO/USDC)",
+      "mean_y_prob": 0.01255,
+      "median_y_prob": 0.0,
+      "n": 23,
+      "rows_y_prob_at_or_above_0_50": 0,
+      "rows_y_prob_below_0_01": 19,
+      "rows_y_prob_exactly_zero": 13
+    },
+    "item_1_calibration_density": {
+      "density_median": 0.99874,
+      "density_min": 0.99845,
+      "pools_below_0_80": 0,
+      "result": "The INVALID density trigger does NOT fire for batch 2. vol_input is not inflated by sparsity, and the frozen values are exactly reproducible from the collector series with no lookahead.",
+      "sigma_inflation_implied_by_worst_density": 1.0008,
+      "snapshots_used": "6800 to 6802 per pool, no NULL rows dropped",
+      "vol_input_reproduction": "worst |recomputed - frozen| / frozen = 4.6e-13 across all 23 rows",
+      "window_definition": "VOL_LOOKBACK_DAYS is None, so the calibration window is ALL history with ts <= T: 1784203748 to 1785429653, span 14.1887 days, expected 6810.6 snapshots at 480/day.",
+      "windows_audited": 23
+    },
+    "item_2_ts_coupling": {
+      "decimals_or_usdc_side_mismatches": 0,
+      "pools_out_of_band_at_T": 0,
+      "result": "The INVALID coupling trigger does NOT fire for batch 2. The grade's s0 row is the prediction's entry row for every pool.",
+      "rows_where_last_le_T_equals_first_ge_T_equals_T": "23 of 23",
+      "worst_price_derivation_disagreement": "|P0_from_sqrt_price - entry_price_usdc| / entry = 1.6e-14"
+    },
+    "item_2b_fee_side_live": {
+      "fee_growth_anomalies_in_calibration_window": 0,
+      "fee_rate_reproduction": "worst relative difference 5.2e-15",
+      "fourteen_day_fee_cushion_as_fraction_of_V_hodl": "KMNO/USDC 0.0987; JUP/USDC 0.0169; BONK/USDC 0.0154; the rest 0.0019 to 0.0089; USDT/USDC 0.00002 and USDS/USDC 0.00001.",
+      "in_range_hours": "340.5 of 340.5 for 22 of 23 pools - the wide bands are in range for the entire window. KMNO/USDC, the one 439-tick band among the non-stables, was in range 158.0 of 340.5 hours (46%). This is the band-width finding showing up in real data.",
+      "rows_with_fee_rate_input_zero": 0
+    },
+    "item_3_coverage_harness": "Built and self-tested 2026-08-06, before any outcome existed. Reads a grade ledger's verifiable_audit_ledger, counts realized_net_return_window values outside [prediction_lower, prediction_upper], and applies the gates above. Self-test reproduces P(X>=k | Bin(23,0.10)) for k = 0..8 and returns the correct verdict at k = 0, 3, 6 and 7. Additionally validated against a REAL production ledger (sol_ledger_20260806.json): it parses the live schema and returns 'NO ROWS - cannot evaluate' rather than a spurious zero, which is the correct behaviour for a pre-maturity ledger.",
+    "method": "sqlite3 file:...?mode=ro against /opt/solana_iq/sol_predictions.db and /opt/sol_whirlpool_collector/whirlpool_state.db on the collector host; vol_input and fee_rate_input independently recomputed by importing the repo's own forecast.calibrate and economics.clmm_fee (never re-implemented). No database was written.",
+    "minor_version_discrepancy_noted": "provenance.methodology_versions.validation_protocol_version reads 6.0.0 while validator_manifest.validator_protocol_version reads 5.4.0 in the same ledger. Recorded here so the inconsistency is on the record before, not after, the first grade.",
+    "reproduction_recipe": [
+      "git clone <publiciq> && cd publiciq",
+      "# the 23 frozen predictions this artifact governs, with y_prob and interval",
+      "jq -r '.rows[] | select(.ts==1785429653) | [.pool_id,.y_prob,.prediction_lower,.prediction_upper] | @tsv' prereg/solana/20260730_164140_solana_preregistered_at_prediction.json",
+      "# E = sum(y_prob) over the canonical batch - the number that fixes the UNTESTED branch",
+      "jq '[.rows[] | select(.ts==1785429653) | .y_prob] | add' prereg/solana/20260730_164140_solana_preregistered_at_prediction.json",
+      "# the canonical-batch rule this artifact is subordinate to (verified key",
+      "# names: the addendum carries applies_to / canonical_batch_rule / batches,",
+      "# and has no 'governs' field)",
+      "jq -r '.addendum_hash, .applies_to, .canonical_batch_rule' prereg/solana/20260803_112507_solana_addendum_20260730.json",
+      "# this artifact's own hash",
+      "python -c \"import json,sys;sys.path.insert(0,'prereg_common');from prereg_hash import canonical_row_hash as h;a=json.load(open('<this file>'));print('sha256:'+h(a,exclude=('addendum_hash',)))\""
+    ],
+    "the_maturity_gate_is_ALREADY_PROVEN_IN_PRODUCTION": "Four grade ledgers already exist (sol_ledger_20260803 through 20260806). Each one considered every frozen prediction and graded NONE: as of 2026-08-06T18:00:06Z, n_predictions_considered 138, n_graded 0, n_rejected 138, all 138 rejected as immature_window with zero calculation_error, zero insufficient_completeness and zero window_span_short. performance_evaluation_matrix is null and verifiable_audit_ledger is empty, and grading_status.detail states in the ledger's own words: 'This ledger asserts zero resolved outcomes, not zero-valued metrics.' The all-rejected path this standard depends on is therefore not theoretical - it has run daily for four consecutive days and has never once manufactured an outcome. This is the strongest pre-resolution evidence available that the maturity gate does what it claims."
+  },
+  "what_the_prediction_claims": {
+    "THE_BAND_IS_NOT_A_POSITION_CHOICE": "STATED PLAINLY BECAUSE IT CHANGES HOW EVERY y_prob SHOULD BE READ. frozen_band is the collector's TickArray RPC coverage window, not an LP's chosen range. It is (2N+1) x 88 x tick_spacing ticks, with N from BAND_N_BY_TICK_SPACING (band-v2), centred on whatever tick_current was at genesis 2026-07-16. The collector's own docstring says it 'does NOT gate capture; it is drift datum.' Its width is therefore a function of the pool's Orca fee tier and of an RPC-cost constant - not of any economic judgement about the pool.",
+    "WIDE_BAND_POOLS_ARE_A_VOLATILITY_FORECAST": "For wide-band pools the position is effectively full range, and 'trap' reduces to a pure price-move test: a full-range CLMM position crosses -5% vs HODL exactly when the 14-day price ratio leaves [0.524, 1.908], i.e. on a 1.91x move in either direction. For those pools y_prob is a volatility forecast and must NOT be described as a pool-quality or yield-trap signal.",
+    "band_width_by_fee_tier": {
+      "observed_in_batch2": "Stored band-tick differences run from 439 (KMNO/USDC, USDT/USDC, USDS/USDC) to 67583 (DRIFT/USDC), with RAY/USDC and TNSR/USDC at 33791 and JUP/USDC the next-narrowest at 3167 - a 153.95-fold spread in band width across one cohort.",
+      "tick_spacing_1": "440 ticks, Pb/Pa 1.05x, +/-2%",
+      "tick_spacing_128": "33792 ticks, Pb/Pa 29.3x, +/-442%",
+      "tick_spacing_16": "7040 ticks, Pb/Pa 2.02x, +/-42%",
+      "tick_spacing_256": "67584 ticks, Pb/Pa 861x, +/-2834%",
+      "tick_spacing_32": "8448 ticks, Pb/Pa 2.33x, +/-53%",
+      "tick_spacing_4": "3168 ticks, Pb/Pa 1.37x, +/-17%",
+      "tick_spacing_64": "16896 ticks, Pb/Pa 5.42x, +/-133%",
+      "tick_spacing_8": "3520 ticks, Pb/Pa 1.42x, +/-19%",
+      "tick_spacing_96": "25344 ticks, Pb/Pa 12.6x, +/-255%",
+      "width_convention": "The row entries above count TICK SLOTS, (2N+1) x 88 x tick_spacing. The stored band is [band_tick_lower, band_tick_upper] with band_tick_upper = starts[-1] + w - 1, so the stored DIFFERENCE is one less than the slot count (e.g. tick_spacing 256 -> 67584 slots, stored difference 67583). Both are correct; they count different things."
+    },
+    "falsifiability": "A single y_prob is not falsified by a single outcome. y_pred = 1[y_prob >= 0.50] is falsifiable per row, but ZERO of the 23 batch-2 rows have y_prob >= 0.50, so y_pred == 0 for all 23 and tp = fp = 0 whatever happens - precision and recall are structurally undefined for this cohort, not merely zero. The interval is the one per-row falsifiable object, and the grader does not currently compute its coverage.",
+    "in_words": "The probability that a unit-native-liquidity Orca Whirlpool position spanning this pool's frozen_band, entered at T and held passively for 14 days, ends more than 5% below simply holding the entry basket. No rebalancing, no gas, no compounding; fees credited only while tick_current is inside the band.",
+    "the_interval": "prediction_lower / prediction_upper are the 5th and 95th percentiles of the SAME 10000 realized_net values that y_prob thresholds. Same quantity, same distribution. This is the only component of a single prediction that one outcome can falsify.",
+    "y_prob_as_implemented": "y_prob = mean over N_SIMS=10000 driftless-GBM paths of 1[realized_net_i < eval_net_threshold], with eval_net_threshold = -0.05 frozen per row, horizon 14 days from the freeze instant T, and realized_net_i = clmm_impermanent_loss(P0,P1_i,band) + (fee_rate_input * in_range_days_i) / v_hodl_native. Source: solana_iq/forecast/run_forecast.py aggregate()."
+  }
+}
