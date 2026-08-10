@@ -1,0 +1,12 @@
+{
+  "batch_root": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "chain": "xrpl-mc",
+  "created_utc": "2026-08-10T11:29:44+00:00",
+  "header_note": "XRPL-MC forward predictions (SCORE_VERSION 6, scope xrpl-mc): a separate stream with its own genesis and its own sealed 18-pool cohort. Every prediction in this stream is pre-registered FOR LIFE \u2014 this store holds only the frozen prediction, and resolution lands in a separate hash-signed grade ledger, so a prediction is never withdrawn from the public set once its outcome is known. Each manifest therefore republishes the complete immutable set, not a delta. record_id is derived from (pool_id, ts) via RFC-8785/JCS; store_record_id and store_prediction_hash are the predictions store's own independently-derived ids, carried for provenance.",
+  "n": 0,
+  "redactions": {},
+  "rows": [],
+  "source_sha256": "650c34973ef97f8522a48097f8d76b24558def40e6bd10d502e1344d28850df8",
+  "stamp": "20260810_112944_xrpl-mc_preregistered_at_prediction",
+  "tier": "preregistered_at_prediction"
+}
