@@ -1,0 +1,88 @@
+{
+  "addendum_hash": "sha256:24f3435b0ecd5d82f46939aaa42fa3b3579bfa403cb7c5ee19f605cfaea3652a",
+  "addendum_hash_recipe": {
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "amendment_rule": "Any change to the canonical selection or the SUI ceiling must be published as a dated successor artifact stating what changed and why, alongside the version it replaces. A silent edit invalidates the pre-registration property of the SUI stream.",
+  "artifact": "prereg_addendum",
+  "canonical_batch_rule": {
+    "applied_with_sui_ceiling": 7200,
+    "multi_batch": "only freeze ts with freeze->publish latency within the ceiling qualify; the LATEST qualifying freeze ts wins (most information, least staleness)",
+    "none_qualify": "an anomaly the published rule does not cover: raise, never guess. Silently grading an unqualified batch is exactly the failure the rule exists to prevent.",
+    "per_day": "sole batch -> kept unconditionally; the rule only arbitrates between batches of the SAME UTC day",
+    "source": "prereg/solana/20260803_112507_solana_addendum_20260730.json",
+    "source_hash": "sha256:af02f6466ac0860e2b250658d7799e54e30f021f20a3307d89ae48e79448b6a4"
+  },
+  "chain": "sui",
+  "contributes_zero_anchors": "This artifact cites nothing and CAN anchor nothing. It carries no rows key; its artifact field contains 'addendum', so _is_non_anchor_artifact excludes it by TYPE even though prereg/sui/ is in PREREG_ANCHOR_DIRS (the whitelist the SUI stream joined when the resolution path was enabled).",
+  "disclosure": {
+    "batches": {
+      "a": {
+        "first_published_iso": "2026-08-13T21:44:12+00:00",
+        "first_published_manifest": "prereg/sui/20260813_214412_sui_preregistered_at_prediction.json",
+        "first_published_utc": 1786657452,
+        "freeze_ts": 1786654800,
+        "freeze_utc": "2026-08-13T21:00:00+00:00"
+      },
+      "b": {
+        "first_published_iso": "2026-08-14T00:14:09+00:00",
+        "first_published_manifest": "prereg/sui/20260814_001409_sui_preregistered_at_prediction.json",
+        "first_published_utc": 1786666449,
+        "freeze_ts": 1786662000,
+        "freeze_utc": "2026-08-13T23:00:00+00:00"
+      }
+    },
+    "canonical_freezes": {
+      "canonical_freeze_ts": 1786662000,
+      "canonical_freeze_utc": "2026-08-13T23:00:00+00:00",
+      "decision_log": "2026-08-13 -> ts 1786662000 (2/2 qualified, 4449s)",
+      "latencies": {
+        "a": "2652s (0h44m12s)",
+        "b": "4449s (1h14m09s)"
+      },
+      "published_but_non_canonical_freeze_ts": 1786654800,
+      "published_but_non_canonical_freeze_utc": "2026-08-13T21:00:00+00:00"
+    },
+    "day_later_manifest": {
+      "file": "prereg/sui/20260814_004401_sui_preregistered_at_prediction.json",
+      "note": "The full-open-set re-publication created 2026-08-14T00:44:01Z carries 66 rows and re-carries both 08-13 batches. Re-publication cannot move a batch's first publication: only the EARLIEST created_utc wins, so A and B keep the latencies above."
+    },
+    "duplicate_batch_day": "2026-08-13 produced TWO frozen SUI batches: ts 1786654800 (2026-08-13T21:00:00+00:00) and ts 1786662000 (2026-08-13T23:00:00+00:00). Both carry the same 22-pool reserve cohort \u2014 the same pool set, the same rows. This is the same defect class as the duplicate 2026-07-30 SOL batches disclosed in prereg/solana/20260803_112507_solana_addendum_20260730.json.",
+    "freeze_to_publish_latency": {
+      "a": "2652s (0h44m12s)",
+      "b": "4449s (1h14m09s)",
+      "note": "Computed as first_publication_by_freeze_ts(ts) - ts, i.e. the earliest created_utc of any committed manifest carrying that freeze ts, minus the freeze ts. Identical to the latency a third party computes from the publiciq repo alone. Note the SUI stream republishes the complete open set, so several manifests carry both freeze ts; only the EARLIEST created_utc wins."
+    },
+    "the_rule": "The canonical-batch rule from prereg/solana/20260803_112507_solana_addendum_20260730.json (commit bb699cb) applies, with the SUI ceiling: per UTC day, a sole batch is kept unconditionally; multiple batches -> only freeze ts whose freeze->publish latency is within the ceiling qualify; the LATEST qualifying freeze ts wins; a day where none qualifies is an anomaly and raises rather than guesses. Applied via canonical_freeze_ts(..., max_latency=SUI_CEILING_SEC) \u2014 the same code the resolution path (resolved_sui) runs."
+  },
+  "governs": "The 44 rows of the two duplicate 2026-08-13 SUI freeze batches (2 x 22 pools): ts 1786654800 (2026-08-13T21:00:00+00:00) and ts 1786662000 (2026-08-13T23:00:00+00:00), first published in prereg/sui/20260813_214412_sui_preregistered_at_prediction.json and prereg/sui/20260814_001409_sui_preregistered_at_prediction.json respectively. This artifact pre-commits that ts 1786662000 is the canonical batch the 2026-08-27+ resolution will be allowed to grade, and that ts 1786654800 is published-but-non-canonical. Rows first frozen on ANY other date, and the resolution outcomes themselves (which land in the hash-signed grade ledger, never here), are not covered by it.",
+  "issued_utc": "2026-08-14T12:00:00Z",
+  "outcomes_known_at_issue": "ZERO. No SUI prediction has resolved. The 2026-08-13 23:00:00Z cohort matures 2026-08-27T23:00:00+00:00. Every number in this artifact was derived at build time from the committed SUI manifests and the published canonical-batch rule; none was chosen with knowledge of an outcome, because no outcome exists to know.",
+  "scope": "sui",
+  "stamp": "20260814_120000_sui_addendum_20260813",
+  "su_max_publish_latency_ceiling": {
+    "value": "7200s (2h00m00s)",
+    "why": "A tier-3 ('preregistered_at_prediction') claim asserts publication AT prediction time, on the same UTC day. SOL's ceiling is 900s (TIER3_MAX_PUBLISH_LATENCY_SEC), calibrated to the SOL 12:20Z pipeline that freezes, emits, commits and pushes in one invocation. The SUI freeze runs on its own cadence and its pre-registration lands up to ~2h after the freeze instant (observed 2026-08-13: 2652s and 4449s). Applying the SOL 900s ceiling to SUI would make EVERY SUI day an unqualified anomaly. 7200s is the pre-committed middle: wide enough to absorb the SUI operational reality and never tripped by normal variance, still a real same-day claim, and nowhere near a half-day hold. It is tunable via SUI_TIER3_MAX_PUBLISH_LATENCY_SEC, never hardcoded to a timestamp.",
+    "wired_as": "prereg_emit_recorded.resolved_sui() calls canonical_freeze_ts with max_latency=SUI_TIER3_MAX_PUBLISH_LATENCY_SEC (env-overridable default 7200), so a reader can verify this ceiling is what the resolution actually applies."
+  },
+  "title": "SUI PRE-REGISTRATION ADDENDUM - the 2026-08-13 duplicate freeze batch and the canonical-batch rule",
+  "verification": {
+    "note": "Every number is recomputable from the publiciq repo alone.",
+    "reproduction_recipe": [
+      "git clone <publiciq> && cd publiciq",
+      "# the freeze ts each 08-13 manifest carries (the open set is republished, # so a manifest may carry several ts); earliest created_utc per ts wins",
+      "for f in prereg/sui/*.json; do   jq -r '[.created_utc, ([.rows[].ts] | unique | join(\",\"))] | @tsv' $f; done",
+      "# the decision, via the SINGLE shared implementation the resolution runs",
+      "python -c \"import sys;sys.path.insert(0,'prereg_common');from prereg_emit_recorded import first_publication_by_freeze_ts, canonical_freeze_ts;fp=first_publication_by_freeze_ts('.', chain='sui');print(canonical_freeze_ts(set(fp), fp, max_latency=7200))\"",
+      "# this artifact's own hash",
+      "python -c \"import json,sys;sys.path.insert(0,'prereg_common');from prereg_hash import canonical_row_hash as h;a=json.load(open('<this file>'));print('sha256:'+h(a,exclude=('addendum_hash',)))\""
+    ]
+  }
+}
