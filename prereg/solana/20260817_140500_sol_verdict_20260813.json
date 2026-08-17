@@ -1,0 +1,117 @@
+{
+  "addendum_hash": "sha256:ea032462d5186a1116be1668aa58db4b253530d9f0ceae9a84afd43fa1c60287",
+  "addendum_hash_recipe": {
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "amendment_rule": "Any change to this verdict must be published as a dated successor artifact stating what changed and why, alongside the version it replaces. A silent edit invalidates the pre-registration property of the entire SOL stream. The underlying realized outcomes are immutable (recorded_20260814_140033 and later); a successor verdict can only re-interpret them under a superseding standard.",
+  "artifact": "prereg_verdict",
+  "binding_reporting_rules": {
+    "discharged": {
+      "rule_1_not_a_win_rate": "HONOURED. This artifact reports the cohort as UNTESTED. It states no win rate, no accuracy figure and no '23/23'. The 23 appears only as the cohort SIZE (n = 23) and in the count of interval misses (6 of 23), both of which are measurements of the cohort, not claims about the model. An all-safe prediction set in an all-safe window is a null result and is published as one.",
+      "rule_2_metrics_are_UNDEFINED": "HONOURED by the republication block below. The ledger's stored values for these are artifacts of undefined metrics coerced to floats: with y_true all zero there is one class, so every one of them is a placeholder, not a measurement. Neither failure nor success can be read off them.",
+      "rule_3_bootstrap_is_UNDEFINED": "HONOURED by the republication block below. The cluster block in the ledger carries evidence of computation \u2014 23 clusters, 1000 completed resamples, a bias correction \u2014 and computed nothing: every resample evaluated to 0.0 because the metric returns 0.0 on single-class y_true. The iid block declined and is honest by accident. Neither is republished as a number here.",
+      "rule_4_what_may_be_claimed": [
+        "The pipeline resolved end to end: freeze -> maturity -> grade -> hash-signed ledger -> publication. The 23 canonical rows joined byte-for-byte to their frozen predictions on committed_record_id and committed_prediction_hash, which is the assertion this builder makes and refuses on.",
+        "The maturity and completeness gates fired as specified.",
+        "realized_net was computable from real on-chain fee_growth deltas.",
+        "The interval-coverage count, which is a real measurement, and is reported above."
+      ]
+    },
+    "one_line_commitment_verbatim": "If, on 2026-08-13, the 23 predictions were mostly near zero and no pool trapped, we will publish that as UNTESTED - nothing learned about the model - together with the interval-coverage count, the E = 0.2886 that shows the cohort could not have been wrong, and the statement that roc_auc 0.0 and brier 0.00135 in the ledger are undefined metrics coerced to floats and mean neither failure nor success. We will not report it as 23/23.",
+    "republished_as_UNDEFINED": {
+      "bootstrap.cluster": "UNDEFINED",
+      "bootstrap.iid_reference": "UNDEFINED",
+      "brier": "UNDEFINED",
+      "logistic_recalibration": "UNDEFINED",
+      "pr_auc": "UNDEFINED",
+      "precision": "UNDEFINED",
+      "recall": "UNDEFINED",
+      "roc_auc": "UNDEFINED"
+    },
+    "republished_as_UNDEFINED_note": "The names come from the standard's own embargo list, read at build time. Each is UNDEFINED for this cohort, not zero and not withheld-but-known: y_true is single-class (zero realized traps over 23 rows) and y_pred is identically 0 because no frozen row carries y_prob >= 0.50, so the confusion cells that would define them are structurally empty. The ledger has no field capable of saying UNDEFINED, so this report carries it \u2014 which is the same office the standard assigned to itself before any outcome existed.",
+    "rules_verbatim": [
+      "It must NOT be reported as '23/23 correct', '100% accuracy', or any win-rate. An all-safe prediction set in an all-safe window is a null result. '23/23' converts a measurement of the window into a claim about the model.",
+      "roc_auc, pr_auc, precision, recall and brier must be republished as UNDEFINED, not as the numbers the ledger contains. Computed 2026-08-06 by feeding the REAL frozen batch-2 y_prob vector through the shipped grader functions with y_true all zero, these are the EXACT values the ledger will carry in that branch: roc_auc 0.0, pr_auc 0.0, precision 0.0, recall 0.0, brier 0.001350423478260869 (= mean(y_prob^2)), calibration ([],[]), logistic_recalibration {intercept 0.0, slope 1.0, fit_converged false}, confusion tp=0 fp=0 tn=23 fn=0. These pass the grader's own finiteness check and are written into a hash-signed ledger with state 'graded'. EVERY ONE IS AN ARTIFACT OF AN UNDEFINED METRIC COERCED TO A FLOAT. A reader will read roc_auc 0.0 as an inverted classifier and brier 0.00135 as a strong one; both readings are false. The ledger has no field capable of saying 'undefined', so this disclosure carries it.",
+      "The BOOTSTRAP blocks must be republished as UNDEFINED on the same terms, and the cluster block is the most misleading of the eight because it carries evidence of computation. Computed 2026-08-06 the same way as the five metrics above - real frozen batch-2 y_prob, y_true all zero, through the shipped functions - the ledger will carry, IDENTICALLY for roc_auc and pr_auc: bootstrap.cluster = {mean 0.0, ci_low 0.0, ci_high 0.0, bias_correction_z0 -6.361340902404056, acceleration_a 0.0, n_resamples 1000, n_clusters 23, method 'cluster_bca'} and bootstrap.iid_reference = {mean 0.0, ci_low 0.0, ci_high 0.0, n_resamples 0, method 'bca'}. Read that cluster block carefully: it reports 23 clusters, 1000 COMPLETED resamples and a bias correction of -6.36, and every one of those 1000 resamples evaluated to 0.0, because _safe_eval_metric returns 0.0 whenever y_true carries a single class. The iid block is honest by accident - its guard short-circuits on single-class y_true and reports n_resamples 0 - while the cluster guard only requires >= 2 clusters, which 23 one-row pools satisfy. A reader comparing the two would conclude the cluster bootstrap succeeded where the iid one declined. Neither computed anything.",
+      "What MAY be claimed: the pipeline resolved end to end (freeze -> maturity -> grade -> hash-signed ledger -> publication); the maturity and completeness gates fired as specified; realized_net was computable from real on-chain fee_growth deltas; and the interval-coverage count, which is a real measurement."
+    ],
+    "source": "the_four_verdicts.v1_UNTESTED.binding_reporting_rules and the_one_line_commitment in prereg/disclosures/20260806_220100_solana_acceptance_standard.json (commit 5f4634b6ce55dc16ae32e01fe6b721cfcb4cf59c, addendum_hash sha256:dfa8ebef311efe3d76a6d9b9a178b744e1b16560ba50a850cc1f020deb643159). Both are lifted verbatim at build time from the committed standard, not re-typed here; the builder REFUSES if either is absent or has changed shape.",
+    "the_standard_prescribes_no_carrier": "READ 2026-08-17 BEFORE THIS ARTIFACT WAS DESIGNED. binding_reporting_rules is a four-clause list constraining what an UNTESTED report MAY CLAIM. It names no artifact, no file format, no directory and no publication channel. Neither does the_one_line_commitment, which fixes the CONTENT of the publication ('publish that as UNTESTED ... together with the interval-coverage count, the E = 0.2886 ... and the statement that the ledger's degenerate metrics are undefined'). The only location-shaped sentence in the whole clause is 'The ledger has no field capable of saying undefined, so this disclosure carries it' \u2014 an observation that the STANDARD carries the undefined-metric disclosure, not a prescription of where a later verdict is published. So the carrier is unprescribed and this artifact is it; the CONTENT is prescribed and is discharged clause by clause below."
+  },
+  "canonical_23_trim_sha256": "ac14037c3036c98e11bd8d8d4ab2563f611ea132f168529cb0e1f1b55d1bf0ad",
+  "chain": "solana",
+  "cohort_ts": 1785429653,
+  "cohort_utc": "2026-07-30T16:40:53+00:00",
+  "contributes_zero_anchors": "This artifact cites record_ids but can anchor none of them. Its artifact field contains 'verdict', so _is_non_anchor_artifact excludes it by TYPE even though prereg/solana/ is in PREREG_ANCHOR_DIRS. It also carries no rows key.",
+  "governs": "The 23 rows of the canonical batch-2 SOL cohort, freeze ts 1785429653 (2026-07-30T16:40:53+00:00), first published in prereg/solana/20260730_164140_solana_preregistered_at_prediction.json and resolved in prereg/recorded/recorded_20260814_140033.json. The verdict is stated under prereg/disclosures/20260806_220100_solana_acceptance_standard.json (commit 5f4634b6ce55dc16ae32e01fe6b721cfcb4cf59c, addendum_hash sha256:dfa8ebef311efe3d76a6d9b9a178b744e1b16560ba50a850cc1f020deb643159). The standard itself prescribes NO carrier for the UNTESTED report \u2014 its binding_reporting_rules constrain what an UNTESTED report may CLAIM; this artifact is that report. Rows first frozen on any other date, and the resolution outcomes themselves (which land in the hash-signed grade ledger, never here), are not covered by it.",
+  "interval_coverage": {
+    "above": 4,
+    "below": 2,
+    "k": 6,
+    "level": "the 5% level (>= 6 misses)",
+    "n": 23,
+    "noted_not_a_tier_change": true,
+    "p": 0.022608,
+    "p_rounded": 0.0226,
+    "reference": "Binomial(n=23, p=0.10) under the nominal-90% interval"
+  },
+  "issued_utc": "2026-08-17T14:05:00Z",
+  "ledger_uuid": "9cd6b03f-cc8c-5eb9-85ff-d9277f2c41f2",
+  "scope": "solana",
+  "stamp": "20260817_140500_sol_verdict_20260813",
+  "standard": {
+    "addendum_hash": "sha256:dfa8ebef311efe3d76a6d9b9a178b744e1b16560ba50a850cc1f020deb643159",
+    "artifact": "prereg/disclosures/20260806_220100_solana_acceptance_standard.json",
+    "commit": "5f4634b6ce55dc16ae32e01fe6b721cfcb4cf59c"
+  },
+  "title": "SOL VERDICT - the 2026-08-13 canonical batch is UNTESTED (E = 0.2886, zero realized traps, interval coverage reported)",
+  "verdict": {
+    "E": 0.28859999999999997,
+    "E_boundary": 3.45,
+    "E_rounded": 0.2886,
+    "evaluation_order_applied": "INVALID first, then UNTESTED, then EVIDENCE AGAINST, then EVIDENCE OF SKILL \u2014 the literal order from the standard's the_four_verdicts. The cohort passed the two pipeline-shaped INVALID re-checks (ts-coupling and calibration density) and the ledger-shaped ones (state 'graded', calculation_error 0, fee_growth_anomaly 0), and qualifies UNTESTED on the first two conditions of the four.",
+    "realized_traps": 0,
+    "reported_does_not_change_the_tier": "REPORTED, DOES NOT CHANGE THE TIER under the literal order. The interval-coverage failure below is a real measurement and is published per the standard's one-line commitment, but a cohort that qualifies UNTESTED is evaluated as UNTESTED first; EVIDENCE AGAINST is not reached.",
+    "verdict": "UNTESTED",
+    "why_untested": "E = sum(y_prob) = 0.2886 is below the 3.45 boundary, and zero of 23 pools realized as a trap. Under the standard's literal order, UNTESTED is evaluated BEFORE EVIDENCE AGAINST, so the interval-coverage count is reported alongside the verdict and does NOT change the tier."
+  },
+  "verification": {
+    "asserted_constants": {
+      "E": "0.28859999999999997",
+      "canonical_23_trim": "ac14037c3036c98e11bd8d8d4ab2563f611ea132f168529cb0e1f1b55d1bf0ad",
+      "k/below/above": [
+        6,
+        2,
+        4
+      ],
+      "ledger_uuid": "9cd6b03f-cc8c-5eb9-85ff-d9277f2c41f2",
+      "realized_traps": 0
+    },
+    "box_side_facts_not_derivable_from_publiciq": {
+      "live_full_ledger_hash": "0fd373fc... \u2014 the full 46-row 2026-08-13 grade ledger's signature hash, observed on the box at grade time. NOT recomputable from the publiciq repo (the ledger is not committed there); stated here as a box-side fact only. The canonical-23 trim above IS derivable and is the one the gradedlp parity gate pins.",
+      "stale_board_hash": "384a8ae6... \u2014 the hash of the previous mutable /solana board build that rendered EVIDENCE AGAINST. Superseded by this verdict; the board now renders FROM this artifact."
+    },
+    "derived_from": [
+      "prereg/solana/20260730_164140_solana_preregistered_at_prediction.json (the 23 frozen predictions at ts 1785429653)",
+      "prereg/recorded/recorded_20260814_140033.json (the realized outcomes, joined byte-for-byte on committed_record_id / committed_prediction_hash)",
+      "prereg/disclosures/20260806_220100_solana_acceptance_standard.json (E boundary, coverage gates, one-line commitment, evaluation order)"
+    ],
+    "note": "Every number is recomputable from the publiciq repo alone, plus the pre-committed constants pinned in the acceptance standard and the gradedlp parity gate (test_sol_coverage_parity.py gate_4).",
+    "reproduction_recipe": [
+      "git clone <publiciq> && cd publiciq",
+      "# the 23 frozen predictions this verdict governs, with y_prob and interval",
+      "jq -r '.rows[] | select(.ts==1785429653) | [.pool_id,.y_prob,.prediction_lower,.prediction_upper] | @tsv' prereg/solana/20260730_164140_solana_preregistered_at_prediction.json",
+      "# E = sum(y_prob) over the canonical batch - 0.28859999999999997",
+      "jq '[.rows[] | select(.ts==1785429653) | .y_prob] | add' prereg/solana/20260730_164140_solana_preregistered_at_prediction.json",
+      "# this artifact's own hash",
+      "python -c \"import json,sys;sys.path.insert(0,'prereg_common');from prereg_hash import canonical_row_hash as h;a=json.load(open('<this file>'));print('sha256:'+h(a,exclude=('addendum_hash',)))\""
+    ]
+  }
+}
