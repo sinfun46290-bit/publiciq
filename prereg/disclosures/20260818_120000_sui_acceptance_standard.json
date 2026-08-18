@@ -1,0 +1,124 @@
+{
+  "addendum_hash": "sha256:dbbe0cef37bf8f91da7bdb6199e6d9bf0d7f2d02263ca5d75dd154a3776b0293",
+  "artifact": "prereg_disclosure_acceptance_standard",
+  "chain": "sui",
+  "contributes_zero_anchors": "This artifact cites record_ids but can anchor none of them. Two independent rules: prereg/disclosures/ is absent from PREREG_ANCHOR_DIRS ('historical', 'poolwatch', 'solana', 'xrpl', 'xrpl-mc', and the SUI stream's own 'prereg/sui/' is only in the whitelist for the resolution path, not for disclosures), and the artifact field above contains 'disclosure' so _is_non_anchor_artifact excludes it by TYPE even if the file were moved into a whitelisted directory. It also carries no rows key.",
+  "cross_reference": {
+    "batch_b_manifest": "prereg/sui/20260814_001409_sui_preregistered_at_prediction.json",
+    "canonical_batch_selection": "Two duplicate 2026-08-13 freeze batches, same 22-pool set: A ts=1786654800 (21:00:00Z) published 21:44:12Z -> latency 2652s; B ts=1786662000 (23:00:00Z) published 00:14:09Z -> latency 4449s. Both within the 7200s SUI ceiling; per the canonical-batch rule the LATEST qualifying freeze ts wins, so B is canonical.",
+    "relationship": "The SUI addendum pre-commits that ts 1786662000 is the canonical batch the 2026-08-27 resolution will be allowed to grade (ceiling 7200s; batch B latency 4449s, batch A 2652s, both qualify, latest wins). This artifact pre-commits what the resulting grade will be allowed to CLAIM. The addendum decides which rows resolve; this decides what their resolution means.",
+    "sui_addendum": "prereg/sui/20260814_120000_sui_addendum_20260813.json",
+    "sui_addendum_hash": "sha256:24f3435b0ecd5d82f46939aaa42fa3b3579bfa403cb7c5ee19f605cfaea3652a"
+  },
+  "governs": "The 22 rows of the canonical batch-B SUI cohort, freeze ts 1786662000 (2026-08-13T23:00:00Z), first published in prereg/sui/20260814_001409_sui_preregistered_at_prediction.json, and every later SUI cohort until superseded by a dated successor artifact. The duplicate 08-13 batch-A (ts 1786654800) is published-but-non-canonical per the SUI addendum and is NOT graded under this standard.",
+  "issued_utc": "2026-08-18T12:00:00Z",
+  "metrics_embargoed_until_8_cohorts_and_20_traps_each_class": {
+    "embargoed": [
+      "roc_auc",
+      "pr_auc",
+      "brier",
+      "precision",
+      "recall",
+      "logistic_recalibration",
+      "bootstrap.cluster",
+      "bootstrap.iid_reference"
+    ],
+    "non_overlapping_is_a_COUNT_not_a_DATE": "A 14-day horizon means consecutive freezes share up to 13 of 14 window-days. The requirement is stated as a count of resolved non-overlapping cohorts, deliberately NOT as a calendar date.",
+    "release_requires_all_three": [
+      "at least 8 resolved NON-OVERLAPPING cohorts",
+      "at least 20 realized traps AND at least 20 realized non-traps, pooled",
+      "the correlation-adjusted effective sample size reported alongside every figure"
+    ],
+    "why_20_traps": "Hanley-McNeil at a true AUC of 0.75 gives a 95% CI half-width of +/-0.41 at (2 traps, 21 non-traps) - the plausible first-cohort case - versus +/-0.15 at (20,20). Below 20 traps an AUC figure is decoration."
+  },
+  "outcomes_known_at_issue": "ZERO. No SUI prediction has resolved. The canonical batch-B cohort freezes ts 1786662000 (2026-08-13T23:00:00Z) and matures 2026-08-27T23:00:00Z; sui resolved/linked/withheld = 0/0/0. Every threshold in this artifact is arithmetic on quantities already frozen and already published; none was chosen with knowledge of an outcome, because no outcome exists to know.",
+  "scope": "sui",
+  "stamp": "20260818_120000_sui_acceptance_standard",
+  "the_four_verdicts": {
+    "evaluation_order": "INVALID first, then UNTESTED, then EVIDENCE AGAINST, then EVIDENCE OF SKILL. A cohort cannot be called skilful or wrong until it has passed both of the first two.",
+    "v0_INVALID": {
+      "audited_2026_08_18_result": "NOT YET RUN. The two data-shaped triggers (ts-coupling, window-coverage) cannot be verified until the grade runs at maturity, because they require the resolved snapshot grid. This standard pre-commits the trigger conditions; Part 2 of the build verifies them against the frozen freeze-time inputs.",
+      "consequence": "Fix, disclose, and resolve the NEXT cohort. It does not license re-freezing the failed one.",
+      "meaning": "A pipeline fault. Not a result about the model.",
+      "triggers_any_of": [
+        "grading_status.state != 'graded', or n_graded < 20 of 22",
+        "data_quality.calculation_error > 0",
+        "any row with fee_growth_anomaly > 0 (a fee_growth reset was clamped to zero, which DISCARDS real fees - economics/clmm_fee.py)",
+        "any row rejected as window_span_short or insufficient_completeness at maturity - the DATA did not span the claimed 14-day horizon even though the wall clock did (the grader's gate_4 coverage floor)",
+        "any row where the first in-window snapshot ts is not the prediction ts (entry-price coupling: the grade derives entry s0 from the first snapshot >= T; the prediction froze entry from the last snapshot <= T)"
+      ]
+    },
+    "v1_UNTESTED": {
+      "batch_b_is_ALREADY_IN_THE_AGAINST_BRANCH_if_nothing_traps": "The frozen zero-trap probability for canonical batch B is P(0 traps) = Pi(1-y_prob) = 0.0021433554373314957 <= 0.01 (the 1% level). MEASURED E = 4.7369 is a separate cross-check: it sits ABOVE even the 1% Poisson E level (4.6052). 2 of 22 rows carry y_prob >= 0.50 (max 0.5751), 9 carry y_prob exactly 0.0000. So: IF NO POOL TRAPS, THE VERDICT IS EVIDENCE AGAINST @1%, AND THAT IS FIXED NOW, BEFORE ANY OUTCOME, BY THE FROZEN PREDICTIONS ALONE. This is the mirror image of SOL batch-2, whose E=0.2886 pre-sealed UNTESTED.",
+      "binding_reporting_rules": [
+        "It must NOT be reported as '22/22 correct', '100% accuracy', or any win-rate. An all-safe prediction set in an all-safe window is a null result. '22/22' converts a measurement of the window into a claim about the model.",
+        "In the zero-trap branch roc_auc, pr_auc, brier, precision, and recall are UNDEFINED in the ledger (the SUI grader's safe_* wrappers return the UNDEFINED sentinel on single-class y_true; safe_precision and safe_recall gained the _degenerate guard on 2026-08-18 to match safe_roc_auc/safe_pr_auc/safe_brier - the ledger no longer carries coerced precision=0.0/recall=0.0 floats and gate_5_degenerate no longer records a coerced-metric failure on a legitimate zero-trap ledger). Republish any of them as UNDEFINED if a downstream copy coerced them.",
+        "The BOOTSTRAP blocks: with single-class y_true the cluster and iid bootstrap paths short-circuit to UNDEFINED (degenerate guard), so no coerced bootstrap numbers reach the ledger. Verified by reading the guard; re-verify on the real ledger.",
+        "What MAY be claimed: the pipeline resolved end to end (freeze -> maturity -> grade -> hash-signed ledger -> publication); the maturity and completeness/coverage gates fired as specified; realized_net was computable from real on-chain fee_growth deltas; and the interval-coverage count, which is a real measurement."
+      ],
+      "trigger": "E = sum(y_prob) over the cohort < 3.3 AND realized trap count == 0. E is computable before any outcome. This is the ONLY place E appears as a boundary: E<3.3 is the UNTESTED gate's form, and NOTHING ELSE. The v2 zero_trap_contradiction does NOT use E - it uses the exact P(0 traps)=Pi(1-y_prob) product at named 5%/1% levels, which is the sharper quantity (for batch B P(0)=0.0021 bounds E tighter than any E-threshold can).",
+      "why_3_3_and_not_3_45": "SOL used 3.45 = 23 x 0.15, the common-p row where (1-p)^n first drops below ~5%. That constant is n-specific. RECOMPUTED for n=22: the same construction gives 22 x 0.15 = 3.3, where (0.85)^22 = 0.0280 (SOL's (0.85)^23 = 0.024). 3.3 sits between the Poisson 5% and 1% E levels (2.9957 and 4.6052), matching SOL's placement of 3.45 between exp(-3.45)=0.032 and the 5%/1% levels. This constant governs ONLY the UNTESTED gate. It is NOT a zero_trap_contradiction boundary: the contradiction trigger is the exact product, below."
+    },
+    "v2_EVIDENCE_AGAINST": {
+      "meaning": "The model is wrong, not merely unlucky. Any ONE trigger suffices.",
+      "the_grader_does_not_compute_the_primary_test": "sui_grade.py stores prediction_lower/prediction_upper in every ledger row and computes interval COVERAGE only in the sense of observed-span vs claimed horizon (gate_4). It does not count how many realized_net_return_window values fall OUTSIDE the stored prediction interval - the calibration-coverage count. Coverage will be computed off-grader from fields the ledger already contains (the same discipline as SOL), so no code change is needed to honour this standard. The SOL harness pattern carries over to a SUI coverage check.",
+      "triggers": {
+        "directional_failure": "mean realized_net of the top-y_prob third is ABOVE that of the bottom third - the rank signal is inverted. With n=22 the thirds are 7/8/7 rows.",
+        "interval_coverage_primary": ">= 6 of 22 rows with realized_net_return_window outside [prediction_lower, prediction_upper]. RECOMPUTED for n=22: P(X>=6 | Bin(22,0.10)) = 0.0182, so this is the 5% level. (SOL's k=6 carried P=0.0226 on n=23; do not carry that tail probability forward.)",
+        "interval_coverage_strong": ">= 7 misses. P(X>=7 | Bin(22,0.10)) = 0.0044, the 1% level. (SOL's k=7 carried P=0.0058 on n=23.)",
+        "miss_asymmetry": "all coverage misses fall on the same side of the interval (>= 3 misses) - the interval is biased, not merely mis-scaled.",
+        "missed_trap_contradiction": "any row with y_prob < 0.01 realized as a trap - the model assigned under 1% to something that happened. 9 of 22 batch-B rows carry y_prob < 0.01 (all exactly 0.0000), so this trigger is live for batch B.",
+        "zero_trap_contradiction": "realized traps == 0 AND the exact zero-trap probability P(0 traps) = Pi(1 - y_prob) over the frozen y-vector is at or below a NAMED level. Levels: P(0 traps) <= 0.05 (the 5% level); P(0 traps) <= 0.01 (the 1% level, EVIDENCE AGAINST @1%). Computed from the frozen y-vector, not from E, and recomputed at grade time from the same published y_prob values. For batch B the frozen value is P(0 traps) = 0.0021433554373314957 <= 0.01, so IF NOTHING TRAPS THE VERDICT IS EVIDENCE AGAINST @1% - fixed now, before any outcome, by the frozen predictions alone."
+      }
+    },
+    "v3_EVIDENCE_OF_SKILL": {
+      "ceiling_on_the_claim": "A single cohort satisfying all four is evidence of skill and nothing stronger. It is not a validated model, not a track record, and not grounds for a performance claim.",
+      "requires_all_four": [
+        "The cohort was capable of being wrong: the exact zero-trap probability P(0 traps) = Pi(1-y_prob) <= 0.05 (the all-safe outcome is at most a 5% event), OR at least one realized trap. Either the prediction set was falsifiable a priori, or the window proved it was. Batch B passes this limb at P(0 traps) = 0.002143 <= 0.01. (E appears nowhere as a boundary outside the UNTESTED gate.)",
+        "realized trap count inside the central 90% of PoissonBinomial(y_prob_1..22)",
+        "interval coverage misses in {1,2,3,4,5}. ZERO misses is NOT evidence of skill: it is consistent with an over-wide interval, P(X=0) = 0.0985 (recomputed for n=22; SOL's P(X=0)=0.0886 was n=23), and with the same benign window as UNTESTED.",
+        "mean realized_net of the top-y_prob third BELOW that of the bottom third - the ordering carried information"
+      ]
+    }
+  },
+  "the_one_line_commitment": "If, on 2026-08-27, the 22 batch-B predictions produce zero realized traps, we will publish that as EVIDENCE AGAINST @1% the model - the zero_trap_contradiction: P(0 traps) = Pi(1-y_prob) over the frozen y-vector = 0.0021433554373314957, i.e. zero traps is a 0.21% event under the model, below the 1% level -> EVIDENCE AGAINST @1% - together with the interval-coverage count, and the statement that roc_auc/pr_auc/brier and precision/recall are UNDEFINED in the zero-trap ledger (the grader's safe_* wrappers return the UNDEFINED sentinel on single-class y_true; safe_precision/safe_recall gained the degenerate guard on 2026-08-18). We will not report it as 22/22. If any pool traps, the verdict is decided by the triggers in v2, and in particular a row with y_prob < 0.01 that traps is EVIDENCE AGAINST outright.",
+  "title": "SUI GRADER ACCEPTANCE STANDARD - what counts as calibrated, pre-committed before the first resolution",
+  "verification": {
+    "audit_performed": "2026-08-18, read-only, nine days before first resolution",
+    "batch_b_cohort_statistics_computable_today": {
+      "E_sum_y_prob": "4.7368999999999994",
+      "E_sum_y_prob_note": "Exact IEEE-754 naive left-to-right jq-add of the 22 frozen y_prob values (protocol.jq_add), quoted unrounded so a verifier's `jq add` reproduces it bit-for-bit. Rounds to 4.7369.",
+      "E_sum_y_prob_rounded": "4.7369",
+      "P_zero_traps_under_the_model": 0.0021433554373314957,
+      "max_y_prob": 0.5751,
+      "mean_y_prob": 0.21531363636363635,
+      "median_y_prob": 0.2584,
+      "n": 22,
+      "rows_y_prob_at_or_above_0_50": 2,
+      "rows_y_prob_below_0_01": 9,
+      "rows_y_prob_exactly_zero": 9
+    },
+    "disclosed_grader_defect_precision_recall": "RESOLVED 2026-08-18. safe_precision and safe_recall in sui/grader/sui_grade.py lacked the _degenerate guard that safe_roc_auc, safe_pr_auc, and safe_brier have, so a zero-trap (single-class y_true) ledger would have carried precision=0.0 and recall=0.0 as floats and gate_5_degenerate would report passed=False with coerced=['precision','recall']. The guard was added to both wrappers on 2026-08-18 and re-verified against the real frozen batch-B y_prob vector with y_true all zero: precision and recall now return UNDEFINED and gate_5 passes (no coerced-metric failure on a legitimate zero-trap ledger).",
+    "reproduction_recipe": [
+      "git clone <publiciq> && cd publiciq",
+      "# the 22 frozen predictions this artifact governs, with y_prob and interval",
+      "jq -r '.rows[] | select(.ts==1786662000) | [.pool_id,.y_prob,.prediction_lower,.prediction_upper] | @tsv' prereg/sui/20260814_001409_sui_preregistered_at_prediction.json",
+      "# E = sum(y_prob) over the canonical batch - cross-check of the verdict number",
+      "jq '[.rows[] | select(.ts==1786662000) | .y_prob] | add' prereg/sui/20260814_001409_sui_preregistered_at_prediction.json",
+      "# P(0 traps) = Pi(1-y_prob) - THE number that fixes the verdict (see the_one_line_commitment)",
+      "jq '[.rows[] | select(.ts==1786662000) | .y_prob] | reduce .[] as $p (1; . * (1-$p))' prereg/sui/20260814_001409_sui_preregistered_at_prediction.json",
+      "# the canonical-batch decision this artifact is subordinate to",
+      "jq -r '.addendum_hash, .canonical_freezes, .governs' prereg/sui/20260814_120000_sui_addendum_20260813.json",
+      "# this artifact's own hash",
+      "python -c \"import json,sys;sys.path.insert(0,'prereg_common');from prereg_hash import canonical_row_hash as h;a=json.load(open('<this file>'));print('sha256:'+h(a,exclude=('addendum_hash',)))\""
+    ],
+    "the_grader_provenance_question": "Mirrors the SOL standard's PROVENANCE_GAP: a reader can verify the ledger's canonical hash and its input hashes, but the code identity of the grade rests on the deploy record (a COMMIT file written by deploy.sh do_sui) rather than on the artifact. To be re-checked at grade time."
+  },
+  "what_the_prediction_claims": {
+    "falsifiability": "A single y_prob is not falsified by a single outcome. y_pred = 1[y_prob >= 0.50] is falsifiable per row; 2 of 22 batch-B rows carry y_prob >= 0.50, so precision and recall are STRUCTURALLY DEFINED for this cohort only if at least one pool traps - if zero pools trap, y_true is single-class and precision/recall are undefined, not merely zero.",
+    "in_words": "The probability that a unit-native-liquidity CLMM position spanning this pool's frozen band, entered at T and held passively for 14 days, ends more than 5% below simply holding the entry basket (realized net in the USDC numeraire). No rebalancing, no gas, no compounding; fees credited only while tick_current is inside the band.",
+    "the_interval": "prediction_lower / prediction_upper are the 5th and 95th percentiles of the SAME 10000 realized_net values that y_prob thresholds (INTERVAL_ALPHA 0.10 -> nominal-90% interval). Same quantity, same distribution. This is the only component of a single prediction that one outcome can falsify.",
+    "trap_definition_verbatim": "A realized trap is y_true == 1, i.e. realized net < -0.05 (eval_net_threshold, SV7 / R2). It is NOT an interval breach. An interval breach is realized net outside [prediction_lower, prediction_upper] - a different event on a different boundary. Any tooling, report, or board that labels an interval breach as a trap is wrong and must be corrected to the same wording as the SOL harness: trap = y_true, realized < -0.05.",
+    "y_prob_as_implemented": "y_prob = mean over N_SIMS=10000 driftless-GBM paths of 1[realized_net_i < eval_net_threshold], with eval_net_threshold = -0.05 frozen per row (DEFAULT_TRAP_NET_RETURN_THRESHOLD in sui/protocol.py, SV7 / R2), horizon 14 days from the freeze instant T. At freeze time the score is PRICE-ONLY: realized_net_i = terminal_i / entry_price - 1. The grade later adds the realized fee side, so y_true at resolution is 1[il_component + fee_component < -0.05]. Source: sui/forecast/run_forecast.py."
+  }
+}
