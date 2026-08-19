@@ -1,0 +1,431 @@
+{
+  "addendum_hash": "sha256:bb41474df866d7ea3c7319c23a0938e441b1b13f018d13ac96a001495d856c50",
+  "addendum_hash_recipe": {
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "adversarial_synthetic_validation": {
+    "expected_state_transitions": {
+      "K_0_to_3_passing_all_gates": "UNTESTED",
+      "K_4_or_more_passing_all_gates": "AGAINST",
+      "any_K_failing_any_INVALID_condition": "INVALID (regardless of K)"
+    },
+    "note": "All tests use SYNTHETIC outcomes only. No real XRPL-MC outcomes were accessed.",
+    "test_edge_cases": {
+      "below_completeness_density_0_66": "INVALID (completeness 0.66 < 0.80)",
+      "cohort_integrity_failure": "INVALID (cohort membership altered)",
+      "concentrated_losses_in_high_y_prob_pools_K2": "UNTESTED (K=2 <= 3)",
+      "data_quality_error": "INVALID (calculation_error > 0)",
+      "dispersed_losses_K3": "UNTESTED (K=3 <= 3)",
+      "incomplete_coverage_8_of_18_graded": "INVALID (n_graded < 18)",
+      "losses_in_zero_y_prob_pools_K3": "UNTESTED (K=3 <= 3, impossible under model but tested for robustness)",
+      "maturity_failure_13_5_days": "INVALID (maturity window not satisfied; MIN_MATURITY_DAYS = 13.958...)",
+      "provenance_failure": "INVALID (record_id/provenance integrity failure)"
+    },
+    "test_k6_plus": "AGAINST (K>=6 >= 4, even when concentrated in high-y_prob pools)",
+    "test_k_sweep": {
+      "K_0": "UNTESTED (0 <= K=0 <= 3, insufficient evidence)",
+      "K_1": "UNTESTED (0 <= K=1 <= 3)",
+      "K_2": "UNTESTED (0 <= K=2 <= 3)",
+      "K_3": "UNTESTED (0 <= K=3 <= 3)",
+      "K_4": "AGAINST (K=4 >= 4, gross miscalibration)",
+      "K_5": "AGAINST (K=5 >= 4)",
+      "K_6": "AGAINST (K=6 >= 4, all 6 non-zero pools trapped)"
+    }
+  },
+  "against_threshold": {
+    "definition": "AGAINST = K >= 4 realized traps",
+    "purpose": "Identify gross miscalibration, NOT to establish general predictive skill. A result of K < 4 does NOT establish that the model is skilled or validated.",
+    "statistical_validation_rho_sensitivity": {
+      "assumptions": {
+        "dependence_model": "Exchangeable Gaussian copula: Y_i = 1[X_i <= Phi^{-1}(p_i)] where X ~ N(0, Sigma) with Sigma_ij = rho for i!=j, Sigma_ii = 1. This bounds the worst-case inflation of P(K>=4) under positive dependence, which is the direction that makes K>=4 easier to trigger spuriously.",
+        "independence_assumption": "The Monte Carlo construction assumes pool-level independence (each pool draws its own seed from sha256(GLOBAL_RANDOM_SEED:record_id)). This is a MODEL ASSUMPTION, not an empirical observation.",
+        "rho_sensitivity": "The rho in [0, 0.8] range is a CONSERVATIVE sensitivity check: if the independence assumption is violated and pairwise correlation is as high as 0.8, P(K>=4) rises to at most 0.0449 - still within the 5% level.",
+        "what_is_not_measured": "The model does NOT measure the true 14-day horizon correlation structure. Pre-genesis daily XRP-token price data showed rho_bar ~ -0.008 (previously reported, with bootstrap interval). Daily correlation is NOT a measurement of 14-day correlation."
+      },
+      "conclusion": "P(K>=4) ranges from 0.0011949459 (rho=0) to 0.0448524000 (rho=0.8). All values <= 5%.",
+      "max_false_positive_probability": 0.0448524,
+      "max_fp_le_5pct": true,
+      "model": "Gaussian copula with exchangeable pairwise correlation rho (rho in [0, 0.8])",
+      "n_informative_pools": 6,
+      "n_zero_prob_pools": 12,
+      "note": "The 12 pools with y_prob=0 contribute deterministically to K=0 (never trap). The trap count K is a Poisson-Binomial over the 6 non-zero pools at rho=0, and a Gaussian-copula Poisson-Binomial over all 18 pools for rho>0.",
+      "results": {
+        "rho_0.0": {
+          "P_K_0": 0.33803417835125793,
+          "P_K_geq_4": 0.0011949459173307482,
+          "P_K_geq_4_passes_5pct": true
+        },
+        "rho_0.2": {
+          "P_K_0": 0.38947015,
+          "P_K_geq_4": 0.00707785,
+          "P_K_geq_4_passes_5pct": true
+        },
+        "rho_0.4": {
+          "P_K_0": 0.4367942,
+          "P_K_geq_4": 0.017493949999999998,
+          "P_K_geq_4_passes_5pct": true
+        },
+        "rho_0.5": {
+          "P_K_0": 0.4594737,
+          "P_K_geq_4": 0.0238295,
+          "P_K_geq_4_passes_5pct": true
+        },
+        "rho_0.6": {
+          "P_K_0": 0.48155035,
+          "P_K_geq_4": 0.030528450000000002,
+          "P_K_geq_4_passes_5pct": true
+        },
+        "rho_0.8": {
+          "P_K_0": 0.524905,
+          "P_K_geq_4": 0.0448524,
+          "P_K_geq_4_passes_5pct": true
+        }
+      }
+    },
+    "threshold": 4
+  },
+  "artifact": "prereg_disclosure_acceptance_standard",
+  "chain": "xrpl-mc",
+  "concentration_disclosure": {
+    "E": "0.8921",
+    "effective_pools_by_1_over_hhi": 2.8316,
+    "explanation": "The limitation is predictive-information concentration rather than simply pool count. 12 of 18 pools carry y_prob = 0 (structurally uninformative), and the 6 informative pools concentrate in 1/HHI = 2.83 effective pools. One pool (STX) alone contributes 49.31% of E; the top two contribute 80.01%. The cohort's joint distribution is governed by these few heavy contributors, not by the nominal 18.",
+    "n_pools_y_prob_zero": 12,
+    "no_skill_conversion": "This concentration is a structural feature of the prediction set, not a performance result. Concentrated predictions cannot be 'rescued' by a favorable outcome - the SKILL tier is structurally unavailable regardless.",
+    "top_pool_fraction_of_E": 49.31,
+    "top_pool_label": "STX",
+    "top_pool_y_prob": 0.4399,
+    "top_two_pools_fraction_of_E": 80.01
+  },
+  "correlation_dependence_disclosure": {
+    "assumed": {
+      "model_assumption": "The prediction model's Monte Carlo construction assumes pool-level independence: each pool draws its own seed from sha256(GLOBAL_RANDOM_SEED:record_id), so the 18 simulations are independent while the real pools share one market tape.",
+      "not_an_observation": "This is a MODEL ASSUMPTION, not an empirical observation.",
+      "open_assumption": "The 14-day correlation structure is an explicit open assumption/limitation. The rho in [0, 0.8] sensitivity range is a CONSERVATIVE CHECK on this assumption."
+    },
+    "observed": {
+      "caveat": "Cannot be independently recomputed from the frozen batch alone - it is a pre-genesis market data analysis.",
+      "daily_xrp_price_rho_bar": -0.008,
+      "note": "This is a DAILY correlation, not a 14-day horizon correlation.",
+      "source": "Pre-genesis daily XRP-token price data (previously reported, bootstrap interval documented in source analysis)."
+    },
+    "unidentified": {
+      "14_day_horizon_correlation": "NOT estimable from available pre-genesis data",
+      "explanation": "14-day horizon-matched correlation is not estimable from the available pre-genesis data. Daily correlation must NOT be presented as a measurement of 14-day correlation."
+    }
+  },
+  "frozen_baseline": {
+    "batch_root": "488d922ea70087def8e17e33f577a544da9c2998a3010cdcfb02f054d1aa3769",
+    "batch_root_prefix": "488d922e",
+    "cohort_freeze_epoch": 1786486200,
+    "cohort_freeze_utc": "2026-08-11T22:10:00Z",
+    "exact_y_prob_vector": {
+      "full_vector": [
+        0.0,
+        0.0824,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.4399,
+        0.0,
+        0.0,
+        0.0,
+        0.0041,
+        0.0,
+        0.2739,
+        0.0185,
+        0.0733,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "n_with_y_prob_nonzero": 6,
+      "n_with_y_prob_zero": 12,
+      "sorted_desc": [
+        0.4399,
+        0.2739,
+        0.0824,
+        0.0733,
+        0.0185,
+        0.0041
+      ]
+    },
+    "freeze_vs_write_note": "batch.created_utc (2026-08-11T22:10:10+00:00) is the MANIFEST WRITE time. The canonical cohort freeze is 2026-08-11T22:10:00Z. All maturity arithmetic in this artifact is anchored to the cohort freeze.",
+    "independently_verified": {
+      "1_over_HHI": 2.8316,
+      "E_rounded_4dp": 0.8921,
+      "E_sum_y_prob_ieee754": "0.8921",
+      "HHI": 0.35315399942056364,
+      "P_zero_traps_independence": 0.33803417835125793,
+      "cohort_size": 18,
+      "max_y_prob": 0.4399,
+      "max_y_prob_pool": "STX",
+      "n_pools_y_prob_nonzero": 6,
+      "n_pools_y_prob_zero": 12,
+      "top_pool_fraction_of_E": 49.31,
+      "top_two_pools_fraction_of_E": 80.01
+    },
+    "manifest_write_epoch": 1786486210,
+    "manifest_write_raw_batch_field": "2026-08-11T22:10:10+00:00",
+    "manifest_write_utc": "2026-08-11T22:10:10Z",
+    "source": "publiciq/prereg/xrpl-mc/20260811_221010_xrpl-mc_preregistered_at_prediction.json",
+    "source_sha256": "dc858c9ac4cfb5aef62aa23548440334f23117053dd610b025418949a82957fb",
+    "verification_status": "ALL VALUES MATCH DIRECTIVE - independently recomputed from frozen batch_root 488d922e..."
+  },
+  "invalid": {
+    "conditions": [
+      "grading_status.state != 'graded', or fewer than 18 of 18 pools graded",
+      "data_quality.calculation_error > 0 (any non-finite or clamped value)",
+      "any row rejected as window_span_short or insufficient_completeness at maturity",
+      "any row where the first in-window snapshot ts is not the prediction ts (entry-price coupling)",
+      "any row whose calibration/snapshot density falls below MIN_COMPLETENESS = 0.80"
+    ],
+    "consequence": "Fix, disclose, and resolve the NEXT cohort. Does not license re-freezing the failed one.",
+    "meaning": "A pipeline fault or integrity failure. Not a result about the model.",
+    "min_completeness": 0.8,
+    "min_completeness_note": "MIN_COMPLETENESS = 0.80 refers to snapshot DENSITY (coverage of the 14-day horizon by collected snapshots), not horizon completion. The XRPL-MC protocol defines this as sampling density, enforced per-row by the grade gate.",
+    "outcome_independence": true
+  },
+  "issued_epoch": 1787155200,
+  "issued_utc": "2026-08-19T16:00:00Z",
+  "maturity_epoch": 1787695800,
+  "maturity_ts": {
+    "anchor": "cohort_freeze",
+    "anchor_epoch": 1786486200,
+    "anchor_utc": "2026-08-11T22:10:00Z",
+    "derivation": "maturity = cohort_freeze + 14 days = 1786486200 + 1209600 = 1787695800 = 2026-08-25T22:10:00Z",
+    "epoch": 1787695800,
+    "horizon_days": 14,
+    "horizon_seconds": 1209600,
+    "not_anchored_to": {
+      "manifest_write_utc": "2026-08-11T22:10:10Z",
+      "reason": "2026-08-11T22:10:10Z is the manifest/record write time, not the canonical cohort freeze. Anchoring maturity there would yield 2026-08-25T22:10:10Z (epoch 1787695810), which is NOT the maturity of this cohort."
+    },
+    "note": "This standard is a PRE-OUTCOME acceptance standard, not a verdict artifact. It contains neither 'verdict' in its artifact type nor a verdict tier, so prereg_commit.maturity_check()'s verdict-family filter does not select it - but the maturity is declared, resolvable, and anchored so the gate would evaluate it correctly if it ever did.",
+    "prereg_commit_compatibility": "prereg_commit._declared_maturity() reads a SCALAR maturity_ts, else the string fields maturity_utc / maturity_iso. This structured object is not a scalar, so the top-level 'maturity_utc' and 'maturity_epoch' fields carry the same instant in the shape that gate can actually evaluate. Verified at build time by calling _declared_maturity() against this artifact.",
+    "utc": "2026-08-25T22:10:00Z"
+  },
+  "maturity_utc": "2026-08-25T22:10:00Z",
+  "outcomes_known_at_issue": "ZERO",
+  "power_curve": {
+    "caveat": "A result of K < 4 does NOT establish that the model is skilled or validated. The AGAINST test is capable primarily of detecting gross miscalibration.",
+    "curve": {
+      "q_0.1": {
+        "directive_value": "~0.10",
+        "power": 0.09819684142543739,
+        "power_rounded": 0.0982
+      },
+      "q_0.2": {
+        "directive_value": "~0.50",
+        "power": 0.49897454145503284,
+        "power_rounded": 0.499
+      },
+      "q_0.3": {
+        "directive_value": "~0.84",
+        "power": 0.8354495180653758,
+        "power_rounded": 0.8354
+      }
+    },
+    "definition": "Power = P(K>=4 | all 18 pools independently trap at rate q). This measures the threshold's ability to detect a gross, cohort-wide calibration failure.",
+    "model": "P(K>=4 | Bin(18, q)) - probability that the AGAINST threshold detects a uniform miscalibration where all 18 pools trap at common rate q",
+    "reprovision": "INDEPENDENTLY REPRODUCED: Binomial(18, q) model. q=0.10 -> P(K>=4|Bin(18,0.10)) = 0.0982 (directive ~0.10); q=0.20 -> P(K>=4|Bin(18,0.20)) = 0.4990 (directive ~0.50); q=0.30 -> P(K>=4|Bin(18,0.30)) = 0.8354 (directive ~0.84)."
+  },
+  "reproducibility": {
+    "append_only_compatible": true,
+    "batch_root": "488d922ea70087def8e17e33f577a544da9c2998a3010cdcfb02f054d1aa3769",
+    "build_toolchain": {
+      "numpy": "2.4.6",
+      "pinned_and_asserted_at_build_time": true,
+      "python": "3.14.5",
+      "reproduction_note": "Rebuilding under a different scipy yields identical rounded values (0.0982 / 0.4990 / 0.8354) and a DIFFERENT addendum_hash. A verifier who cannot match the hash should first check scipy's version.",
+      "scipy": "1.18.0",
+      "why_pinned": "power_curve.curve.q_*.power (scipy.stats.binom.cdf) and frozen_baseline.independently_verified.HHI (CPython float sum() accumulation) differ in their final ULPs across toolchain versions. Those ULPs do not move any rounded published value but they DO move the canonical JCS hash. Byte-for-byte reproduction of this artifact requires this exact toolchain; the builder refuses to run under any other."
+    },
+    "canonical_version": "JCS (RFC-8785) via prereg_hash.canonical_row_hash",
+    "cohort_freeze_epoch": 1786486200,
+    "cohort_freeze_timestamp": "2026-08-11T22:10:00Z",
+    "cohort_id": "20260811_221010_xrpl-mc_preregistered_at_prediction",
+    "creation_timestamp": "2026-08-19T16:00:00Z",
+    "frozen_E": "0.8921",
+    "independent_verification_recipe": [
+      "git clone <publiciq> && cd publiciq",
+      "# Verify the frozen batch exists and its batch_root matches:",
+      "jq -r '.batch_root' prereg/xrpl-mc/20260811_221010_xrpl-mc_preregistered_at_prediction.json",
+      "# Extract y_prob vector:",
+      "jq '[.rows[] | .y_prob] | {sum: add, max: max, count_zero: [.[] | select(. == 0)] | length}' prereg/xrpl-mc/20260811_221010_xrpl-mc_preregistered_at_prediction.json",
+      "# E = sum(y_prob), 12 zeros, max = 0.4399, 1/HHI = E^2/sum(y_prob^2)",
+      "# P(K>=4) via Poisson-Binomial DP over non-zero y_prob values",
+      "# P(K>=4) under rho-dependence via Gaussian copula",
+      "# Power curve: P(K>=4 | Bin(18, q)) for q in {0.10, 0.20, 0.30}",
+      "# This standard's hash:",
+      "python -c \"import json,sys;sys.path.insert(0,'prereg_common');from prereg_hash import canonical_row_hash as h;a=json.load(open('<this file>'));print('sha256:'+h(a,exclude=('addendum_hash',)))\""
+    ],
+    "manifest_write_epoch": 1786486210,
+    "manifest_write_timestamp": "2026-08-11T22:10:10Z",
+    "maturity_derivation": "maturity = cohort_freeze + 14 days = 1786486200 + 1209600 = 1787695800 = 2026-08-25T22:10:00Z",
+    "maturity_epoch": 1787695800,
+    "maturity_timestamp": "2026-08-25T22:10:00Z",
+    "not_pre_committed_at_genesis": "This standard was NOT pre-committed at genesis. It is a PRE-OUTCOME standard formulated at 2026-08-19T16:00:00Z - after the cohort freeze (2026-08-11T22:10:00Z) and after the manifest write (2026-08-11T22:10:10Z), but before outcome maturity (2026-08-25T22:10:00Z). Every empirical value is derived from the frozen batch; no post-outcome information was used in its formulation.",
+    "pre_committed_at_genesis": false,
+    "provenance": {
+      "E_recomputed_independently": true,
+      "HHI_recomputed_independently": true,
+      "P_K_0_recomputed_independently": true,
+      "P_K_geq_4_recomputed_independently": true,
+      "batch_root_verified": true,
+      "frozen_batch": "publiciq/prereg/xrpl-mc/20260811_221010_xrpl-mc_preregistered_at_prediction.json",
+      "power_curve_recomputed_independently": true,
+      "source_sha256": "dc858c9ac4cfb5aef62aa23548440334f23117053dd610b025418949a82957fb",
+      "y_prob_vector_verified_from_batch": true
+    },
+    "standard_id": "xrpl-mc-genesis-v1-dryrun",
+    "standard_issued_epoch": 1787155200,
+    "standard_issued_timestamp": "2026-08-19T16:00:00Z",
+    "statistical_assumptions": {
+      "MC_model": "driftless-GBM, N_SIMS=10000, seed=sha256(GLOBAL_RANDOM_SEED:record_id)",
+      "decision_threshold": "PROBABILITY_DECISION_THRESHOLD = 0.50",
+      "maturity_window": "14 days - 1 hour tolerance (half-open bounded window)",
+      "min_completeness": "0.80 (snapshot density gate)",
+      "power_model": "Binomial(18, q) for uniform miscalibration detection",
+      "rho_sensitivity": "Gaussian copula, exchangeable, rho in [0, 0.8]",
+      "trap_threshold": "DEFAULT_TRAP_NET_RETURN_THRESHOLD = -0.05"
+    },
+    "verdict_rules": "INVALID -> AGAINST (K>=4) -> UNTESTED (0<=K<=3)"
+  },
+  "scope": "xrpl-mc",
+  "skill_tier": {
+    "no_conversion_clause": "Favorable founding-cohort outcomes cannot convert this structurally unavailable tier into SKILL. No alternative pathway is created that allows a post-outcome result to be labeled SKILL.",
+    "required_evidence": {
+      "effective_pools_by_1_over_hhi": 2.8316,
+      "max_y_prob": 0.4399,
+      "precision": "UNDEFINED",
+      "predicted_positive_count": "0/18",
+      "probability_decision_threshold": 0.5,
+      "rank_discrimination": "structurally weak: 12/18 pools have y_prob = 0, so the rank signal cannot distinguish within 2/3 of the cohort",
+      "recall": "0.0 (identically, no predicted positives)"
+    },
+    "status": "STRUCTURALLY UNAVAILABLE",
+    "structural_basis": "max(y_prob) = 0.4399 < PROBABILITY_DECISION_THRESHOLD = 0.50, so no pool crosses the decision boundary and the predicted-positive count is 0/18. Precision is undefined (no positive predictions), recall is identically 0 (no predicted positives to be correct), and rank discrimination is structurally weak because 12 of 18 pools carry y_prob = 0."
+  },
+  "stamp": "20260819_160000_xrpl-mc_genesis_acceptance_standard",
+  "standard_id": "xrpl-mc-genesis-v1-dryrun",
+  "temporal_integrity_certification": {
+    "actions_not_taken": [
+      "NOT accessed any XRPL-MC outcome data (no 2026-08-25 outcomes inspected)",
+      "NOT used the synthetic XRPL-MC baseline as empirical source",
+      "NOT used SOL or SUI acceptance thresholds as XRPL-MC thresholds",
+      "NOT frozen, published, or committed any artifact",
+      "NOT generated any XRPL-MC verdict",
+      "NOT modified production grading logic",
+      "NOT deployed capital"
+    ],
+    "actions_taken": [
+      "Loaded the REAL frozen batch from publiciq (batch_root 488d922e...)",
+      "Independently recomputed E, max(y_prob), 1/HHI, pool composition from frozen y_prob",
+      "Independently recomputed P(K>=4) via exact Poisson-Binomial DP (rho=0) and Gaussian-copula Monte Carlo (rho>0)",
+      "Independently recomputed power curve via Binomial(18, q) model",
+      "Independently recomputed P(K=0) for zero-trap prohibition",
+      "Ran adversarial synthetic tests (K=0..6+, edge cases) - synthetic outcomes only"
+    ],
+    "certification": "NO POST-OUTCOME INFORMATION WAS USED",
+    "cohort_freeze_instant": "2026-08-11T22:10:00Z",
+    "issuance_strictly_after_cohort_freeze": true,
+    "issuance_strictly_before_maturity": true,
+    "issue_date": "2026-08-19",
+    "manifest_write_instant": "2026-08-11T22:10:10Z",
+    "maturity_instant": "2026-08-25T22:10:00Z",
+    "outcomes_accessed": false,
+    "post_genesis_outcome_information_used": false,
+    "row_observation_instant": "2026-08-11T22:07:12Z",
+    "standard_issued_instant": "2026-08-19T16:00:00Z",
+    "standard_pre_committed_at_genesis": false,
+    "status": "DRY-RUN ONLY",
+    "temporal_gap": "Standard issued 2026-08-19T16:00:00Z; the earliest any outcome could be known is 2026-08-25T22:10:00Z (cohort freeze 2026-08-11T22:10:00Z + 14 days). The standard was formulated 6.2569 days BEFORE outcome maturity and 7.7431 days AFTER the cohort freeze.",
+    "temporal_gap_seconds_freeze_to_issue": 669000,
+    "temporal_gap_seconds_issue_to_maturity": 540600
+  },
+  "timestamps": {
+    "cohort_freeze": {
+      "epoch": 1786486200,
+      "role": "CANONICAL COHORT FREEZE. Defines the prediction cohort and is the SOLE anchor for the 14-day maturity calculation.",
+      "utc": "2026-08-11T22:10:00Z"
+    },
+    "manifest_write": {
+      "epoch": 1786486210,
+      "role": "MANIFEST / RECORD WRITE TIME. The later instant at which the immutable preregistration record was written to disk. NOT the cohort freeze and NOT the maturity anchor.",
+      "source_field": "batch.created_utc",
+      "utc": "2026-08-11T22:10:10Z"
+    },
+    "manifest_write_lag_note": "The 10-second difference between the canonical cohort freeze (2026-08-11T22:10:00Z) and the manifest write time (2026-08-11T22:10:10Z) is ordinary record-writing latency, NOT an inconsistency. The cohort freeze is NOT redefined as 22:10:10Z; the maturity anchor remains 22:10:00Z.",
+    "manifest_write_lag_seconds": 10,
+    "ordering": [
+      "row_observation (2026-08-11T22:07:12Z)",
+      "cohort_freeze (2026-08-11T22:10:00Z)",
+      "manifest_write (2026-08-11T22:10:10Z)",
+      "standard_issued (2026-08-19T16:00:00Z)",
+      "outcome_maturity (2026-08-25T22:10:00Z)"
+    ],
+    "ordering_verified_strictly_increasing": true,
+    "outcome_maturity": {
+      "epoch": 1787695800,
+      "role": "OUTCOME MATURITY. Earliest instant at which any XRPL-MC outcome for this cohort can be known.",
+      "utc": "2026-08-25T22:10:00Z"
+    },
+    "row_observation": {
+      "epoch": 1786486032,
+      "role": "Per-row market snapshot instant carried by the frozen batch. Disclosed for completeness. NOT the cohort freeze and NOT the maturity anchor.",
+      "source_field": "batch.rows[*].ts (identical across all 18 rows)",
+      "utc": "2026-08-11T22:07:12Z"
+    },
+    "standard_issued": {
+      "epoch": 1787155200,
+      "role": "STANDARD FORMULATION / ISSUANCE. When this acceptance standard was written. PROVENANCE METADATA ONLY - this is NOT the genesis freeze timestamp and does not imply the standard existed at genesis.",
+      "utc": "2026-08-19T16:00:00Z"
+    }
+  },
+  "title": "XRPL-MC GENESIS ACCEPTANCE STANDARD (DRY-RUN) - founding cohort restricted acceptance",
+  "untested": {
+    "definition": "UNTESTED = 0 <= K <= 3 (after INVALID and AGAINST gates)",
+    "description": "The founding cohort did not produce sufficient evidence to establish either contradiction or predictive skill.",
+    "not_evidence_of_support": "UNTESTED must NOT be described as evidence supporting the model. It is the residual state after the validated AGAINST threshold.",
+    "sui_sol_import_prohibition": "Do NOT import the SUI/SOL 0.15-per-pool rule or the 3.45 E-boundary. UNTESTED is purely K-based: 0 <= K <= 3."
+  },
+  "verdict_state_machine": {
+    "evaluation_order": "INVALID first (outcome-independent pipeline/integrity check) otherwise AGAINST if K >= 4 realized traps otherwise UNTESTED (0 <= K <= 3).",
+    "no_skill_tier": true,
+    "state_definitions": {
+      "AGAINST": "K >= 4 realized traps. Indicates gross miscalibration, not general predictive failure.",
+      "INVALID": "A pipeline fault or integrity failure. Not a result about the model. Determined entirely from pre-outcome metadata.",
+      "UNTESTED": "0 <= K <= 3 after the INVALID and AGAINST gates. Residual state: insufficient evidence of either contradiction or skill."
+    },
+    "states": [
+      "INVALID",
+      "UNTESTED",
+      "AGAINST"
+    ]
+  },
+  "zero_trap_prohibition": {
+    "prohibited_clauses": [
+      "zero-trap contradiction",
+      "zero-trap skill",
+      "zero-trap success",
+      "any equivalent clause treating K=0 as positive evidence of model skill"
+    ],
+    "rationale": {
+      "P_K_0_independence_exact": 0.33803417835125793,
+      "P_K_0_range": "0.3380 to 0.5249",
+      "P_K_0_range_pct": "33.8% to 52.5%",
+      "explanation": "P(K=0) ranges from 33.8% (rho=0) to 52.5% (rho=0.8) across the tested dependence sensitivity range. Zero traps are a modal/plausible outcome under the frozen prediction distribution and are NOT evidence of predictive skill. This matches the directive's range of 0.34-0.53.",
+      "rho_range": "rho in [0, 0.8]"
+    },
+    "sui_import_prohibition": "The SUI zero-trap logic (zero_trap_contradiction as EVIDENCE AGAINST) is NOT imported. SUI's P(0 traps) = 0.0021 is below 1%; XRPL-MC's P(0 traps) = 0.3380 is far above any meaningful level."
+  }
+}
