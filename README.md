@@ -49,4 +49,22 @@ retro-fit. Verdict-day responses (pass / hold / fail) were fixed in advance in
 | `exhibits/preflight_2026-07-02.txt` | Read-only data audit, 2026-07-02 — zero resolved rows (prediction-predates-resolution evidence). |
 | `exhibits/verdict-inputs-*.json` | Input manifest: SHA-256 + per-table row counts of the graded database snapshot (no database contents published). |
 
+## Verify the published hashes
+
+Every artifact under `prereg/` carries its own `addendum_hash`. It is reproducible
+from a fresh clone using only RFC-8785 JSON Canonicalization (JCS) + SHA-256 — no
+other dependency. The verifier is a self-contained script in `verifier/`:
+
+```bash
+git clone https://github.com/sinfun46290-bit/publiciq.git
+cd publiciq
+pip install jcs
+python3 verifier/verify_addendum_hash.py prereg/solana/20260817_140500_sol_verdict_20260813.json
+python3 verifier/verify_addendum_hash.py prereg/disclosures/20260818_120000_sui_acceptance_standard.json
+python3 verifier/verify_addendum_hash.py prereg/disclosures/20260819_160000_xrpl-mc_genesis_acceptance_standard.json
+```
+
+All three report `MATCH` — `ea032462…`, `dbbe0cef…`, `bb41474d…` respectively.
+See `verifier/README.md` for the full hash semantics.
+
 *This is analytics, not financial advice. No capital executor is wired to any tier.*
