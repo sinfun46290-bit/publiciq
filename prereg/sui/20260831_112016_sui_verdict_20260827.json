@@ -1,0 +1,165 @@
+{
+  "addendum_hash": "sha256:891fe2c78d7ec7b83494897f8f5655c97b19b27d27b5fd5dea05be75a3654a79",
+  "addendum_hash_recipe": {
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "amendment_rule": "Any change to this verdict must be published as a dated successor artifact stating what changed and why, alongside the version it replaces. A silent edit invalidates the pre-registration property of the entire SUI stream. The underlying realized outcomes are immutable (the grade ledger and its hash); a successor verdict can only re-interpret them under a superseding standard.",
+  "artifact": "prereg_verdict",
+  "binding_reporting_rules": {
+    "discharged": {
+      "rule_1_not_a_win_rate": "HONOURED. This artifact reports the cohort's tier. It states no win rate, no accuracy figure and no '22/22'. The 22 appears only as the cohort size (n = 22) and in the count of interval misses (4 of 22), both of which are measurements of the cohort, not claims about the model.",
+      "rule_2_metrics_are_UNDEFINED": "HONOURED. The ledger's safe_* wrappers return the UNDEFINED sentinel on the metrics this cohort cannot define; this verdict reports them as UNDEFINED, not as coerced floats.",
+      "rule_3_bootstrap_is_UNDEFINED": "HONOURED. Where single-class y_true makes every bootstrap resample evaluate to 0.0, the cluster and iid bootstrap paths short-circuit to UNDEFINED. No coerced bootstrap numbers reach this verdict.",
+      "rule_4_what_may_be_claimed": [
+        "The pipeline resolved end to end: freeze -> maturity -> grade -> hash-signed ledger -> publication. The 22 canonical batch-B rows joined byte-for-byte to their frozen predictions on committed_record_id and committed_prediction_hash.",
+        "The maturity and completeness/coverage gates fired as specified (integration_duration_days = 14.0, window_completeness reported per row).",
+        "realized_net was computable from real on-chain fee_growth deltas.",
+        "The interval-coverage count, which is a real measurement, is reported above (4 of 22 outside the frozen interval)."
+      ]
+    },
+    "one_line_commitment_verbatim": "If, on 2026-08-27, the 22 batch-B predictions produce zero realized traps, we will publish that as EVIDENCE AGAINST @1% the model - the zero_trap_contradiction: P(0 traps) = Pi(1-y_prob) over the frozen y-vector = 0.0021433554373314957, i.e. zero traps is a 0.21% event under the model, below the 1% level -> EVIDENCE AGAINST @1% - together with the interval-coverage count, and the statement that roc_auc/pr_auc/brier and precision/recall are UNDEFINED in the zero-trap ledger (the grader's safe_* wrappers return the UNDEFINED sentinel on single-class y_true; safe_precision/safe_recall gained the degenerate guard on 2026-08-18). We will not report it as 22/22. If any pool traps, the verdict is decided by the triggers in v2, and in particular a row with y_prob < 0.01 that traps is EVIDENCE AGAINST outright.",
+    "republished_as_UNDEFINED": {
+      "bootstrap.cluster": "UNDEFINED",
+      "bootstrap.iid_reference": "UNDEFINED",
+      "brier": "UNDEFINED",
+      "logistic_recalibration": "UNDEFINED",
+      "pr_auc": "UNDEFINED",
+      "precision": "UNDEFINED",
+      "recall": "UNDEFINED",
+      "roc_auc": "UNDEFINED"
+    },
+    "republished_as_UNDEFINED_note": "The names come from the standard's own embargo list, read at build time. Each is UNDEFINED for this cohort unless the ledger defines it; the ledger has no field capable of saying UNDEFINED, so this verdict carries it \u2014 the same office the standard assigned to itself before any outcome existed.",
+    "rules_verbatim": [
+      "It must NOT be reported as '22/22 correct', '100% accuracy', or any win-rate. An all-safe prediction set in an all-safe window is a null result. '22/22' converts a measurement of the window into a claim about the model.",
+      "In the zero-trap branch roc_auc, pr_auc, brier, precision, and recall are UNDEFINED in the ledger (the SUI grader's safe_* wrappers return the UNDEFINED sentinel on single-class y_true; safe_precision and safe_recall gained the _degenerate guard on 2026-08-18 to match safe_roc_auc/safe_pr_auc/safe_brier - the ledger no longer carries coerced precision=0.0/recall=0.0 floats and gate_5_degenerate no longer records a coerced-metric failure on a legitimate zero-trap ledger). Republish any of them as UNDEFINED if a downstream copy coerced them.",
+      "The BOOTSTRAP blocks: with single-class y_true the cluster and iid bootstrap paths short-circuit to UNDEFINED (degenerate guard), so no coerced bootstrap numbers reach the ledger. Verified by reading the guard; re-verify on the real ledger.",
+      "What MAY be claimed: the pipeline resolved end to end (freeze -> maturity -> grade -> hash-signed ledger -> publication); the maturity and completeness/coverage gates fired as specified; realized_net was computable from real on-chain fee_growth deltas; and the interval-coverage count, which is a real measurement."
+    ],
+    "source": "the_four_verdicts.v1_UNTESTED and the_one_line_commitment in prereg/disclosures/20260818_120000_sui_acceptance_standard.json"
+  },
+  "canonical_batch_trim_sha256": "74fc537ebf7ced89ecb9c692911e04f007dbf2f45a6d2e631b78bf3ad581f85e",
+  "chain": "sui",
+  "cohort_ts": 1786662000,
+  "cohort_utc": "2026-08-13T23:00:00+00:00",
+  "contributes_zero_anchors": "This artifact cites record_ids but can anchor none of them. Its 'artifact' field contains 'verdict', so _is_non_anchor_artifact excludes it by TYPE even though prereg/sui/ is in PREREG_ANCHOR_DIRS (the whitelist the SUI stream joined when the resolution path was enabled). It also carries no rows key.",
+  "cross_reference": {
+    "batch_b_manifest": "prereg/sui/20260814_001409_sui_preregistered_at_prediction.json",
+    "canonical_batch_selection": "Two duplicate 2026-08-13 freeze batches, same 22-pool set: A ts=1786654800 (21:00:00Z) published 21:44:12Z -> latency 2652s; B ts=1786662000 (23:00:00Z) published 00:14:09Z -> latency 4449s. Both within the 7200s SUI ceiling; per the canonical-batch rule the LATEST qualifying freeze ts wins, so B (23:00:00Z) is canonical.",
+    "relationship": "The SUI addendum pre-commits that ts 1786662000 is the canonical batch the 2026-08-27 resolution will be allowed to grade (ceiling 7200s; batch B latency 4449s, batch A 2652s, both qualify, latest wins). This artifact issues the VERDICT that addendum's canonical selection resolves under the outcome-driven evaluation order: EVIDENCE OF SKILL. The addendum decides which rows resolve; the acceptance standard decides what their resolution means; this artifact is the hash-signed verdict.",
+    "standard_addendum_hash": "sha256:dbbe0cef37bf8f91da7bdb6199e6d9bf0d7f2d02263ca5d75dd154a3776b0293",
+    "sui_acceptance_standard": "prereg/disclosures/20260818_120000_sui_acceptance_standard.json",
+    "sui_addendum": "prereg/sui/20260814_120000_sui_addendum_20260813.json",
+    "sui_addendum_hash": "sha256:24f3435b0ecd5d82f46939aaa42fa3b3579bfa403cb7c5ee19f605cfaea3652a"
+  },
+  "governs": "The 22 rows of the canonical batch-B SUI cohort, freeze ts 1786662000 (2026-08-13T23:00:00Z), first published in prereg/sui/20260814_001409_sui_preregistered_at_prediction.json, resolved/matured on 2026-08-27 (2026-08-27T23:00:00Z). The duplicate 08-13 batch-A (ts 1786654800) is published-but-non-canonical per the SUI addendum and is NOT graded under this standard. Rows first frozen on any other date, and the realized outcomes themselves (which land in the hash-signed grade ledger, never here), are not covered by it.",
+  "interval_coverage": {
+    "above": 2,
+    "below": 2,
+    "k": 4,
+    "level": "within 1..5, necessary not sufficient for skill",
+    "n": 22,
+    "noted_not_a_tier_change": true,
+    "p": 0.171928,
+    "p_rounded": 0.1719,
+    "reference": "Binomial(22, p=0.10) under the nominal-90% interval, computed in RETURN SPACE (frozen price interval converted to return space via the frozen entry_price_usdc before counting misses)"
+  },
+  "issued_utc": "2026-08-31T11:20:16Z",
+  "ledger": {
+    "ledger_hash": "f57ea579c7c63061ab2080e271b05e7b2d610b41d704440374712dda05007eb1",
+    "ledger_name": "sui_ledger_20260831.json",
+    "ledger_uuid": "d6a9d7da-fb23-59fc-8868-b5e4a8784524"
+  },
+  "maturity_ts": 1787871600,
+  "maturity_utc": "2026-08-27T23:00:00+00:00",
+  "metrics_embargoed_until_8_cohorts_and_20_traps_each_class": {
+    "embargoed": [
+      "roc_auc",
+      "pr_auc",
+      "brier",
+      "precision",
+      "recall",
+      "logistic_recalibration",
+      "bootstrap.cluster",
+      "bootstrap.iid_reference"
+    ],
+    "release_requires_all_three": [
+      "at least 8 resolved NON-OVERLAPPING cohorts",
+      "at least 20 realized traps AND at least 20 realized non-traps, pooled",
+      "the correlation-adjusted effective sample size reported alongside every figure"
+    ]
+  },
+  "outcomes_known_at_issue": "ALL KNOWN. The 2026-08-13T23:00:00Z batch-B cohort matured 2026-08-27T23:00:00+00:00 and the grade ledger (sui_ledger_20260831.json) carried the realized outcomes. Realized traps = 4 of 22. Every number in this artifact was derived at build time from the committed SUI manifests, the grade ledger, and the acceptance standard; none was chosen with knowledge of a different outcome, because the verdict was pre-committed by the frozen y-vector before any outcome existed.",
+  "scope": "sui",
+  "stamp": "20260831_112016_sui_verdict_20260827",
+  "standard": {
+    "addendum_hash": "sha256:dbbe0cef37bf8f91da7bdb6199e6d9bf0d7f2d02263ca5d75dd154a3776b0293",
+    "artifact": "prereg/disclosures/20260818_120000_sui_acceptance_standard.json"
+  },
+  "title": "SUI VERDICT - the 2026-08-27 canonical batch-B cohort resolves EVIDENCE OF SKILL (realized traps = 4 of 22, all four v3 conditions satisfied)",
+  "verdict": {
+    "E": 4.7369,
+    "E_boundary": 3.3,
+    "E_exact": "4.7368999999999994",
+    "central_90": [
+      2,
+      8
+    ],
+    "coverage_misses": 4,
+    "deciding_condition": "all four v3 conditions satisfied: falsifiable (p0 = 0.0021433554373315 <= 0.05 or traps >= 1), traps = 4 in the central 90% [2, 8] of PoissonBinomial(y_prob), coverage misses k = 4 in {1..5}, top-y_prob third mean (-0.0024) below bottom-third mean (0.0009).",
+    "evaluation_order_applied": "INVALID first, then UNTESTED, then EVIDENCE AGAINST, then EVIDENCE OF SKILL \u2014 the literal order parsed from the acceptance standard's evaluation_order text. The cohort passed the pipeline-shaped INVALID re-checks (ts-coupling and calibration density, plus ledger-shaped state 'graded', n_graded = 22/22, calculation_error 0, fee_growth_anomaly 0 on every row).",
+    "mean_bot": 0.0009088666060480806,
+    "mean_top": -0.002400753422329962,
+    "realized_traps": 4,
+    "skill_conditions": {
+      "coverage_misses_in_1_5": true,
+      "falsifiable": true,
+      "top_third_below_bottom": true,
+      "traps_in_central_90": true
+    },
+    "trap_definition": "y_true == 1 (realized_net < eval_net_threshold = -0.05). A realized trap is NOT an interval breach (realized < prediction_lower).",
+    "verdict": "EVIDENCE OF SKILL"
+  },
+  "verification": {
+    "asserted_constants": {
+      "E": "4.7369",
+      "E_boundary": 3.3,
+      "P0_level": "1%",
+      "P_zero_traps": "0.0021433554373314957",
+      "canonical_22_trim": "74fc537ebf7ced89ecb9c692911e04f007dbf2f45a6d2e631b78bf3ad581f85e",
+      "canonical_N": 22,
+      "ledger_uuid": "d6a9d7da-fb23-59fc-8868-b5e4a8784524",
+      "realized_traps": 4
+    },
+    "box_side_facts_not_derivable_from_publiciq": {
+      "ledger_name": "sui_ledger_20260831.json",
+      "live_full_ledger_hash": "f57ea579... \u2014 the full grade ledger's signature hash, observed on the box at grade time. NOT recomputable from the publiciq repo (the ledger is not committed there); stated here as a box-side fact only. The canonical-22 trim above IS derivable from the frozen predictions + the realized net/threshold fields and is the one the verdict artifact pins."
+    },
+    "derived_from": [
+      "prereg/sui/20260814_001409_sui_preregistered_at_prediction.json (the 22 frozen predictions at ts 1786662000)",
+      "grade ledger sui_ledger_20260831.json in --ledger-dir (the realized outcomes)",
+      "prereg/disclosures/20260818_120000_sui_acceptance_standard.json (E boundary, coverage gates, zero_trap levels, one-line commitment, evaluation order, embargo list)",
+      "prereg/sui/20260814_120000_sui_addendum_20260813.json (canonical-batch pre-commitment, ceiling 7200s)"
+    ],
+    "note": "Every number is recomputable from the publiciq repo, the grade ledger, and the pinned pre-committed constants.",
+    "reproduction_recipe": [
+      "git clone <publiciq> && cd publiciq",
+      "# the 22 frozen predictions this verdict governs, with y_prob and interval",
+      "jq -r '.rows[] | select(.ts==1786662000) | [.pool_id,.y_prob,.prediction_lower,.prediction_upper] | @tsv' prereg/sui/20260814_001409_sui_preregistered_at_prediction.json",
+      "# E = sum(y_prob) over the canonical batch - 4.7369",
+      "jq '[.rows[] | select(.ts==1786662000) | .y_prob] | add' prereg/sui/20260814_001409_sui_preregistered_at_prediction.json",
+      "# P(0 traps) = Pi(1-y_prob) - THE number that fixes the zero-trap verdict",
+      "jq '[.rows[] | select(.ts==1786662000) | .y_prob] | reduce .[] as $p (1; . * (1-$p))' prereg/sui/20260814_001409_sui_preregistered_at_prediction.json",
+      "# the canonical-batch decision this verdict is subordinate to",
+      "jq -r '.addendum_hash, .canonical_freezes, .governs' prereg/sui/20260814_120000_sui_addendum_20260813.json",
+      "# this artifact's own hash",
+      "python -c \"import json,sys;sys.path.insert(0,'prereg_common');from prereg_hash import canonical_row_hash as h;a=json.load(open('<this file>'));print('sha256:'+h(a,exclude=('addendum_hash',)))\""
+    ]
+  }
+}
