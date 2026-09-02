@@ -1,0 +1,83 @@
+{
+  "artifact": "prereg_verdict",
+  "scope": "xrpl",
+  "chain": "xrpl",
+  "stamp": "20260902_180000_xrpl_pooliq_verdict_20260902",
+  "title": "XRPL POOL IQ VERDICT - Outcome C, FAIL. The pre-registered dual gate is POWERED and the frozen v5 scorer does not clear it.",
+  "issued_utc": "2026-09-02T18:00:00Z",
+  "governs": "The frozen XRPL Pool IQ scorer (SCORE_VERSION 5, commit b6efae7) on the high-volume speculative XRPL AMM tail, as pre-registered in PREREGISTRATION.md and read under VERDICT_PROTOCOL.md.",
+  "verdict": {
+    "outcome": "C",
+    "label": "FAIL",
+    "definition_applied": "Outcome C - quorum met but does not clear the gate, OR Maturity Deadline reached without quorum (VERDICT_PROTOCOL.md).",
+    "both_disjuncts_satisfied": true,
+    "quorum_met": true,
+    "leg_a_clears": false,
+    "leg_b_clears": false,
+    "maturity_deadline": "2026-08-15",
+    "maturity_deadline_passed": true,
+    "reading": "The gate became powered on 2026-08-23 (11 resolved phases) and is now fully resolved at 14/14. Neither leg clears: no HAC t reaches the pre-registered 2.0, and phase-stability is 7% against a required 100%. This is an honest negative result - data, not an error."
+  },
+  "frozen_contract": {
+    "frozen_commit": "b6efae7",
+    "score_version": 5,
+    "promotion_z": 2.0,
+    "min_pools_per_date": 12,
+    "min_resolved_phases": 10,
+    "min_phase_frac": 1.0,
+    "primary_metric": "cross_sectional_IC",
+    "gate": "Verdict = leg A AND leg B (PREREGISTRATION.md pass contract)."
+  },
+  "evidence": {
+    "grade_run_stamp": "20260902_140031",
+    "rows_graded": 1167,
+    "dates_in_cross_section": 52,
+    "phases_resolved": 14,
+    "phases_total": 14,
+    "phase_stable_pct": 7,
+    "leg_a_hac": {
+      "t1_vs_t0": {
+        "dIC": -0.0525,
+        "HAC_t": -1.46,
+        "n": 52
+      },
+      "t1_vs_heur": {
+        "dIC": 0.048,
+        "HAC_t": 0.96,
+        "n": 52
+      }
+    },
+    "gate_output_verbatim": "====================================================\n            DUAL-AGREEMENT PROMOTION GATE            \n  overlapping HAC  AND  promote in 100% of >=10 resolved phases\n====================================================\n  HOLD   [t1 vs t0]: neither clears.\n  [t1 vs heur] head-to-head: phase-stable in 7% -> not stable\n===================================================="
+  },
+  "verification": {
+    "grade_log": {
+      "path": "grade_20260902_140031.log",
+      "sha256": "b9e6ab6d6318e35fb6644df0220e126f5e0eb3fa8263cd528d365047b82d2b39"
+    },
+    "graded_snapshot_sha256": "5f4779bc3f21de6d1998e06ef2227038ff229931de5cd65d214dd7e890874d76",
+    "graded_source_sha256": "ea9f0d21cba3dd39e553d10fa086077b16e46c6fc0f971cbcffe880029c70615",
+    "graded_row_counts": {
+      "pool_grades": 1167,
+      "pool_snapshots": 621619,
+      "snapshots": 1634,
+      "sqlite_sequence": 2
+    },
+    "frozen_grader_sha256": "be34147d733bbe660f73e308b9501679f3fcfb55dbc530dc589896ccb5b51b6d",
+    "frozen_gate_sha256": "6ae28870ee4eb8c77cca64d98030d01495ffcc769d27ed2c8ff8e53f8e2e1144",
+    "preregistration_sha256": "7a6f4f4f3a065f871c6dda851cc8c8df2e546ad0b992ef39ce0afafe98e233b9",
+    "verdict_protocol_sha256": "62deb304c254e438f943403a21ca8be43ffe724f63c169fad518584a03b48757",
+    "note": "Every figure above is parsed from the recorded grade-run log named here, and every threshold is imported from the frozen grader whose sha256 is named here. The builder refuses to emit if a threshold in the log disagrees with the frozen constant, or if the outcome it recomputes from them is not C."
+  },
+  "contributes_zero_anchors": "This artifact cites no record_ids and anchors none. Its artifact field contains 'verdict', so it is excluded by TYPE from the committed anchor index.",
+  "amendment_rule": "Any change to this verdict must be published as a dated successor artifact stating what changed and why. This file is never edited in place.",
+  "addendum_hash_recipe": {
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "canonicalization": "RFC-8785 JCS",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))"
+  },
+  "addendum_hash": "sha256:4894c884eefa3c441cb46db56cd58f7da6806116e7ee4b1816ec86002927f83d"
+}
