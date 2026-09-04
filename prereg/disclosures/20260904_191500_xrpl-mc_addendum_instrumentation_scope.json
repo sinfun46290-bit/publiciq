@@ -1,0 +1,133 @@
+{
+  "addendum_hash": "sha256:2ef48e1b248190a3faf4dce799925d4ac25af649bce761438f834b3bbd0dc1cd",
+  "addendum_hash_recipe": {
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "artifact": "prereg_addendum",
+  "chain": "xrpl-mc",
+  "disclosure": {
+    "forward": {
+      "action": "The daily freeze timer (xrpl-mc-grader.timer, 22:10Z) has been disabled so the stream stops accruing pre-registrations that cannot be resolved.",
+      "disabled_utc": "2026-09-04T16:54:12Z",
+      "final_batch": "prereg/xrpl-mc/20260903_221126_xrpl-mc_preregistered_at_prediction.json",
+      "if_xrpl_mc_resumes": "Any future XRPL-MC graded cohort requires a NEW acceptance standard issued before that cohort's maturity, published on this record, and naming the manifest it governs. Restarting the timer without one would only recreate this situation.",
+      "unaffected": [
+        "xrpl_mc_collector.service - the on-chain measurement collector keeps running; it is measurement, not a claim",
+        "the genesis cohort, its ledger, and its published verdict - unchanged and still on the record",
+        "xrpl-mc-resolve.service - remains staged and unarmed, as designed",
+        "every other chain (poolwatch, solana, sui, xrpl) - untouched"
+      ]
+    },
+    "header": "scope: xrpl-mc | the daily freeze timer ran on past the one cohort it was built to grade | stated 2026-09-04",
+    "immutability": "No published manifest is edited, withdrawn, or deleted by this addendum. All 33 pre-registration manifests, the cohort genesis record, the resolved ledger, and the genesis verdict STAND AS PUBLISHED. This is a new dated artifact that states what the existing ones are. The 414 instrumentation predictions remain publicly fetchable and independently hashable exactly as before; anyone who has already cited them is unaffected.",
+    "summary": "The XRPL-MC daily freeze produced 24 prediction batches between 2026-08-11 and 2026-09-03, all published as pre-registration manifests. Exactly ONE of them - the 2026-08-11 genesis cohort - was a graded experiment: it had an acceptance standard committed before its outcomes could be known, it was resolved into a canonical ledger, and its verdict was published. The other 23 batches, 414 predictions, were the freeze pipeline continuing to run. They have no acceptance standard, they will not receive one, and no verdict will be issued from them. They are instrumentation.",
+    "what_is_NOT_wrong": "No prediction was altered after the fact. No outcome was suppressed. No verdict was withdrawn. Every one of the 432 predictions was genuinely frozen and published before its window opened, and each remains independently verifiable from the public repository. The genesis verdict stands unchanged: UNTESTED, K=0. What is corrected here is a claim that was never stated explicitly and should have been: that a running pre-registration stream implies a coming verdict. For 414 of these predictions it does not.",
+    "what_was_graded": {
+      "batch_root": "488d922ea70087def8e17e33f577a544da9c2998a3010cdcfb02f054d1aa3769",
+      "cohort": "20260811_221010_xrpl-mc_preregistered_at_prediction",
+      "cohort_freeze_utc": "2026-08-11T22:10:00Z",
+      "cohort_size": 18,
+      "governing_standard": "prereg/disclosures/20260819_160000_xrpl-mc_genesis_acceptance_standard.json",
+      "governing_standard_hash": "sha256:bb41474df866d7ea3c7319c23a0938e441b1b13f018d13ac96a001495d856c50",
+      "governing_standard_id": "xrpl-mc-genesis-v1-dryrun",
+      "ledger_hash": "c7fa7097de9f7f998cfd2b405fc0cc49f01137b39c43693d2ae1b14fe13a40ce",
+      "maturity_utc": "2026-08-25T22:10:00Z",
+      "note": "This is the whole of the graded XRPL-MC record. Nothing else in this chain has been graded.",
+      "published_verdict": "prereg/xrpl-mc/20260826_111905_xrpl-mc_verdict_20260825.json",
+      "published_verdict_hash": "sha256:674bb98a31d6a73e858859e14b4223ad27d44a3c9f0d2bbfe0c1341c31548479",
+      "resolved_ledger": "xrpl_mc_ledger_20260826.json",
+      "source_sha256": "dc858c9ac4cfb5aef62aa23548440334f23117053dd610b025418949a82957fb",
+      "standard_issued_before_maturity": true,
+      "standard_issued_utc": "2026-08-19T16:00:00Z",
+      "verdict": "UNTESTED (K=0)"
+    },
+    "what_was_not_graded": {
+      "acceptance_standard": "NONE - none was ever written for these batches",
+      "batches": 23,
+      "first_prediction_ts_utc": "2026-08-12T22:08:00Z",
+      "in_flight_at_issue": {
+        "batches": 14,
+        "note": "Their windows had not closed when this addendum issued. Maturity changes nothing: they have no standard either.",
+        "predictions": 252
+      },
+      "last_prediction_ts_utc": "2026-09-03T22:08:00Z",
+      "matured_but_unresolved_at_issue": {
+        "batches": 9,
+        "note": "Their 14-day windows closed between 2026-08-26 and 2026-09-03. They were never resolved and will not be.",
+        "prediction_ts_range_utc": "2026-08-12T22:08:00Z .. 2026-08-20T22:07:00Z",
+        "predictions": 162
+      },
+      "predictions": 414,
+      "resolved": "NONE - no ledger was produced for any of them",
+      "verdict": "NONE - and none will be issued"
+    },
+    "why_they_cannot_be_verdicted_now": {
+      "reason_1_no_pre_committed_standard": "A verdict requires an acceptance standard fixed BEFORE its outcomes can be known. The genesis standard certified exactly that (outcomes_known_at_issue: ZERO; issuance_strictly_before_maturity: true). No standard exists for batches 2-24, and for the 10 already-matured batches no standard written today could be pre-committed. That door is closed and does not reopen.",
+      "reason_2_the_standard_is_single_cohort": "xrpl-mc-genesis-v1-dryrun cannot be stretched to cover them. It pins one batch_root (488d922e...), one source_sha256, one exact 18-value y_prob vector, and one scalar maturity_epoch (1787695800). Its entire threshold apparatus - E=0.8921, HHI=0.35315, 1/HHI=2.8316, P(K>=4)<=0.0449, P(K=0)=0.3380, and therefore the K>=4 AGAINST threshold - is derived from that specific vector.",
+      "reason_3_each_batch_re_forecasts": "Every daily freeze re-runs the forecast, so each batch carries a different y_prob vector and therefore a different E, a different concentration profile, and a different false-positive curve. Applying the genesis thresholds to them would be applying a threshold derived from one prediction set to a different prediction set.",
+      "the_principle": "Deriving an acceptance threshold after outcomes are knowable is the failure mode the genesis standard's temporal_integrity_certification exists to rule out. Doing it here, retroactively, would contradict the one methodological commitment this chain has actually made."
+    },
+    "why_this_happened": "The freeze half of the XRPL-MC pipeline is a daily timer. The resolve half was built for a single sealed cohort with a fixed maturity instant, and its unit was deliberately left with no timer and no [Install] section. After the genesis cohort resolved on 2026-08-26 the timer kept firing, and each firing added 18 more pre-registered predictions with nothing on the other end. That was not noticed until 2026-09-04."
+  },
+  "issued_utc": "2026-09-04T19:15:00Z",
+  "outcomes_known_at_issue": "All 24 prediction batches described here are already frozen and published; 10 have passed their 14-day maturity. This addendum states what the batches ARE. It reports no outcome, computes no verdict, and applies no acceptance standard.",
+  "published_state_at_issue": {
+    "manifests_empty_pre_genesis": {
+      "batch_root": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "count": 9,
+      "note": "Empty batches published before the cohort was armed. batch_root is the SHA-256 of the empty canonical form. Zero predictions.",
+      "range": "20260803 .. 20260810"
+    },
+    "manifests_with_predictions": {
+      "count": 24,
+      "cumulative": true,
+      "cumulative_note": "Each manifest contains every prediction to date, not only that day's 18. 20260811 holds 18 rows; 20260903 holds all 432. Each carries its own batch_root over its full contents.",
+      "predictions_per_batch": 18,
+      "predictions_total": 432,
+      "range": "20260811 .. 20260903"
+    },
+    "other_artifacts": [
+      "prereg/xrpl-mc/20260728_214404_xrpl-mc_cohort_genesis.json",
+      "prereg/xrpl-mc/20260826_111905_xrpl-mc_verdict_20260825.json",
+      "prereg/disclosures/20260819_160000_xrpl-mc_genesis_acceptance_standard.json"
+    ],
+    "path": "prereg/xrpl-mc/",
+    "pre_registration_manifests_total": 33,
+    "repository": "https://github.com/sinfun46290-bit/publiciq",
+    "split_as_published": {
+      "frozen": 432,
+      "published_verdicts": 1,
+      "resolved": 18
+    }
+  },
+  "scope": "xrpl-mc",
+  "stamp": "20260904_191500_xrpl-mc_addendum_instrumentation_scope",
+  "title": "XRPL-MC PRE-REGISTRATION ADDENDUM - the post-genesis daily stream is instrumentation, not graded claims",
+  "verification": {
+    "method": "clean clone from origin; every figure below recomputed from the committed manifests alone",
+    "reproduction_recipe": [
+      "git clone https://github.com/sinfun46290-bit/publiciq && cd publiciq",
+      "# 1. count the published xrpl-mc pre-registration manifests (expect 33)",
+      "ls prereg/xrpl-mc/*_preregistered_at_prediction.json | wc -l",
+      "# 2. split into batches with predictions (expect 24) and empty ones (expect 9)",
+      "python3 -c \"import json,glob; f=[json.load(open(p)).get('rows') or [] for p in sorted(glob.glob('prereg/xrpl-mc/*_preregistered_at_prediction.json'))]; print('with predictions:', sum(1 for r in f if r), '| empty:', sum(1 for r in f if not r))\"",
+      "# 3. the final manifest holds 432 rows across 24 distinct freeze instants",
+      "#    (published rows carry the freeze instant as 'ts')",
+      "python3 -c \"import json; r=json.load(open('prereg/xrpl-mc/20260903_221126_xrpl-mc_preregistered_at_prediction.json'))['rows']; print(len(r), len({x['ts'] for x in r}))\"",
+      "# 4. exactly ONE xrpl-mc verdict exists (expect 1)",
+      "ls prereg/xrpl-mc/*verdict*.json | wc -l",
+      "# 5. the genesis standard names the genesis batch and no other",
+      "python3 -c \"import json; d=json.load(open('prereg/disclosures/20260819_160000_xrpl-mc_genesis_acceptance_standard.json')); print(d['standard_id']); print(d['frozen_baseline']['source']); print(d['maturity_epoch'])\"",
+      "# 6. verify this addendum's own hash with the verifier the clone ships",
+      "#    (self-contained; needs only the jcs package)",
+      "python3 verifier/verify_addendum_hash.py prereg/disclosures/20260904_191500_xrpl-mc_addendum_instrumentation_scope.json"
+    ]
+  }
+}
