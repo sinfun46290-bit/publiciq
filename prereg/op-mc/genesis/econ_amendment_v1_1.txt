@@ -1,0 +1,20 @@
+CONTRACT AMENDMENT OP-MC-ECON v1.1 (B2 CLOSURE)
+Replaces (3C §4.1, bullet "Protocol-fee splits"):
+  OLD: "claimed, pending one-time source/bytecode verification ... 
+        fee_split_verified=false until verified"
+  NEW: "VERIFIED BEHAVIORALLY 2026-08-25 by isolated single-swap 
+        reconciliation on each implementation:
+          Uniswap V3      : protocol share 1/4  (slot0.feeProtocol=0x44); 
+                            ratio observed 0.75000000
+          Sushi V3-style  : protocol share 1/4  (slot0.feeProtocol=0x44);
+                            ratio observed 0.75048585 (dust-swap tolerance)
+          Slipstream F1   : protocol share 1/20 (no slot0 field);
+                            ratio observed 0.95000000
+        feeGrowthGlobal{0,1}X128 accumulate POST-SPLIT LP share on all 
+        three families. fee_split_verified=true for all eligible families. 
+        No subtraction beyond the growth-delta identity is permitted. 
+        Each boundary read MUST record slot0.feeProtocol byte (UniV3/Sushi 
+        families); a changed nibble flags the record for re-audit (flag 
+        only; does not invalidate accrued history)."
+Reason: one-time verification demanded by 3C §19(a); evidence in this report §2.
+Everything else in 3C is UNCHANGED.
