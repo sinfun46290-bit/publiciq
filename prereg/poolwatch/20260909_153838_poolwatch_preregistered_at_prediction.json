@@ -1,0 +1,11 @@
+{
+  "batch_root": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "chain": "poolwatch",
+  "created_utc": "2026-09-09T15:38:38+00:00",
+  "n": 0,
+  "redactions": {},
+  "rows": [],
+  "source_sha256": "f4af1fbcb2c1ee3656707c45c6c6b77d563c08ae60721c4e58f97afb773e1a16",
+  "stamp": "20260909_153838_poolwatch_preregistered_at_prediction",
+  "tier": "preregistered_at_prediction"
+}
