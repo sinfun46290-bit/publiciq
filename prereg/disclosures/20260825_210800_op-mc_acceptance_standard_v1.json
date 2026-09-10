@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "contract_id": "OP_MC_ACCEPTANCE_STANDARD_V1",
+  "created_utc": "2026-08-25",
+  "phase": "OP-MC-PREMATURITY.3G",
+  "status": "QUALIFIED SPECIFICATION - NOT A FROZEN COHORT, NO OUTCOMES EXIST",
+
+  "references": {
+    "economic_contract": {
+      "document": "docs/reports/OP-MC-PREMATURITY_3C_CANONICAL_ECONOMIC_CONTRACT.md",
+      "amendment": "OP-MC-ECON v1.1 (3E report)",
+      "amendment_sha256": "fd83492aeba03aacb821e852249d0d2a42dd27970d9b4689c700bdeccb43e15a"
+    },
+    "cohort_contract": {
+      "document": "docs/contracts/op_cohort_contract_v1.json",
+      "sha256_at_acceptance_time": "191C4726723E718C8B9A6DD40B9E32AD42461D735DB49BDE2CDE5941EE785943"
+    },
+    "reference_implementation": {
+      "path": "prereg_common/op_mc_acceptance_v1.py",
+      "sha256_at_acceptance_time": "826E082286C0751A005B8BC4313CC29D0DA8E2CCA22894C397F05D2A2D3C1E67",
+      "python": "CPython 3.11.15, stdlib only (fractions, hashlib, json)"
+    }
+  },
+
+  "verdict_taxonomy": {
+    "observation_level": {
+      "POSITIVE": {"alias": "SKILL", "condition": "record_status == VALID AND net_return_frac_14d > 0 (exact rational comparison)"},
+      "NEGATIVE": {"alias": "AGAINST", "condition": "record_status == VALID AND net_return_frac_14d <= 0 (zero is NOT positive; boundary exclusive on positivity)"},
+      "UNTESTED": {"condition": "record_status in {UNRESOLVED, INSUFFICIENT_DATA} or pool failed to complete maturity with readable state"},
+      "INVALID": {"condition": "record_status == INVALID (hash mismatch, identity failure, post-hoc modification)"}
+    },
+    "run_level": {
+      "EDGE_CONFIRMED": "min evidence met AND edge_frac > 0 AND exact one-sided Fisher p < 5/100",
+      "EDGE_NOT_ESTABLISHED": "min evidence met AND edge_frac > 0 AND p >= 5/100 (honest absence-of-demonstration; NOT proof of no edge)",
+      "NO_EDGE_DETECTED": "min evidence met AND edge_frac <= 0",
+      "INSUFFICIENT_EVIDENCE": "VALID observations per arm < MIN_VALID_PER_ARM (fail closed)",
+      "INVALID_RUN": "any integrity gate failure: contract hash mismatch, malformed genesis hash, duplicate pool id, role conflict, bad role/status, non-finite metric"
+    }
+  },
+
+  "primary_metric": {
+    "per_observation": "net_return_frac_14d from economic contract v1.1 section 16 (exact Fraction; integer inputs; single final division)",
+    "arm_rate": "Fraction(n_positive, n_valid) per arm",
+    "edge": "top_rate - control_rate (exact rational subtraction)",
+    "significance": "one-sided Fisher exact tail P(X >= a | m=10, n=10, K=a+c), computed in exact integer/rational arithmetic"
+  },
+
+  "minimum_evidence": {
+    "MIN_VALID_PER_ARM": 10,
+    "rationale": "cohort is exactly 10 TOP + 10 CONTROL; reserves resolve pre-genesis deaths only; post-genesis shortfalls fail closed rather than dilute the denominator",
+    "asymmetric_completion": "either arm below minimum -> INSUFFICIENT_EVIDENCE for the whole run",
+    "missing_outcome": "UNTESTED observation -> counts against minimum evidence",
+    "invalid_outcome_record": "INVALID observation -> INVALID_RUN when integrity-related; otherwise counts against minimum evidence"
+  },
+
+  "boundary_semantics": {
+    "positivity": "strictly greater than 0; net == 0 classifies NEGATIVE (documented exclusive boundary)",
+    "alpha": "p < 5/100 strictly; p == 5/100 does NOT confirm",
+    "rounding": "all comparisons on unrounded exact rationals; display rounding occurs only after verdict assignment"
+  },
+
+  "missing_and_invalid_data_rules": {
+    "imputation": "PROHIBITED unconditionally",
+    "missing_state_quantity": "record UNRESOLVED/INSUFFICIENT_DATA -> UNTESTED verdict",
+    "valuation_failure": "INSUFFICIENT_DATA -> UNTESTED",
+    "endpoint_disagreement": "INVALID + halt per economic contract section 10",
+    "block_hash_mismatch": "INVALID + halt per economic contract section 11"
+  },
+
+  "deterministic_serialization": {
+    "input_canonicalization": "observations sorted by (lowercase pool_id, role); nets serialized as exact 'num/den' strings; JSON sort_keys, separators without whitespace; UTF-8",
+    "output": "result dict JSON sort_keys; SHA256 recorded per run"
+  },
+
+  "provenance_requirements": [
+    "every record embeds economic_contract_sha256 and cohort manifest hash",
+    "resolver must refuse records whose embedded hashes differ from prereg-committed values (3C section 18 rule 2)",
+    "no arm labels enter the calculator input schema beyond role membership required for aggregation"
+  ],
+
+  "fail_closed_conditions": [
+    "economic contract hash mismatch", "genesis hash malformed",
+    "duplicate pool ids", "role conflict", "unknown role/status",
+    "non-finite metric value", "arm size shortfall",
+    "endpoint disagreement", "block hash mismatch"
+  ],
+
+  "synthetic_qualification": {
+    "cases_total": 21,
+    "cases_passed": 21,
+    "determinism_output_sha256": "ad7fa4653b1b33ac08aacffaad3db3d346f0673e61141f9fca2633f7ced3b57f",
+    "coverage": ["strong_edge", "weak_edge", "equal_rates", "negative_edge",
+                 "all_negative", "mixed", "insufficient_evidence",
+                 "invalid_record", "contract_mismatch", "duplicate_id",
+                 "role_conflict", "arm_shortfall", "bad_genesis_hash",
+                 "zero_net_boundary", "tiny_positive_boundary",
+                 "unrounded_vs_display_rounding", "nonfinite_metric",
+                 "reorder_invariance", "wellformed_hash_variation",
+                 "output_determinism"]
+  },
+
+  "acceptance_standard_sha256": "RECORDED IN docs/reports/OP-MC-PREMATURITY_3G_ACCEPTANCE_STANDARD_QUALIFICATION.md section A (self-referential hash cannot be embedded)"
+}
