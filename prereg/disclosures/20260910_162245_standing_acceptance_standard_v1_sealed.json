@@ -1,0 +1,88 @@
+{
+  "addendum_hash": "sha256:56455e37a9f70d7af3349518e4cda04a258dde7b855ed0f7b0fdad32e7d7a765",
+  "addendum_hash_recipe": {
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "independent_recipe": "python -c \"import json,hashlib,jcs;d=json.load(open('<this file>'));d.pop('addendum_hash');print('sha256:'+hashlib.sha256(jcs.canonicalize(d)).hexdigest())\"",
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "artifact": "prereg_disclosure_acceptance_standard",
+  "fixed_rule": {
+    "against_battery": {
+      "directional_inversion": "mean realized_net of the top-y_prob third >= mean of the bottom third; thirds = ceil(N/3).",
+      "interval_coverage_tail": "coverage misses M ~ Binomial(N, interval_alpha); AGAINST@level if P(X >= M) <= level.",
+      "miss_asymmetry": "M >= 3 coverage misses AND all on the same side of the interval.",
+      "missed_trap_contradiction": "any row with y_prob < 0.01 that realizes as a trap (y_true=1).",
+      "trap_count_tail_two_sided": "AGAINST@level if P(K <= realized_traps) <= level (lower tail; the zero-trap-contradiction is its K=0 case, P(0 traps)=prod(1-y)) OR P(K >= realized_traps) <= level (upper tail); each on PoissonBinomial(y) at worst-case rho."
+    },
+    "evaluation_order": "INVALID first; then UNTESTED-narrow (the cohort could not have been shown wrong: zero realized traps AND the all-safe outcome was not surprising, P(0 traps) > 0.05); then EVIDENCE AGAINST (any trigger in the battery); then EVIDENCE OF SKILL (only if skill is available for the cohort AND all conditions hold); else UNTESTED-residual. The FIRST tier that fires decides.",
+    "invalid_battery": {
+      "data_shaped": [
+        "any row with per-row completeness/density < completeness_floor",
+        "ts-coupling: first in-window snapshot ts != prediction ts (entry-price coupling) - performed when the cohort supplies the re-check inputs; otherwise the verdict DISCLOSES that this re-check was not attached (never a silent pass)"
+      ],
+      "ledger_shaped": [
+        "grading_status.state != 'graded'",
+        "n_graded < n_floor (n_floor = N - allowed_missing)",
+        "data_quality.calculation_error > 0",
+        "any row with fee_growth_anomaly > 0 (where the chain instruments it)"
+      ],
+      "outcome_independent": true
+    },
+    "protocol_constants": {
+      "dependence_model": "exchangeable one-factor Gaussian copula; AGAINST trap-count tail probabilities are the WORST CASE over the rho grid.",
+      "interval_alpha": 0.1,
+      "interval_nominal_coverage": 0.9,
+      "named_levels": {
+        "strong": 0.01,
+        "weak": 0.05
+      },
+      "probability_decision_threshold": 0.5,
+      "rho_grid": [
+        0.0,
+        0.2,
+        0.4,
+        0.5,
+        0.6,
+        0.8
+      ],
+      "skill_concentration_floor": 4.0,
+      "skill_concentration_note": "SKILL requires effective independent pools 1/HHI(y) >= 4.0 (at least ~4 independent bets before a skill claim is admissible). Pre-committed here before any future cohort exists; NOT a per-cohort boolean an operator can set by hand.",
+      "trap_definition": "y_true = 1 iff realized_net < trap_net_return_threshold, RECOMPUTED at grade time from realized_net; a realized trap is NOT an interval breach.",
+      "trap_net_return_threshold": -0.05
+    },
+    "skill_conditions_all_required": [
+      "skill_available: 1/HHI(y) >= skill_concentration_floor",
+      "falsifiable: P(0 traps) = prod(1-y) <= named_levels.weak (0.05) OR realized_traps >= 1",
+      "realized_traps inside the central 90% [q05, q95] of PoissonBinomial(y) at rho=0",
+      "coverage misses M in {1 .. k_weak-1}, k_weak = smallest k with P(X>=k | Bin(N, alpha)) <= 0.05 (zero misses is NOT skill)",
+      "mean realized_net of top-y_prob third < mean of bottom third"
+    ],
+    "verdicts": [
+      "INVALID",
+      "UNTESTED",
+      "EVIDENCE AGAINST",
+      "EVIDENCE OF SKILL"
+    ]
+  },
+  "issued_utc": "2026-09-10T11:55:00Z",
+  "one_line_commitment": "One pre-committed rule, parameterized only by each cohort's frozen inputs (y-vector, N, intervals, floors), applied mechanically to every future matured cohort on every chain to produce exactly one of four verdicts. The tier thresholds are DERIVED from each cohort's own frozen inputs by the formulas below, not re-typed per cohort.",
+  "reproduces_genesis_verdicts": {
+    "note": "Prove-by-replay: this one rule, applied to each cohort's frozen inputs, reproduces the already-published genesis verdicts as special cases (no per-cohort special-casing). Retro-fit per operator decision 7.2 - a cross-reference, not a re-issue of those verdicts.",
+    "sui_08_27": "EVIDENCE OF SKILL (E=4.7369, 4 traps in central-90, coverage misses 4, directional correct, 1/HHI=11.74>=4.0)",
+    "xrpl_mc_genesis": "UNTESTED (E=0.8921, 0 traps, P(0 traps)=0.338>0.05 could-not-be-wrong; SKILL unavailable 1/HHI=2.83<4.0)"
+  },
+  "scope": "mc-forecast",
+  "seals": {
+    "note": "The 11:55 disclosure established and committed this rule but omitted the self-hash envelope every other standard carries. This artifact adds the envelope with fixed_rule byte-for-byte identical to the committed file; the rule is unchanged, only its machine hash is now attached and verifiable.",
+    "supersedes_unsealed": "prereg/disclosures/20260910_115500_standing_acceptance_standard_v1.json"
+  },
+  "stamp": "20260910_162245_standing_acceptance_standard_v1_sealed",
+  "standard_id": "standing_acceptance_standard_v1",
+  "status": "STANDING STANDARD v1 - COMMITTED. Governs all future MC-forecast cohorts (SOL/SUI/XRPL-MC family and any new MC-forecast chain). The fixed_rule below is pre-committed once; per-cohort inputs are frozen+committed per cohort. Nathen sign-off 2026-09-09; proven-by-replay 2026-09-10.",
+  "title": "GradedLP STANDING Acceptance Standard - THE FIXED RULE (DRAFT v1, pending seal)"
+}

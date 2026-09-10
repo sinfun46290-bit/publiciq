@@ -1,0 +1,226 @@
+{
+  "addendum_hash": "sha256:3888d877f028d759b2dc6ccfef7de1c3d1c0b85b0c3350e4a43d5842f8f5c7d2",
+  "addendum_hash_recipe": {
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "independent_recipe": "python -c \"import json,hashlib,jcs;d=json.load(open('<this file>'));d.pop('addendum_hash');print('sha256:'+hashlib.sha256(jcs.canonicalize(d)).hexdigest())\"",
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "artifact": "prereg_verdict_standing_standard_applied",
+  "build_toolchain": {
+    "pinned_and_asserted_at_build_time": false,
+    "python": "3.12.3",
+    "why_pinned": "This verdict's arithmetic is comparison and counting over the standing evaluator's already-computed metrics; the ledger it reads is itself the byte-frozen resolution of record. No floating-point result is emitted here that a library version could move."
+  },
+  "chain": "xrpl-mc",
+  "cohort_id": "20260812_221010_xrpl-mc_preregistered_at_prediction",
+  "frozen_cohort": {
+    "cohort_root": "97bd0cbe43604d9e0ed5881fb27664244c28fbc9854f3b2710760ba32ddb8987",
+    "cohort_root_note": "batch_root over this cohort's 18 rows' prediction_hash within the cumulative manifest; the manifest republishes the complete immutable set, so the cohort is bound by this sub-root plus per-row record_id == JCS(pool_id, ts).",
+    "cohort_size": 18,
+    "cohort_target_ts": 1786572506,
+    "cohort_target_utc": "2026-08-12T22:08:26Z",
+    "manifest": "prereg/xrpl-mc/20260812_221010_xrpl-mc_preregistered_at_prediction.json",
+    "manifest_batch_root": "b1deed7608faea665b15c15338ea3df3da26ff8ebddc1bf070270bb3aaecc399",
+    "manifest_source_sha256": "48fcd089ddfb3936e3ab64b4a0d06f64fc34a260e35ce7e8093cfad6fc7db61b"
+  },
+  "governing_standard": {
+    "addendum_hash": "sha256:56455e37a9f70d7af3349518e4cda04a258dde7b855ed0f7b0fdad32e7d7a765",
+    "artifact": "prereg/disclosures/20260910_162245_standing_acceptance_standard_v1_sealed.json",
+    "hash_verified_at_build": true,
+    "logic_source": "Tier and every threshold were computed by the standing evaluator that parses this standard's fixed_rule; nothing was re-implemented in this emitter.",
+    "standard_id": "standing_acceptance_standard_v1"
+  },
+  "issued_utc": "2026-09-10T16:22:45Z",
+  "maturity_epoch": 1787782200,
+  "maturity_ts": {
+    "anchor": "cohort_freeze",
+    "anchor_epoch": 1786572600,
+    "anchor_utc": "2026-08-12T22:10:00Z",
+    "derivation": "maturity = cohort_freeze + 14 days = 1786572600 + 1209600 = 1787782200 = 2026-08-26T22:10:00Z",
+    "epoch": 1787782200,
+    "freeze_anchor_note": "cohort_freeze is the freeze-day manifest's created_utc floored to the minute \u2014 the same nominal-freeze convention the founding cohort used (2026-08-11T22:10:00Z).",
+    "horizon_days": 14,
+    "utc": "2026-08-26T22:10:00Z"
+  },
+  "maturity_utc": "2026-08-26T22:10:00Z",
+  "outcomes_known_at_issue": true,
+  "per_pool_outcomes": [
+    {
+      "is_trap": false,
+      "pool_id": "r9ZKrNu1RJQg1UoqJ24pn5ZqynJg7rifGY",
+      "realized_net_14d": -0.0018704101188096577,
+      "record_id": "03bb91ddeadec979f56e71c8747fa429ff5344a503825c7828e8e9b22f32ef03"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rBu4LXTxM9cfs3JsFCuDbPMzvGBDR66wpi",
+      "realized_net_14d": 0.003059552158508173,
+      "record_id": "079a42da09f5c521cd3f92822bbfa0d1fb0a83873ac8dfb502614dea27bb8fd8"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rD6BwRhKRtzdiF1miWw7xrxiJwLwnY4PqH",
+      "realized_net_14d": -9.53884513769247e-05,
+      "record_id": "3fe5a2f6bddbef4de62e55400e8a61489dfe1ff34f9fca5a94dd437d5991d56f"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rEDFZUyyikyUbjNoMsSgmXfZNN53rwLLZv",
+      "realized_net_14d": 0.0021504637080414467,
+      "record_id": "6eb12dac46460e79ebc1ed39adeb96e38e7bbacea864160b54b26f61c6aaac77"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rEKkGGiLMfL28q74W4QAEPeRwXvcxWdutn",
+      "realized_net_14d": -0.009694402086223273,
+      "record_id": "1226c5a54951942e002e2dba40a95ac884a469c6fd74f3086602f9a1c26a8568"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rEaErQ5vEbHXThFedUrjz9YFotG5HHcxoW",
+      "realized_net_14d": -0.0049916211149933715,
+      "record_id": "4502da9fc05d26c1eb316777928d6d2c0740bb9f35feaf82dfb03bb73d0f3ef5"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rG5ZYmUUT14RGtU491p3CCfoHzuDRLy8nU",
+      "realized_net_14d": 0.00031682252809418863,
+      "record_id": "9d01949a663b7408e14e4025afc12411cad1929ed063c283d5b8f16afaa56f64"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rHUpaqUPbwzKZdzQ8ZQCme18FrgW9pB4am",
+      "realized_net_14d": -0.00933753408213164,
+      "record_id": "0f479d4bf0983490e24e5bc373c9fb153f2f7930406e5d35cf8e6e0af71c9b90"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rJvuDNFkb25GybpHvqCmQzEMjycqBn3uTi",
+      "realized_net_14d": 0.0018013856037838662,
+      "record_id": "0bffec132b4e11dd1dd69c3de333df551a6ca66892c47fafc11516882f33412e"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rLikwdZqS14VEqtAB43NAYeCv8uJVYQXzJ",
+      "realized_net_14d": 0.006813668468660161,
+      "record_id": "8a59ef0d104461157dcb0fd165cc86895b7d3d19a35d0e681674d835745f3367"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rMEJo9H5XvTe17UoAJzj8jtKVvTRcxwngo",
+      "realized_net_14d": 0.0007819373891961947,
+      "record_id": "09ff45e5b55343a84338070f0db92250d86950e9a74f4061edeeea00c0ce2a5f"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rQBeAghWHEwWvKShryBSa5yR3VRX9oyQ5T",
+      "realized_net_14d": -0.0011283409405520581,
+      "record_id": "519df0c3fc9fc545242796e2afaf4ae373b8bb06c54d002ad3f9b7cd020eaa59"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rUw4bsCaZyRiZJLzh2Hb3fujnSXiieHarz",
+      "realized_net_14d": -0.02332428031007783,
+      "record_id": "e9a04db644267ef38814b0d45449f12481ff635a8213f512378f91d639baa80f"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rf7g4JWCxu9oE1MKsWTihL9whY75AphCaV",
+      "realized_net_14d": 0.02499092913729027,
+      "record_id": "f22cc11f64941454e1a4dcf80eb3043a87e1754e87f622ec273375b17fc334ba"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rpnAMBAyBMhK4RN1qDLsgENrLMYNEsx3i4",
+      "realized_net_14d": 0.005081269802085073,
+      "record_id": "16bf018d1f6e812dd84205986951d4be8bfa39d96452b634a64b72b6302e18e7"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rs9ineLqrCzeAGS1bxsrW8x2n3bRJYAh3Q",
+      "realized_net_14d": -0.009023342847308715,
+      "record_id": "935741d329ca69d30629fa46d1b958a14fc9df5e1a79a63008cc2c12eb305baa"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rsKuiczZKG1jXdTDBJnZombGeENYvrmY2U",
+      "realized_net_14d": 0.0005969311958636834,
+      "record_id": "bc234775dbfefa709a9201e20f17d471b529e5a7e05c854f00c16d3fb77139d2"
+    },
+    {
+      "is_trap": false,
+      "pool_id": "rw3tWE23X3Qn43XGKwqVJ7J8QA42rYEGy4",
+      "realized_net_14d": -0.0019721701907078927,
+      "record_id": "3ab304a945ff8310c983765de1c641d2ab213d21688b422ade0e348d9f31ad16"
+    }
+  ],
+  "resolved_ledger": {
+    "data_quality": {
+      "calculation_error": 0,
+      "calculation_error_detail": [],
+      "n_rows_emitted": 18
+    },
+    "derivation_note": "Every metric was derived row by row from this ledger's verifiable_audit_ledger; a missing outcome aborts, never counts as no-trap.",
+    "file": "xrpl_mc_ledger_cohort_20260812.json",
+    "grading_status": {
+      "n_graded": 18,
+      "n_predictions_considered": 18,
+      "n_rejected": 0,
+      "rejected_by_reason": {
+        "insufficient_completeness": 0,
+        "window_span_short": 0
+      },
+      "rejections": [],
+      "state": "graded"
+    },
+    "ledger_hash": "f9ed47359404d5ef99c1802d82fe1dc325106607c67a1fefbeff0afa373ff5b6",
+    "ledger_uuid": "2c92bb84-435d-55d0-a088-e8803877d3ad",
+    "outcome_field": "realized_net_14d"
+  },
+  "scope": "xrpl-mc",
+  "stamp": "20260910_162245_xrpl-mc_verdict_20260812",
+  "timestamps": {
+    "cohort_freeze": {
+      "epoch": 1786572600,
+      "role": "CANONICAL COHORT FREEZE \u2014 sole maturity anchor.",
+      "utc": "2026-08-12T22:10:00Z"
+    },
+    "manifest_write": {
+      "role": "MANIFEST WRITE TIME \u2014 not the maturity anchor.",
+      "utc": "2026-08-12T22:10:11+00:00"
+    },
+    "outcome_maturity": {
+      "epoch": 1787782200,
+      "role": "OUTCOME MATURITY \u2014 earliest resolvable instant.",
+      "utc": "2026-08-26T22:10:00Z"
+    },
+    "verdict_issued": {
+      "role": "VERDICT ISSUANCE \u2014 at or after outcome maturity.",
+      "utc": "2026-09-10T16:22:45Z"
+    }
+  },
+  "title": "XRPL-MC cohort 20260812 verdict \u2014 resolved against the STANDING acceptance standard (mc-forecast family)",
+  "verdict": {
+    "E": 0.9167000000000001,
+    "above": 4,
+    "against_triggers": {},
+    "below": 6,
+    "coverage_misses": 10,
+    "deciding_condition": "could not be shown wrong: 0 realized traps and the all-safe outcome was not surprising (P(0 traps)=0.334615 > 0.05)",
+    "disclosures": [],
+    "interpretation_limits": "Tiers are assigned in the order fixed by the standing standard: INVALID, then UNTESTED-narrow (0 traps and an unsurprising all-safe outcome), then EVIDENCE AGAINST (any battery trigger), then EVIDENCE OF SKILL (all conditions incl. the 1/HHI concentration floor), else UNTESTED-residual. UNTESTED is NOT a win and NOT evidence supporting the model; EVIDENCE AGAINST identifies contradiction on the tested axis, not general failure.",
+    "k_weak": 5,
+    "mean_bottom_third": -0.0009303735883814756,
+    "mean_top_third": 0.0018177051175160117,
+    "one_over_hhi": 3.1616049780915776,
+    "p_zero_traps": 0.33461518407658986,
+    "realized_traps": 0,
+    "skill_available": false,
+    "verdict": "UNTESTED"
+  }
+}
