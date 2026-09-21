@@ -1,0 +1,237 @@
+{
+  "addendum_hash": "sha256:25687e385be736c29ffe26ea183836dad67af682728bb23e5acfc6b6a939d78c",
+  "addendum_hash_recipe": {
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "artifact": "prereg_addendum",
+  "chain": "solana",
+  "disclosure": {
+    "forward": {
+      "collector": "sol_whirlpool_collector keeps running: it is measurement and feeds SOL v2.",
+      "disabled_utc": "2026-09-21T17:29:34Z",
+      "final_batch": "prereg/solana/20260921_122210_solana_preregistered_at_prediction.json",
+      "freeze_timer_disabled": "sol-grader.timer",
+      "resolution_timer": "sol-resolve.timer stays enabled until 2026-10-05T12:19:26Z, then is disabled"
+    },
+    "governed_cohorts_to_be_verdicted": {
+      "cohorts": [
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260910_122140_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789042670,
+          "freeze_utc": "2026-09-10T12:17:50Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-09-24T12:17:50Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "b2b03f8ac235550b253b1e1b195e1ea5e99a13d70962ecd9cdc575ff6adb2e88",
+          "y_prob_sum": 0.1933
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260911_122154_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789129104,
+          "freeze_utc": "2026-09-11T12:18:24Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-09-25T12:18:24Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "2f5a8ae3119cf45f90de0fbbd3dd93456af65e8c9c3c023484e4965ed134bff3",
+          "y_prob_sum": 0.1976
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260912_122121_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789215529,
+          "freeze_utc": "2026-09-12T12:18:49Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-09-26T12:18:49Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "e0526a0e979b032688f4a25d61ad8cea2e8b58dcf570d8da946fe70fc4800e34",
+          "y_prob_sum": 0.1506
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260913_122133_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789301989,
+          "freeze_utc": "2026-09-13T12:19:49Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-09-27T12:19:49Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "f29ee3e783f3e5d283c05607f3cfb1dc1066043fcad5fb3bd6f529e1accdb350",
+          "y_prob_sum": 0.1957
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260914_122047_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789388254,
+          "freeze_utc": "2026-09-14T12:17:34Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-09-28T12:17:34Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "147054fd6ca0654e445c3caaee48e4311c17a55af07bce46fb8b161634ad9629",
+          "y_prob_sum": 0.1826
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260915_122049_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789474708,
+          "freeze_utc": "2026-09-15T12:18:28Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-09-29T12:18:28Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "9d09580ad9e852a61615628a929dcd2e99396789b7b55abb6e5ceb59d747988a",
+          "y_prob_sum": 0.1816
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260916_122050_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789561144,
+          "freeze_utc": "2026-09-16T12:19:04Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-09-30T12:19:04Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "6723e87ed65b6bae63d631bf8dea16e85d6bd43c41c32e5094498589f703133c",
+          "y_prob_sum": 0.2905
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260917_122118_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789647570,
+          "freeze_utc": "2026-09-17T12:19:30Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-10-01T12:19:30Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "63440ebd7ce083515f8da98c1f8a8869f740f2ac53f2a57e1adf22b680396fe9",
+          "y_prob_sum": 0.1959
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260918_122134_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789733858,
+          "freeze_utc": "2026-09-18T12:17:38Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-10-02T12:17:38Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "b77cf83f076d9860b139d68222c3293bdd7067673f55afe83470385590fa5dbc",
+          "y_prob_sum": 0.1105
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260919_122130_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789820240,
+          "freeze_utc": "2026-09-19T12:17:20Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-10-03T12:17:20Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "51cd76620d39c203e52beb7de258bc0b71dacdaaa7ce38b8fe3a9fb0560dd8b6",
+          "y_prob_sum": 0.0735
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260920_122128_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789906800,
+          "freeze_utc": "2026-09-20T12:20:00Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-10-04T12:20:00Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "91c48677194600c73c1fb2acabcac9f6803b56c4df8c75f73e871a3c82499e13",
+          "y_prob_sum": 0.0869
+        },
+        {
+          "N": 23,
+          "allowed_missing": 2,
+          "completeness_floor": 0.8,
+          "first_published_in": "prereg/solana/20260921_122210_solana_preregistered_at_prediction.json",
+          "freeze_ts": 1789993166,
+          "freeze_utc": "2026-09-21T12:19:26Z",
+          "maturity_days_floor": 13.9583,
+          "maturity_utc": "2026-10-05T12:19:26Z",
+          "n_floor": 21,
+          "prediction_hash_set_sha256": "44d921c5fa161dab2f6f5445ed0452c6101aa0185b84a68cffa7f44176352553",
+          "y_prob_sum": 0.0565
+        }
+      ],
+      "commitment": "Each cohort receives exactly one verdict (INVALID / UNTESTED / EVIDENCE AGAINST / EVIDENCE OF SKILL), mechanically, from the sealed rule, published whatever it says. The resolution timer (sol-resolve) stays armed until the last cohort matures; a cohort that cannot be resolved is reported INVALID, never omitted.",
+      "count": 12,
+      "governing_standard": "prereg/disclosures/20260910_162245_standing_acceptance_standard_v1_sealed.json",
+      "governing_standard_hash": "sha256:56455e37a9f70d7af3349518e4cda04a258dde7b855ed0f7b0fdad32e7d7a765",
+      "per_cohort_inputs_precommitted_here": "The standing rule is parameterized by each cohort's frozen inputs. The inputs the rule leaves open (allowed_missing, completeness_floor, maturity floor) and each cohort's exact row set are fixed below, before any of these cohorts matures. allowed_missing=2 matches the only earlier >=20-row MC cohort graded under this standard (sui-08-27, N=22).",
+      "predictions": 276,
+      "row_set_definition": "cohort rows = rows of the final manifest whose ts equals freeze_ts; prediction_hash_set_sha256 = sha256(JCS(sorted list of their prediction_hash))",
+      "rule": "Every v1 cohort frozen strictly after the standing acceptance standard v1 was committed (2026-09-10T11:55:00Z) is a 'future MC-forecast cohort' in that standard's own words and is governed by it. The sealed envelope (prereg/disclosures/20260910_162245_standing_acceptance_standard_v1_sealed.json) attaches a self-hash to a byte-identical fixed_rule; it does not move the commit instant."
+    },
+    "graded_genesis": {
+      "freeze_utc": "2026-07-30T16:40:53Z",
+      "governing_standard": "prereg/disclosures/20260806_220100_solana_acceptance_standard.json",
+      "governing_standard_hash": "sha256:dfa8ebef311efe3d76a6d9b9a178b744e1b16560ba50a850cc1f020deb643159",
+      "published_verdict": "prereg/solana/20260817_140500_sol_verdict_20260813.json",
+      "published_verdict_hash": "sha256:ea032462d5186a1116be1668aa58db4b253530d9f0ceae9a84afd43fa1c60287",
+      "verdict": "UNTESTED"
+    },
+    "header": "scope: solana | SOL v1 (mc-gbm-1.0.0) retired 2026-09-21, superseded by SOL v2",
+    "immutability": "Additive only. No manifest, ledger, standard or verdict is edited, withdrawn or deleted. All 52 v1 manifests and the genesis verdict stand as published.",
+    "successor": {
+      "board": "https://gradedlp.com/sol-v2/",
+      "name": "SOL v2 (band-breach-margin tiers)",
+      "standards": [
+        {
+          "addendum_hash": "sha256:1be7961093e2b36ad85b71e0a5406a384ae52c385344938ed13834bae0fbdb29",
+          "artifact": "prereg/disclosures/20260914_161534_standing_acceptance_standard_bbm_v1_sealed.json"
+        },
+        {
+          "addendum_hash": "sha256:641e0b978933eebf484f9ce18af8f49bb1538f5eb78adcb70f9f4099de502921",
+          "artifact": "prereg/disclosures/20260921_115606_standing_acceptance_standard_bbm_v1_1_sealed.json"
+        }
+      ]
+    },
+    "summary": "SOL v1 froze 23 Monte-Carlo predictions a day on Orca Whirlpool bands and published them as cumulative pre-registration manifests: 52 freeze instants, 1,196 predictions, 2026-07-30 .. 2026-09-21. It is retired. Its question (will a fixed band beat a threshold net return?) is superseded by SOL v2, which forecasts a band-breach-margin tier for every tracked pool daily under its own sealed standards. On the public record, v1 ends as follows: one genesis verdict (published, UNTESTED); 12 cohorts that WILL be verdicted under the standing acceptance standard v1 as they mature (2026-09-24T12:17:50Z .. 2026-10-05T12:19:26Z); and 39 cohorts that never had a pre-committed standard and will never receive a verdict.",
+    "ungoverned_cohorts": {
+      "acceptance_standard": "NONE was in force when they were frozen",
+      "count": 39,
+      "freeze_range_utc": "2026-07-30T12:31:18Z .. 2026-09-09T12:18:02Z",
+      "predictions": 897,
+      "verdict": "NONE - and none will be issued",
+      "why": "A verdict requires a standard fixed before the forecasts it grades. These were frozen before the standing standard existed and the genesis standard is single-cohort. Applying either to them now would be choosing a rule after the fact, which is the failure mode pre-registration exists to rule out. They remain published and hashable as instrumentation."
+    }
+  },
+  "issued_utc": "2026-09-21T17:42:38Z",
+  "outcomes_known_at_issue": "No outcome is reported here. For the 12 cohorts this addendum commits to verdicting, none has matured at issue (first maturity 2026-09-24T12:17:50Z); the build refuses to emit otherwise. Every other v1 batch is described by what it IS, not by how it turned out.",
+  "scope": "solana",
+  "stamp": "20260921_174238_solana_addendum_v1_retirement",
+  "title": "SOL v1 PRE-REGISTRATION ADDENDUM - v1 retired, superseded by SOL v2; which v1 cohorts will and will not receive a verdict",
+  "verification": {
+    "reproduction_recipe": [
+      "git clone https://github.com/sinfun46290-bit/publiciq && cd publiciq",
+      "ls prereg/solana/*_preregistered_at_prediction.json | wc -l   # 52",
+      "python3 -c \"import json,collections; r=json.load(open('prereg/solana/20260921_122210_solana_preregistered_at_prediction.json'))['rows']; c=collections.Counter(x['ts'] for x in r); print(len(r), len(c), set(c.values()), sum(1 for t in c if t > 1789041300))\"   # 1196 52 {23} 12",
+      "python3 verifier/verify_addendum_hash.py prereg/disclosures/20260921_174238_solana_addendum_v1_retirement.json"
+    ]
+  }
+}
