@@ -1,0 +1,72 @@
+{
+  "addendum_hash": "sha256:15f28985adf632bc8ca3232eb31ecc61c8255ef86aa1ab7b21310eb2326fdb7b",
+  "addendum_hash_recipe": {
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "independent_recipe": "python -c \"import json,hashlib,jcs;d=json.load(open('<this file>'));d.pop('addendum_hash');print('sha256:'+hashlib.sha256(jcs.canonicalize(d)).hexdigest())\""
+  },
+  "artifact": "prereg_disclosure_acceptance_standard",
+  "fixed_rule": {
+    "against_battery": {
+      "miscalibration": "EVIDENCE AGAINST if, for ANY width (or the HELD track as a whole) with >= min_informative_items informative items, the stream has >= against_min_days matured freeze days, |gap| >= against_min_abs_gap, and the against_ci block-bootstrap interval of gap excludes 0. Direction is reported: gap > 0 = breaches happened MORE than forecast (the dangerous direction for an LP)."
+    },
+    "cadence": "One verdict per stream every 28 days, judged on the CUMULATIVE matured record since the first freeze (verdict k covers freeze days 1..28k). Earlier verdicts are never revised; each is a snapshot of the record at its date.",
+    "calibrated_conditions_all_required": [
+      ">= calibrated_min_days matured freeze days in the stream",
+      "for EVERY width (and HELD) with >= min_informative_items informative items: the calibrated_ci block-bootstrap interval of gap lies entirely inside [-calibration_tolerance, +calibration_tolerance]",
+      "at least one width has both breaches and non-breaches among its informative items (the forecasts were exposed to both outcomes)"
+    ],
+    "evaluation_order": "INVALID first; then EVIDENCE AGAINST; then CALIBRATED; else UNTESTED. The first that fires decides.",
+    "forecast_object": "p = P(breach within 14 days) for a band [-lo, +up] around the entry price. MARKET stream: each coin, symmetric bands +/-5%, +/-15%, +/-35%, entry = live spot at the freeze (23:50 UTC day t), window = daily candles t+1..t+14 from the coin's fixed venue. POOLS stream: each non-stable SOL v2 Orca pool, FRESH bands +/-5/15/35% at the pool's own price (freeze 15:20 UTC) and the HELD 2026-07-16 band when price is inside it; window [ts, ts+14d) of the SOL collector's snapshots.",
+    "invalid_battery": [
+      "any frozen row created at or after its window opened (MARKET: created_at_ts >= window_start_ts; POOLS: created_at_ts > ts + 600)",
+      "INCOMPLETE rows (window data missing after a 7-day grace) exceed incomplete_max_share of the stream's matured rows",
+      "the stream froze on fewer than running_min_share of the calendar days in the judged period",
+      "any row whose prediction_hash does not recompute from its own fields"
+    ],
+    "outcome": "breach = 1 if (MARKET) max(high)/spot - 1 > up OR 1 - min(low)/spot > lo over the window; (POOLS) tick_current ever < band_tick_lower or > band_tick_upper over the window. Recomputed at grade time from the stored inputs.",
+    "protocol_constants": {
+      "against_ci": 0.99,
+      "against_min_abs_gap": 0.1,
+      "against_min_days": 42,
+      "block_days": 14,
+      "calibrated_ci": 0.95,
+      "calibrated_min_days": 84,
+      "calibration_tolerance": 0.1,
+      "gap_definition": "gap(width) = mean over resolved items of (breach - p)",
+      "incomplete_max_share": 0.1,
+      "informative_item": "an item with 0.02 <= p <= 0.98 (near-certain forecasts are excluded from the tests but shown in the reliability table)",
+      "min_informative_items": 30,
+      "resamples": 2000,
+      "running_min_share": 0.7,
+      "seed": 42
+    },
+    "reported_not_gated": [
+      "Brier score per width, and Brier skill vs the stream's own pooled breach rate (climatology). MW-B1 is close to climatology by construction; the product claim is calibration, not beating climatology.",
+      "reliability table: 5 bins of p with counts and observed frequency",
+      "CHALLENGER SCOREBOARD: MW-IV1 vs MW-B1 paired Brier skill on the options coins per width, block-bootstrap 95% CI. Promotion rule (pre-committed): MW-IV1 replaces MW-B1 for the options coins only if, over >= 120 matured freeze days, its Brier skill at +/-15% is >= 5% with the 95% CI excluding 0 AND it is not worse (point estimate) at +/-5% or +/-35%. A promotion is a new sealed model version; never back-applied."
+    ],
+    "serial_dependence": "Daily 14-day windows overlap and coins move together, so rows are NOT independent. All inference resamples whole freeze DAYS in moving blocks of 14 consecutive days (2000 resamples, seed 42). No test treats coins or days as independent draws.",
+    "streams": [
+      "MARKET",
+      "POOLS"
+    ],
+    "verdicts": [
+      "INVALID",
+      "UNTESTED",
+      "EVIDENCE AGAINST",
+      "CALIBRATED"
+    ]
+  },
+  "issued_utc": "2026-09-21T13:54:54Z",
+  "notes": "Seal BEFORE the first mw-v1.0.0 freeze. Research that shaped this family (rounds 1-3, incl. the withdrawn round-2 implied-vol claim) is in gradedlp research/market_weather/ and is disclosed as in-sample.",
+  "one_line_commitment": "Every day, for every covered coin and every Orca pool position, a probability that price leaves a stated band within 14 days is frozen before the window opens; the cumulative record is judged mechanically on calibration (do events happen as often as forecast?) with serial-dependence-aware inference, and every result is published including misses.",
+  "scope": "market-weather",
+  "stamp": "20260921_135454_standing_acceptance_standard_mw_v1_sealed",
+  "standard_id": "standing_acceptance_standard_mw_v1",
+  "status": "STANDING STANDARD (Market Weather / probability-of-breach family) v1 - COMMITTED. Governs every mw-v1.0.0+ forecast. Sealed before the first freeze.",
+  "title": "GradedLP STANDING Acceptance Standard - MARKET WEATHER (probability-of-breach family) v1 - DRAFT, pending seal"
+}
