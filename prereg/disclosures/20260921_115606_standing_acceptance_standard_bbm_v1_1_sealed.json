@@ -1,0 +1,78 @@
+{
+  "addendum_hash": "sha256:641e0b978933eebf484f9ce18af8f49bb1538f5eb78adcb70f9f4099de502921",
+  "addendum_hash_recipe": {
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "independent_recipe": "python -c \"import json,hashlib,jcs;d=json.load(open('<this file>'));d.pop('addendum_hash');print('sha256:'+hashlib.sha256(jcs.canonicalize(d)).hexdigest())\"",
+    "note": "Recompute from this committed file alone; depends on every field except addendum_hash.",
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "artifact": "prereg_disclosure_acceptance_standard",
+  "fixed_rule": {
+    "against_battery": {
+      "discrimination_inversion": "AGAINST if the BACKWARDS hypothesis is significant: one-sided Mann-Whitney U with H1 (OK realized_net stochastically worse than AVOID) has p <= named_levels.weak. The ordering the product asserts is not merely absent but reversed - OK pools did significantly worse than AVOID.",
+      "missed_severe": "AGAINST if any OK-tier pool realizes SEVERE (realized_net < severe_net_return_threshold) - a catastrophic false-safe, judged outcome-by-outcome like the MC family's missed_trap_contradiction.",
+      "ok_false_safe": "AGAINST@level if P(X >= observed OK breaches | Binomial(n_OK, ok_tier_tolerance)) <= level. OK pools breached more than the pre-committed safe-to-hold tolerance allows.",
+      "oor_not_idle": "AGAINST if n_OOR >= 1 and P(X >= observed OUT_OF_RANGE breaches | Binomial(n_OOR, oor_tier_tolerance)) <= named_levels.weak. Out-of-range pools bled more than the pre-committed idle claim allows. Evaluated before UNTESTED-narrow (see evaluation_order)."
+    },
+    "evaluation_order": "INVALID first; then the OUT_OF_RANGE claim check (EVIDENCE AGAINST if oor_not_idle fires - evaluated before UNTESTED-narrow because the OUT_OF_RANGE claim does not depend on the AVOID/OK contrast, so a calm AVOID/OK window must not hide it); then UNTESTED-narrow (the cohort could not have distinguished AVOID from OK: an empty AVOID or OK group, OR zero breaches among AVOID+OK); then EVIDENCE AGAINST (any trigger in the battery); then EVIDENCE OF SKILL (only if skill is available AND all conditions hold); else UNTESTED-residual. The FIRST tier that fires decides.",
+    "forecast_object": "per-pool tier in {AVOID, WATCH, OK, OUT_OF_RANGE}, frozen before outcomes. OUT_OF_RANGE = price outside the frozen band at freeze (edge_margin_ticks < 0) by at least one day's normal move of the asset, i.e. |BBM| >= 1/sqrt(14) (the frozen 14-day prior under random-walk time scaling). A price outside the band by less than that is 'at the edge' and is AVOID. In band, AVOID/WATCH/OK are cut on BBM exactly as in v1. WATCH is an explicit buffer band and is EXCLUDED from every test (no hit/miss claim). OUT_OF_RANGE is EXCLUDED from the AVOID-vs-OK discrimination test and is judged ONLY by its own claim (oor_not_idle).",
+    "invalid_battery": {
+      "data_shaped": [
+        "any row with per-row window_completeness < completeness_floor",
+        "any row where the resolve window's first snapshot ts != the frozen ts (entry coupling) - performed when the cohort supplies the re-check inputs; otherwise DISCLOSED, never a silent pass"
+      ],
+      "ledger_shaped": [
+        "grading_status.state != 'graded'",
+        "n_graded < n_floor (n_floor = N - allowed_missing)",
+        "data_quality.calculation_error > 0",
+        "any row with fee_growth_anomaly > 0",
+        "any frozen row whose prior_table_hash != the cohort's committed prior_table_hash (the denominator was not the sealed prior)"
+      ],
+      "outcome_independent": true
+    },
+    "outcome": "breached = realized_net < trap_net_return_threshold, RECOMPUTED at grade time, identical definition and vs-HODL basis to the MC-forecast family (alignment invariant).",
+    "protocol_constants": {
+      "avoid_all_safe_note": "An AVOID group that does not breach is NOT penalized as a false alarm: AVOID means 'fragile IF the market moves', and a calm 14-day window (no breaches anywhere) is a regime outcome, not a model error. Such a cohort is UNTESTED (could not be shown wrong), never AGAINST. This asymmetry is pre-committed.",
+      "discrimination_test": "Mann-Whitney U, exact, one-sided. H1: the realized_net of AVOID-tier pools is stochastically LESS (more negative) than that of OK-tier pools. Chosen deliberately over Fisher's exact on the binary breach: (1) it is threshold-free, so it does not inherit the knife-edge of the -0.05 trap line (a large fraction of outcomes sit within 0.02 of it; a Fisher 2x2 flips a pool's classification across that razor while Mann-Whitney ranks the continuous value); (2) it uses magnitude, consistent with the severity grading (a -0.30 blow-out outranks a -0.06 graze); (3) it has more power in the small, often-calm cohorts (~two dozen pools) this judge sees. The exact U null distribution is used (no normal approximation), matching the exact-inference discipline of the MC family. The BINARY breach is retained elsewhere - as the falsifiability gate for SKILL and as the OK-tier safety guards - because those claims ARE inherently binary.",
+      "named_levels": {
+        "strong": 0.01,
+        "weak": 0.05
+      },
+      "ok_tier_tolerance": 0.05,
+      "ok_tolerance_note": "OK is the load-bearing 'safe to hold capital' claim. The pre-committed tolerance is that an OK pool breaches with probability <= 0.05; a cohort whose OK breaches are surprising under Binomial(n_OK, 0.05) is EVIDENCE AGAINST. This is the failure that matters most (false reassurance) and is judged on an ABSOLUTE bar, not relative to AVOID.",
+      "oor_tier_tolerance": 0.1,
+      "oor_tolerance_note": "OUT_OF_RANGE claims 'idle: this band earns no fees and does not bleed unless price returns through it'. The pre-committed tolerance is that an OUT_OF_RANGE pool breaches (realized_net < trap_net_return_threshold) with probability <= 0.10. The bar is looser than OK's 0.05 on purpose and in the open: a pool sitting just outside its edge can be dragged back through the band by a normal move; that re-entry risk is real and is what the tolerance prices. A cohort whose OUT_OF_RANGE breaches are surprising under Binomial(n_OOR, 0.10) at named_levels.weak is EVIDENCE AGAINST.",
+      "severe_net_return_threshold": -0.15,
+      "skill_concentration_floor": 4.0,
+      "skill_concentration_note": "SKILL requires effective independent bets 1/HHI over the distinct ASSETS of the tested (AVOID+OK) pools >= 4.0, AND at least 3 AVOID and 3 OK calls. HHI is over assets, not pools, so a cluster of correlated same-asset pools (e.g. SOL + its liquid-staking derivatives) counts as roughly one bet, not several - a tier call spread across one asset family is not independent evidence. Pre-committed before any future cohort exists.",
+      "trap_net_return_threshold": -0.05
+    },
+    "skill_conditions_all_required": [
+      "skill_available: 1/HHI over the distinct ASSETS of AVOID+OK pools >= skill_concentration_floor AND n_AVOID >= 3 AND n_OK >= 3",
+      "falsifiable: at least 1 REAL breach occurred among AVOID+OK pools - the tiers were tested against an actual trap, not only a ranking of grazes (the product is about catching losses)",
+      "discrimination: one-sided Mann-Whitney U p(AVOID realized_net worse than OK) <= named_levels.weak",
+      "ok_protected: the ok_false_safe trigger does NOT fire, and no missed_severe",
+      "oor_idle: the oor_not_idle trigger does NOT fire (vacuous when the cohort has no OUT_OF_RANGE pool)"
+    ],
+    "verdicts": [
+      "INVALID",
+      "UNTESTED",
+      "EVIDENCE AGAINST",
+      "EVIDENCE OF SKILL"
+    ]
+  },
+  "issued_utc": "2026-09-21T11:56:06Z",
+  "notes": "Draft pending Nathen sign-off. Seal BEFORE the first bbm-v2.1.0 cohort is frozen, so every v2.1 cohort's pre-registration manifest can cite it. Never applied to bbm-v2.0.0 cohorts.",
+  "one_line_commitment": "One pre-committed rule, parameterized only by each cohort's frozen tiers + realized breaches, applied mechanically to every future matured tier-forecast cohort to produce exactly one of four verdicts. Every threshold is derived from the cohort's own frozen inputs by the formulas below, never re-typed per cohort.",
+  "scope": "tier-forecast",
+  "stamp": "20260921_115606_standing_acceptance_standard_bbm_v1_1_sealed",
+  "standard_id": "standing_acceptance_standard_bbm_v1_1",
+  "status": "STANDING STANDARD (tier-forecast / BBM family) v1.1 - COMMITTED. Governs every cohort frozen under model bbm-v2.1.0 or later. Sealed before the first bbm-v2.1.0 cohort was frozen. bbm-v2.0.0 cohorts stay under bbm_v1.",
+  "supersedes_for_new_cohorts": "standing_acceptance_standard_bbm_v1",
+  "title": "GradedLP STANDING Acceptance Standard - TIER-FORECAST family (BBM) v1.1 - adds the OUT_OF_RANGE claim - DRAFT, pending seal",
+  "why_v1_1": "Under v2.0 a pool whose price was ALREADY outside its frozen band at freeze was tiered AVOID (BBM < 1). Such a position holds 100% of one token and its vs-HODL basis is that same token, so realized_net is ~0 unless price travels back through the band. Across the 851 matured SOL v1 outcomes re-tiered with the v2 map, out-of-band-at-freeze AVOID calls breached 6% (median realized_net 0.000) versus 42% for in-band AVOID, 2% for OK and 1% for WATCH: 'a normal move breaches' was the wrong claim for them. All 9 of those out-of-band breaches were pools within |BBM| < 0.10 of their edge (re-entry during the August move), so v2.1 keeps pools that close to the edge in AVOID via a one-day-move buffer (|BBM| >= 1/sqrt(14) to be OUT_OF_RANGE). On the same 851 outcomes that map gives OUT_OF_RANGE 0/79 breached and AVOID 35% (233). DISCLOSED AS IN-SAMPLE: the split and the need for a buffer were seen in data that shaped this standard; the buffer's value comes from time scaling of the frozen prior, not from a fit. Only cohorts frozen after this standard is sealed are ever judged by it."
+}
