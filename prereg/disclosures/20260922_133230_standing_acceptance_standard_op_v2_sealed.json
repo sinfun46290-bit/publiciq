@@ -1,0 +1,75 @@
+{
+  "addendum_hash": "sha256:83377977f089c5da18bec663b14bf773de6d030a7035cfd521650cdd151d37a6",
+  "addendum_hash_recipe": {
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "independent_recipe": "python -c \"import json,hashlib,jcs;d=json.load(open('<this file>'));d.pop('addendum_hash');print('sha256:'+hashlib.sha256(jcs.canonicalize(d)).hexdigest())\""
+  },
+  "artifact": "prereg_disclosure_acceptance_standard",
+  "fixed_rule": {
+    "against_battery": {
+      "miscalibration": "EVIDENCE AGAINST if, for ANY width with >= min_informative_items informative items, the stream has >= against_min_days matured freeze days, |gap| >= against_min_abs_gap, and the against_ci block-bootstrap interval of gap excludes 0. Direction is reported: gap > 0 = breaches happened MORE than forecast (the dangerous direction for an LP)."
+    },
+    "cadence": "One verdict every 28 days, judged on the CUMULATIVE matured record since the first freeze (verdict k covers freeze days 1..28k). Earlier verdicts are never revised.",
+    "calibrated_conditions_all_required": [
+      ">= calibrated_min_days matured freeze days in the stream",
+      "for EVERY width with >= min_informative_items informative items: the calibrated_ci block-bootstrap interval of gap lies entirely inside [-calibration_tolerance, +calibration_tolerance]",
+      "at least one width has both breaches and non-breaches among its informative items (the forecasts were exposed to both outcomes)"
+    ],
+    "evaluation_order": "INVALID first; then EVIDENCE AGAINST; then CALIBRATED; else UNTESTED. The first that fires decides.",
+    "forecast_object": "p = P(breach within 14 days) for a band [-lo, +up] around the entry price. OP_POOLS stream: every pool in op_v2/universe.json (21 non-stable Optimism concentrated-liquidity pools, fixed at seal; the file's sha256 is in every row), FRESH bands +/-5%, +/-15%, +/-35% of the pool's own price at the latest on-chain sample (<= 10 min old), snapped OUTWARD to the pool's tick spacing; p is computed on the snapped band's actual distances. Freeze once per UTC day at 15:25 UTC. Champion MW-B1 (unchanged): USD-quoted pools use the asset's Coinbase daily candles; cross pools (OP/ETH, SNX/ETH) use the daily ratio series built from hourly closes of both legs (day high/low = max/min of hourly close ratios, which slightly understates intraday extremes - disclosed). History = candles closed by day t-1, 730 trailing starts.",
+    "invalid_battery": [
+      "any frozen row created after its window opened (window_start_ts != created_at_ts) or whose entry sample is more than 600 s older than created_at_ts",
+      "a matured row is INCOMPLETE when its window has < 90% of the expected ~180 s samples; INCOMPLETE rows exceeding incomplete_max_share of the stream's matured rows make the verdict INVALID",
+      "the stream froze on fewer than running_min_share of the calendar days in the judged period",
+      "any row whose prediction_hash does not recompute from its own fields"
+    ],
+    "outcome": "breach = 1 if ANY on-chain collector sample (slot0 tick, one sample per ~180 s) with created_at_ts <= sample ts < created_at_ts + 14 d has tick < band_tick_lower OR tick >= band_tick_upper. Recomputed at grade time from the stored samples. Sampling can miss a brief excursion; that bias favours 'no breach' and is accepted, not corrected.",
+    "protocol_constants": {
+      "against_ci": 0.99,
+      "against_min_abs_gap": 0.1,
+      "against_min_days": 42,
+      "block_days": 14,
+      "calibrated_ci": 0.95,
+      "calibrated_min_days": 84,
+      "calibration_tolerance": 0.1,
+      "coverage_floor": 0.9,
+      "expected_sample_period_s": 180,
+      "gap_definition": "gap(width) = mean over resolved items of (breach - p)",
+      "incomplete_max_share": 0.1,
+      "informative_item": "an item with 0.02 <= p <= 0.98 (near-certain forecasts are excluded from the tests but shown in the reliability table)",
+      "min_informative_items": 30,
+      "resamples": 2000,
+      "running_min_share": 0.7,
+      "seed": 42
+    },
+    "reported_not_gated": [
+      "Brier score per width, and Brier skill vs the stream's own pooled breach rate (climatology). The product claim is calibration.",
+      "reliability table: 5 bins of p with counts and observed frequency",
+      "per pair class (USD vs CROSS) gaps, shown so a ratio-series bias is visible; not a separate gate",
+      "fee_14d_est, exp_il and FIR are displayed economics and are NOT graded by this standard"
+    ],
+    "serial_dependence": "Daily 14-day windows overlap and pools on the same asset move together, so rows are NOT independent. All inference resamples whole freeze DAYS in moving blocks of 14 consecutive days (2000 resamples, seed 42).",
+    "streams": [
+      "OP_POOLS"
+    ],
+    "verdicts": [
+      "INVALID",
+      "UNTESTED",
+      "EVIDENCE AGAINST",
+      "CALIBRATED"
+    ]
+  },
+  "issued_utc": "2026-09-22T13:32:30Z",
+  "notes": "Seal BEFORE the first op-v2.0.0 freeze. The probability method is Market Weather's MW-B1, reproduced bit-for-bit from the OP code path against the stored Market Weather ETH forecast (2026-09-21 gate). Spec: docs/design/OP_V2_SPEC.md.",
+  "one_line_commitment": "Every day, for 21 Optimism pools and three fresh band widths, a probability that the pool's price leaves the band within 14 days is frozen before the window opens; the cumulative record is judged mechanically on calibration with serial-dependence-aware inference, and every result is published including misses.",
+  "scope": "op-v2",
+  "stamp": "20260922_133230_standing_acceptance_standard_op_v2_sealed",
+  "standard_id": "standing_acceptance_standard_op_v2",
+  "status": "STANDING STANDARD (OP v2 / probability-of-breach family) - COMMITTED. Governs every op-v2.0.0 forecast. Sealed before the first freeze.",
+  "title": "GradedLP STANDING Acceptance Standard - OP v2 (Optimism pool weather, probability-of-breach family) v1",
+  "universe_sha256": "745f853b0f939645188abb8daa950d5c34bf9747fd000d923163f6455e576597"
+}
