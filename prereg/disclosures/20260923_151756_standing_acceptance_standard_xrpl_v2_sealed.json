@@ -1,0 +1,77 @@
+{
+  "addendum_hash": "sha256:6b47740f593f3b408346a3e11b49ded9fd3659c3bb3b6e50a42c242a67869a03",
+  "addendum_hash_recipe": {
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "independent_recipe": "python -c \"import json,hashlib,jcs;d=json.load(open('<this file>'));d.pop('addendum_hash');print('sha256:'+hashlib.sha256(jcs.canonicalize(d)).hexdigest())\""
+  },
+  "artifact": "prereg_disclosure_acceptance_standard",
+  "fixed_rule": {
+    "against_battery": {
+      "miscalibration": "EVIDENCE AGAINST if, for EITHER group with >= min_informative_items informative items, the stream has >= against_min_days matured freeze days, |gap| >= against_min_abs_gap, and the against_ci block-bootstrap interval of gap excludes 0. gap > 0 = LP lost to holding MORE often than forecast (the dangerous direction)."
+    },
+    "cadence": "One verdict every 28 days, judged on the CUMULATIVE matured record since the first freeze (verdict k covers freeze days 1..28k). Earlier verdicts are never revised.",
+    "calibrated_conditions_all_required": [
+      ">= calibrated_min_days matured freeze days",
+      "for EVERY group with >= min_informative_items informative items: the calibrated_ci block-bootstrap interval of gap lies entirely inside [-calibration_tolerance, +calibration_tolerance]",
+      "at least one group has both outcomes among its informative items"
+    ],
+    "evaluation_order": "INVALID first; then EVIDENCE AGAINST; then CALIBRATED; else UNTESTED. The first that fires decides.",
+    "forecast_object": "For every pool in xrpl_v2/universe.json (XRP / issued-token constant-product AMMs on the XRP Ledger, fixed at seal; the file's sha256 is in every row), frozen once per UTC day at 16:00 UTC: p_lose = P(LP-vs-HOLD net < 0 over the next 14 days) and p_lose1 = P(net < -1%). net = (fi1/fi0) * 2*sqrt(r)/(1+r) - 1 with fi = sqrt(R_xrp*R_tok)/S_lp and r the ratio of XRP-per-token prices - exact from reserves, including real fees and fee votes. Champion XV-B1: the pool's CURRENT fee factor (trailing 7 days of the on-chain daily points at 00:00 UTC, x2) combined with each of its trailing 730 historical 14-day price moves (daily on-chain points from the full-history ledger). Pools with < 365 own starts use XV-P1: the pooled, standardized 14-day moves of the long-history pools rescaled to the pool's own trailing-60-day volatility (labelled short history, still tiered, still graded). Challenger XV-H1 (graded, never the headline): the pool's own historical realized 14-day nets.",
+    "groups": [
+      "lose (p_lose vs y_lose)",
+      "lose1 (p_lose1 vs y_lose1)"
+    ],
+    "invalid_battery": [
+      "any frozen row whose window_start_ts differs from its created_at_ts",
+      "INCOMPLETE rows exceeding incomplete_max_share of the stream's matured rows",
+      "the stream froze on fewer than running_min_share of the calendar days in the judged period",
+      "any row whose prediction_hash does not recompute from its own fields"
+    ],
+    "outcome": "realized net between the first collector sample at/after created_at_ts (<= 600 s later) and the first sample at/after that start + 14 days (<= 600 s later), computed from reserves and LP supply. y_lose = net < 0; y_lose1 = net < -0.01. A missing start or end sample makes the row INCOMPLETE. Recomputed at grade time from the stored samples.",
+    "protocol_constants": {
+      "against_ci": 0.99,
+      "against_min_abs_gap": 0.1,
+      "against_min_days": 42,
+      "block_days": 14,
+      "calibrated_ci": 0.95,
+      "calibrated_min_days": 84,
+      "calibration_tolerance": 0.1,
+      "gap_definition": "gap(width) = mean over resolved items of (breach - p)",
+      "incomplete_max_share": 0.1,
+      "informative_item": "an item with 0.02 <= p <= 0.98 (near-certain forecasts are excluded from the tests but shown in the reliability table)",
+      "min_informative_items": 30,
+      "resamples": 2000,
+      "running_min_share": 0.7,
+      "seed": 42
+    },
+    "reported_not_gated": [
+      "Brier and Brier skill vs climatology per group",
+      "reliability table (5 bins)",
+      "CHALLENGER SCOREBOARD XV-H1 vs XV-B1 per group. Promotion (pre-committed): XV-H1 replaces XV-B1 only if, over >= 120 matured freeze days, its Brier skill on 'lose' is >= 5% with the 95% block CI excluding 0 AND it is not worse (point estimate) on 'lose1'. A promotion is a new sealed model version; never back-applied.",
+      "exp_net, net percentiles, fee14 and exp_il are displayed and not graded by this standard"
+    ],
+    "serial_dependence": "Daily 14-day windows overlap and pools co-move with XRP, so rows are NOT independent. All inference resamples whole freeze DAYS in moving blocks of 14 consecutive days (2000 resamples, seed 42).",
+    "streams": [
+      "XRPL_POOLS"
+    ],
+    "verdicts": [
+      "INVALID",
+      "UNTESTED",
+      "EVIDENCE AGAINST",
+      "CALIBRATED"
+    ]
+  },
+  "issued_utc": "2026-09-23T15:17:56Z",
+  "notes": "Seal BEFORE the first xrpl-v2.0.0 freeze. Spec: docs/design/XRPL_V2_SPEC.md. Supersedes XRPL-MC and Pool IQ (their records stand as published).",
+  "one_line_commitment": "Every day, for every universe XRPL AMM pool, the probability that LP loses to holding over the next 14 days (and loses more than 1%) is frozen before the window opens; the cumulative record is judged mechanically on calibration with serial-dependence-aware inference, and every result is published including misses.",
+  "scope": "xrpl-v2",
+  "stamp": "20260923_151756_standing_acceptance_standard_xrpl_v2_sealed",
+  "standard_id": "standing_acceptance_standard_xrpl_v2",
+  "status": "STANDING STANDARD (XRPL v2 / LP-vs-HOLD loss-probability family) - COMMITTED. Governs every xrpl-v2.0.0 forecast. Sealed before the first freeze.",
+  "title": "GradedLP STANDING Acceptance Standard - XRPL v2 (LP-vs-HOLD loss-probability family) v1",
+  "universe_sha256": "13d6e3b13fb701a690d4f2c9169e273fd369ff48e85d3bc1ba8222c164ddfcce"
+}
