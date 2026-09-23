@@ -1,0 +1,75 @@
+{
+  "addendum_hash": "sha256:1e6a22f291ead48dd498ac83f56bf1d92caa888ddffa91764cc840e547c508ca",
+  "addendum_hash_recipe": {
+    "call": "prereg_hash.canonical_row_hash(artifact, exclude=('addendum_hash',))",
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "tooling": "prereg_common/prereg_hash.py"
+  },
+  "artifact": "prereg_addendum",
+  "chain": "xrpl",
+  "disclosure": {
+    "header": "scope: xrpl (Pool IQ) + xrpl-mc | both closed 2026-09-23 | superseded by xrpl-v2",
+    "immutability": "Additive only. No manifest, ledger, standard or verdict from either chain is edited, withdrawn or deleted. All 70 Pool IQ manifests, the Pool IQ FAIL, all 33 XRPL-MC manifests and all 16 XRPL-MC verdicts stand exactly as published and remain independently fetchable and hashable.",
+    "pool_iq": {
+      "collection_stopped_unit": "pooliq-canonical.timer (14:00 UTC daily; the grade, export and pre-registration steps are chained from it and stop with it)",
+      "collection_stopped_utc": "2026-09-23T16:04:27Z",
+      "final_batch": "prereg/xrpl/20260923_140040_xrpl_preregistered_at_prediction.json",
+      "manifests": 70,
+      "note": "The FAIL stands as published. Nothing about it is revised, softened or withdrawn by this addendum, and the scorer is not being re-run under new rules.",
+      "predictions": 1257,
+      "published_verdict": "prereg/xrpl/20260902_180000_xrpl_pooliq_verdict_20260902.json",
+      "published_verdict_hash": "sha256:4894c884eefa3c441cb46db56cd58f7da6806116e7ee4b1816ec86002927f83d",
+      "verdict": "Outcome C - FAIL (the pre-registered dual gate was powered; the frozen v5 scorer did not clear it)",
+      "what_the_post_verdict_batches_are": "Measurement. The batches published after 2026-09-02 carry no acceptance standard of their own and will receive no verdict - the same honesty the XRPL-MC instrumentation addendum states for that chain. They remain published and independently hashable."
+    },
+    "successor": {
+      "board": "https://gradedlp.com/xrpl-v2/",
+      "chain": "xrpl-v2",
+      "first_batch_root": "e4b624128a6e3836936569a1e799e12ea81741f4ddd3b20cf8753413370642e4",
+      "first_manifest": "prereg/xrpl-v2/20260923_160001_xrpl-v2_preregistered_at_prediction.json",
+      "first_manifest_rows": 21,
+      "first_maturity_utc": "2026-10-07T16:00:01Z",
+      "history": "Each pool's own price and realized LP result were rebuilt daily for 760 days from the XRP Ledger's full history (amm_info at the first validated ledger after 00:00 UTC), and checked against the live collector: where both read the same ledger they agree exactly.",
+      "outcome": "net = (fi1/fi0) * 2*sqrt(r)/(1+r) - 1, computed from the pool's own reserves and LP supply at the window's two ends - exact, and including real fees.",
+      "question": "For each XRP-paired AMM pool: P(LP-vs-HOLD net < 0 over 14 days) and P(net < -1%), with a tier (AVOID >= 0.60 / WATCH / OK < 0.30), the expected result, the pool's current fee pace and its average price-move loss.",
+      "standard": "prereg/disclosures/20260923_151756_standing_acceptance_standard_xrpl_v2_sealed.json",
+      "standard_hash": "sha256:6b47740f593f3b408346a3e11b49ded9fd3659c3bb3b6e50a42c242a67869a03",
+      "standard_issued_utc": "2026-09-23T15:17:56Z",
+      "standard_sealed_before_first_forecast": true
+    },
+    "summary": "Two XRPL experiments end here. POOL IQ scored XRPL AMM pools with a frozen scorer against a pre-registered dual gate; the gate resolved, the scorer did not clear it, and the FAIL was published on 2026-09-02. Collection kept running afterwards and is now stopped. XRPL-MC ran a forward Monte-Carlo forecast on the same pools; its 16 verdicts are published, 14 of them UNTESTED because the forecast rarely put itself at risk of being wrong, and its freeze timer was stopped on 2026-09-04. Neither chain produced a daily call a visitor could act on. Their successor, XRPL v2, does: for every liquid XRP pool it states, before the window opens, the probability that providing liquidity loses to simply holding over the next 14 days, and it is graded on the pool's own on-chain reserves.",
+    "what_is_NOT_wrong": "No prediction was altered after the fact, no outcome was suppressed, and no verdict was withdrawn. Both chains published what they found, including a FAIL and a run of UNTESTED verdicts. What is stated here is that they are finished, and that the successor was sealed before its first forecast rather than after its first result.",
+    "xrpl_mc": {
+      "collector": "The on-chain amm_info collector is NOT stopped - it is measurement, and it is now XRPL v2's data source. It samples 21 pools every 180 s (18 inherited plus OAR, XRdoge and XJOY, added 2026-09-22).",
+      "freeze_stopped_utc": "2026-09-04T16:54:12Z",
+      "manifests": 33,
+      "predictions": 432,
+      "published_verdicts": 16,
+      "scope_addendum": "prereg/disclosures/20260904_191500_xrpl-mc_addendum_instrumentation_scope.json",
+      "scope_addendum_hash": "sha256:2ef48e1b248190a3faf4dce799925d4ac25af649bce761438f834b3bbd0dc1cd",
+      "verdict_split": "1 EVIDENCE OF SKILL, 1 EVIDENCE AGAINST, 14 UNTESTED",
+      "why_it_ends": "The verdicts are dominated by UNTESTED: the forecast rarely risked a loss, so the record could rarely show it wrong. A stream that cannot be wrong is not a forecast anyone should act on. Rather than tune it, the question was changed to one that is always at risk: LP versus simply holding."
+    }
+  },
+  "issued_utc": "2026-09-23T16:06:37Z",
+  "outcomes_known_at_issue": "None for the successor. The first XRPL v2 forecasts were frozen 2026-09-23T16:00:01Z and mature 2026-10-07; no XRPL v2 outcome exists or is reported here. For the two closed chains this addendum reports nothing new: their results are already published and are cited, unchanged.",
+  "scope": "xrpl + xrpl-mc",
+  "stamp": "20260923_160637_xrpl_addendum_pooliq_and_xrpl-mc_closed",
+  "title": "XRPL PRE-REGISTRATION ADDENDUM - Pool IQ and XRPL-MC are closed; the question they were built to answer is now answered forward, daily, by XRPL v2",
+  "verification": {
+    "reproduction_recipe": [
+      "git clone https://github.com/sinfun46290-bit/publiciq && cd publiciq",
+      "ls prereg/xrpl/*_preregistered_at_prediction.json | wc -l            # 70",
+      "ls prereg/xrpl-mc/*_preregistered_at_prediction.json | wc -l         # 33",
+      "ls prereg/xrpl-mc/*verdict*.json | wc -l                              # 16",
+      "python3 -c \"import json;d=json.load(open('prereg/xrpl/20260902_180000_xrpl_pooliq_verdict_20260902.json'));print(d['disclosure']['verdict']['label'])\"  # FAIL",
+      "# the successor's standard is older than its first manifest:",
+      "python3 -c \"import json,glob;s=json.load(open('prereg/disclosures/20260923_151756_standing_acceptance_standard_xrpl_v2_sealed.json'));m=json.load(open(sorted(glob.glob('prereg/xrpl-v2/*_preregistered_at_prediction.json'))[0]));print(s['issued_utc'], m['created_utc'], s['issued_utc'] < m['created_utc'])\"",
+      "python3 verifier/verify_addendum_hash.py prereg/disclosures/20260923_160637_xrpl_addendum_pooliq_and_xrpl-mc_closed.json"
+    ]
+  }
+}
