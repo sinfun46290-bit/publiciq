@@ -1,0 +1,79 @@
+{
+  "addendum_hash": "sha256:f734678a452d9e8401ddd2b7295219f97e3d6b737546a0e8db2170c72af8e7f2",
+  "addendum_hash_recipe": {
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "independent_recipe": "python -c \"import json,hashlib,jcs;d=json.load(open('<this file>'));d.pop('addendum_hash');print('sha256:'+hashlib.sha256(jcs.canonicalize(d)).hexdigest())\""
+  },
+  "artifact": "prereg_disclosure_acceptance_standard",
+  "fixed_rule": {
+    "against_battery": {
+      "miscalibration": "EVIDENCE AGAINST if, for ANY width with >= min_informative_items informative items, the stream has >= against_min_days matured freeze days, |gap| >= against_min_abs_gap, and the against_ci block-bootstrap interval of gap excludes 0. gap > 0 = bands broke MORE often than forecast (the dangerous direction for an LP)."
+    },
+    "cadence": "One verdict every 28 days on the CUMULATIVE matured record since the first freeze. Earlier verdicts are never revised.",
+    "calibrated_conditions_all_required": [
+      ">= calibrated_min_days matured freeze days",
+      "for EVERY width with >= min_informative_items informative items: the calibrated_ci block-bootstrap interval of gap lies entirely inside [-calibration_tolerance, +calibration_tolerance]",
+      "at least one width saw both outcomes among its informative items"
+    ],
+    "evaluation_order": "INVALID first; then EVIDENCE AGAINST; then CALIBRATED; else UNTESTED. The first that fires decides.",
+    "forecast_object": "p = P(the band is left within 14 days) for a fresh range +/-5%, +/-15%, +/-35% around the pool's price in the day's Poolwatch snapshot, for every pool in poolwatch_v2/universe.json (Uniswap-v3-style pools on Ethereum, Base, Arbitrum, Optimism and Polygon with TVL >= $250k at seal, exactly one dollar-stable leg; the file's sha256 is in every row). Frozen once per UTC day at 08:30 UTC, after Poolwatch's 08:00 snapshot. Champion PW-B1: the MW-B1 two-sided empirical pairs of the pool asset's Market Weather candles (730 trailing starts, real daily highs and lows). Pools whose asset has no Market Weather series use their OWN daily snapshot prices (PW-B1-own) - one observation per day, so intraday excursions are invisible and p is a FLOOR, not an estimate; pools with too little history borrow the pooled, rescaled shape of the mapped pools (PW-P1). Every row states which model spoke.",
+    "groups": [
+      "w05",
+      "w15",
+      "w35"
+    ],
+    "invalid_battery": [
+      "any frozen row whose window_start_ts differs from its created_at_ts",
+      "INCOMPLETE rows exceeding incomplete_max_share of the stream's matured rows",
+      "the stream froze on fewer than running_min_share of the calendar days in the judged period",
+      "any row whose prediction_hash does not recompute from its own fields"
+    ],
+    "outcome": "breach = 1 if ANY Poolwatch daily snapshot in (freeze_day, freeze_day + 14 days] records a price outside the frozen band. Daily sampling can only MISS a breach, never invent one; the bias therefore favours 'no breach' and is accepted, not corrected. Fewer than 13 snapshots in the window makes the row INCOMPLETE. Recomputed at grade time from the stored snapshots.",
+    "protocol_constants": {
+      "against_ci": 0.99,
+      "against_min_abs_gap": 0.1,
+      "against_min_days": 42,
+      "block_days": 14,
+      "calibrated_ci": 0.95,
+      "calibrated_min_days": 84,
+      "calibration_tolerance": 0.1,
+      "gap_definition": "gap(width) = mean over resolved items of (breach - p)",
+      "incomplete_max_share": 0.1,
+      "informative_item": "an item with 0.02 <= p <= 0.98 (near-certain forecasts are excluded from the tests but shown in the reliability table)",
+      "min_informative_items": 30,
+      "resamples": 2000,
+      "running_min_share": 0.7,
+      "seed": 42
+    },
+    "reported_not_gated": [
+      "Brier and Brier skill vs climatology per width",
+      "reliability table (5 bins)",
+      "gaps split BY MODEL (PW-B1 mapped / PW-B1-own / PW-P1 borrowed) and BY NETWORK - this is how the honesty of the own- and borrowed-history labels gets tested",
+      "fee_14d_est, exp_il and FIR are displayed economics and are NOT graded by this standard",
+      "the separate TOP-vs-CONTROL paper-position experiment is NOT governed by this standard and is unchanged by it"
+    ],
+    "serial_dependence": "Daily 14-day windows overlap and pools on the same asset move together (many pools here are the same ETH or BTC price on different chains and fee tiers), so rows are NOT independent. All inference resamples whole freeze DAYS in moving blocks of 14 consecutive days (2000 resamples, seed 42).",
+    "streams": [
+      "PW_POOLS"
+    ],
+    "verdicts": [
+      "INVALID",
+      "UNTESTED",
+      "EVIDENCE AGAINST",
+      "CALIBRATED"
+    ]
+  },
+  "issued_utc": "2026-09-24T07:45:59Z",
+  "notes": "Seal BEFORE the first pw-v2.0.0 freeze. Spec: docs/design/POOLWATCH_V2_SPEC.md. Cross pools (both legs volatile) are NOT covered by this version: Poolwatch records each pool's tracked leg in USD, not the pool's own rate, so their outcome is not measurable from this data - they are listed on the board with that reason.",
+  "one_line_commitment": "Every day, for every liquid EVM pool Poolwatch tracks, the probability that a fresh +/-5/15/35% range is left within 14 days is frozen before the window opens; the cumulative record is judged mechanically on calibration with serial-dependence-aware inference, and every result is published including misses.",
+  "scope": "poolwatch-v2",
+  "stamp": "20260924_074559_standing_acceptance_standard_poolwatch_v2_sealed",
+  "standard_id": "standing_acceptance_standard_poolwatch_v2",
+  "status": "STANDING STANDARD (Poolwatch v2 / probability-of-breach family) - COMMITTED. Governs every pw-v2.0.0 forecast. Sealed before the first freeze.",
+  "title": "GradedLP STANDING Acceptance Standard - POOLWATCH v2 (probability-of-breach family) v1",
+  "universe_sha256": "e9c58e06a9714177d24329f786c5e7cb47ca7dfc3f22effd785c9b663930425f"
+}
