@@ -1,0 +1,108 @@
+{
+  "addendum_hash": "sha256:5fd224392408673a6af303fe1b7f575041f2479fd3cba4135e48f74473fa3bf5",
+  "addendum_hash_recipe": {
+    "canonicalization": "RFC-8785 JCS (jcs.canonicalize)",
+    "digest": "sha256",
+    "excluded_fields": [
+      "addendum_hash"
+    ],
+    "independent_recipe": "python -c \"import json,hashlib,jcs;d=json.load(open('<this file>'));d.pop('addendum_hash');print('sha256:'+hashlib.sha256(jcs.canonicalize(d)).hexdigest())\""
+  },
+  "artifact": "prereg_disclosure_acceptance_standard",
+  "cites_mw_v1": "prereg/disclosures/20260921_135454_standing_acceptance_standard_mw_v1_sealed.json",
+  "cites_mw_v1_hash": "sha256:15f28985adf632bc8ca3232eb31ecc61c8255ef86aa1ab7b21310eb2326fdb7b",
+  "grid_rule": {
+    "cadence": "One GRID verdict every 28 days, cumulative from the first grid freeze day, due when the last day of the period has matured (+14 days, +2 days slack). Written to prereg/market-weather/<stamp>_market-weather_grid_verdict_w<k>.json, citing this standard's addendum_hash. Earlier verdicts are never revised.",
+    "evaluation_lattice": {
+      "k": [
+        4,
+        10,
+        20,
+        30,
+        50,
+        70,
+        100
+      ],
+      "meaning": "edges 2, 5, 10, 15, 25, 35, 50 %; all 49 (lo, up) combinations per coin-day, symmetric and asymmetric. Fixed now so the tested cells cannot be chosen after the outcomes are known."
+    },
+    "forecast_object": "For every coin that receives an MW-B1 champion row at a MARKET freeze (23:50 UTC day t): p(lo, up) = count(U > up OR D > lo) / n_pairs over the SAME U/D pairs that row was computed from (trailing 730 days of 14-day excursions, closed candles up to day t-1 only), for every band [-lo, +up] around the freeze spot with lo = k_lo/200 and up = k_up/200, k_lo and k_up integers in [1, 120] (0.5% to 60% in 0.5% steps, asymmetric bands included). Identical formula to MW-B1; the grid adds no model, no fitting and no parameter.",
+    "freezing": "The pairs are frozen in mw_grid_<day>.json.gz (canonical JSON: sorted keys, no whitespace, ASCII; gzip mtime 0). grid_sha256 = sha256 of the UNCOMPRESSED canonical bytes. It is written once, before the outcome window opens (created_at_ts < window_start_ts), carries each coin's champion record_id and prediction_hash, and is refused for any coin whose pairs do not reproduce that row's published p at +/-5/15/35% bit-for-bit. grid_sha256 is committed in that day's MARKET pre-registration manifest; a grid that is not in a committed manifest is never served.",
+    "groups": "Lattice items are pooled across coins and cells and grouped by forecast p into 5 bins: [0, 0.2), [0.2, 0.4), [0.4, 0.6), [0.6, 0.8), [0.8, 1.0]. The calibration claim is per bin: when the grid says ~p, breaches happen ~p of the time, whatever the band shape.",
+    "invalid_battery": [
+      "any grid file whose uncompressed bytes do not hash to the grid_sha256 committed in its MARKET manifest, or are not canonical",
+      "any grid created at or after its window opened (created_at_ts >= window_start_ts)",
+      "any grid entry whose record_id / prediction_hash does not match the champion row of that coin-day in the ledger",
+      "any grid entry whose pairs do not reproduce that row's p at +/-5/15/35% exactly",
+      "grids exist for fewer than running_min_share of the calendar days in the judged period",
+      "INCOMPLETE rows exceed incomplete_max_share of the matured coin-days that have a grid"
+    ],
+    "outcome": "Same as the inherited MARKET outcome: U_real = max(high[t+1..t+14]) / spot - 1, D_real = 1 - min(low[t+1..t+14]) / spot from the coin's fixed venue; breach(lo, up) = 1 if U_real > up OR D_real > lo. One realized (U_real, D_real) per coin-day resolves EVERY cell of that coin's grid, so no answer the grid can give is ungradeable.",
+    "reported_not_gated": [
+      "Brier score and Brier skill vs pooled climatology, per bin and overall",
+      "the same gap statistics split into SYMMETRIC cells (lo = up) and ASYMMETRIC cells (lo != up), so a problem specific to lopsided bands is visible even when the pooled bins pass",
+      "the same gap statistics per edge distance of the nearer edge (<= 5%, 5-15%, > 15%)"
+    ],
+    "scope_of_claim": "This standard grades the grid as a forecast. It does not grade any user's decision, position, fees or impermanent loss, and a CALIBRATED verdict is not a recommendation.",
+    "tests": "Exactly the inherited protocol_constants and machinery, applied with the 5 p-bins as the groups: informative items 0.02 <= p <= 0.98; gap = mean(breach - p) per bin; 14-day moving-block bootstrap over freeze DAYS (2000 resamples, seed 42). EVIDENCE AGAINST if any bin with >= 30 informative items has |gap| >= 0.10 and its 99% CI excludes 0, with >= 42 matured grid days. CALIBRATED if >= 84 matured grid days, every bin with >= 30 informative items has its 95% CI inside [-0.10, +0.10], and some bin saw both outcomes. Else UNTESTED. INVALID first."
+  },
+  "inherited_fixed_rule": {
+    "against_battery": {
+      "miscalibration": "EVIDENCE AGAINST if, for ANY width (or the HELD track as a whole) with >= min_informative_items informative items, the stream has >= against_min_days matured freeze days, |gap| >= against_min_abs_gap, and the against_ci block-bootstrap interval of gap excludes 0. Direction is reported: gap > 0 = breaches happened MORE than forecast (the dangerous direction for an LP)."
+    },
+    "cadence": "One verdict per stream every 28 days, judged on the CUMULATIVE matured record since the first freeze (verdict k covers freeze days 1..28k). Earlier verdicts are never revised; each is a snapshot of the record at its date.",
+    "calibrated_conditions_all_required": [
+      ">= calibrated_min_days matured freeze days in the stream",
+      "for EVERY width (and HELD) with >= min_informative_items informative items: the calibrated_ci block-bootstrap interval of gap lies entirely inside [-calibration_tolerance, +calibration_tolerance]",
+      "at least one width has both breaches and non-breaches among its informative items (the forecasts were exposed to both outcomes)"
+    ],
+    "evaluation_order": "INVALID first; then EVIDENCE AGAINST; then CALIBRATED; else UNTESTED. The first that fires decides.",
+    "forecast_object": "p = P(breach within 14 days) for a band [-lo, +up] around the entry price. MARKET stream: each coin, symmetric bands +/-5%, +/-15%, +/-35%, entry = live spot at the freeze (23:50 UTC day t), window = daily candles t+1..t+14 from the coin's fixed venue. POOLS stream: each non-stable SOL v2 Orca pool, FRESH bands +/-5/15/35% at the pool's own price (freeze 15:20 UTC) and the HELD 2026-07-16 band when price is inside it; window [ts, ts+14d) of the SOL collector's snapshots.",
+    "invalid_battery": [
+      "any frozen row created at or after its window opened (MARKET: created_at_ts >= window_start_ts; POOLS: created_at_ts > ts + 600)",
+      "INCOMPLETE rows (window data missing after a 7-day grace) exceed incomplete_max_share of the stream's matured rows",
+      "the stream froze on fewer than running_min_share of the calendar days in the judged period",
+      "any row whose prediction_hash does not recompute from its own fields"
+    ],
+    "outcome": "breach = 1 if (MARKET) max(high)/spot - 1 > up OR 1 - min(low)/spot > lo over the window; (POOLS) tick_current ever < band_tick_lower or > band_tick_upper over the window. Recomputed at grade time from the stored inputs.",
+    "protocol_constants": {
+      "against_ci": 0.99,
+      "against_min_abs_gap": 0.1,
+      "against_min_days": 42,
+      "block_days": 14,
+      "calibrated_ci": 0.95,
+      "calibrated_min_days": 84,
+      "calibration_tolerance": 0.1,
+      "gap_definition": "gap(width) = mean over resolved items of (breach - p)",
+      "incomplete_max_share": 0.1,
+      "informative_item": "an item with 0.02 <= p <= 0.98 (near-certain forecasts are excluded from the tests but shown in the reliability table)",
+      "min_informative_items": 30,
+      "resamples": 2000,
+      "running_min_share": 0.7,
+      "seed": 42
+    },
+    "reported_not_gated": [
+      "Brier score per width, and Brier skill vs the stream's own pooled breach rate (climatology). MW-B1 is close to climatology by construction; the product claim is calibration, not beating climatology.",
+      "reliability table: 5 bins of p with counts and observed frequency",
+      "CHALLENGER SCOREBOARD: MW-IV1 vs MW-B1 paired Brier skill on the options coins per width, block-bootstrap 95% CI. Promotion rule (pre-committed): MW-IV1 replaces MW-B1 for the options coins only if, over >= 120 matured freeze days, its Brier skill at +/-15% is >= 5% with the 95% CI excluding 0 AND it is not worse (point estimate) at +/-5% or +/-35%. A promotion is a new sealed model version; never back-applied."
+    ],
+    "serial_dependence": "Daily 14-day windows overlap and coins move together, so rows are NOT independent. All inference resamples whole freeze DAYS in moving blocks of 14 consecutive days (2000 resamples, seed 42). No test treats coins or days as independent draws.",
+    "streams": [
+      "MARKET",
+      "POOLS"
+    ],
+    "verdicts": [
+      "INVALID",
+      "UNTESTED",
+      "EVIDENCE AGAINST",
+      "CALIBRATED"
+    ]
+  },
+  "issued_utc": "2026-09-24T15:38:52Z",
+  "notes": "Seal with: mw_publish.py seal-grid --pub <publiciq> --issued <UTC>, BEFORE the first freeze that passes --grid-standard. Spec: docs/design/GRADEDLP_PAY_V0_SPEC.md \u00a74.3 and \u00a79 D8.",
+  "scope": "market-weather",
+  "stamp": "20260924_153852_standing_acceptance_standard_mw_grid_v1_sealed",
+  "standard_id": "standing_acceptance_standard_mw_grid_v1",
+  "status": "STANDING STANDARD (Market Weather RANGE GRID) v1 - COMMITTED. Additive to standing_acceptance_standard_mw_v1, which is unchanged. Governs every mw-grid-v1 grid and every paid grade-range answer drawn from one. Sealed before the first grid existed.",
+  "supersedes": "nothing.",
+  "title": "GradedLP STANDING Acceptance Standard - MARKET WEATHER RANGE GRID v1 - DRAFT, pending seal"
+}
